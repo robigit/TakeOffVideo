@@ -11,22 +11,21 @@
 
 <label class="label">Selezionare la telecamera</label>
 <div class="field has-addons">
-    
-    <div class="control">
+    <div class="control is-expanded">
+         
+            <div class="select is-fullwidth">
+                <select id="Dispositivo" @onchange="@OnCameraSelected">
 
-        <div class="select">
-            <select id="Dispositivo" @bind="@_selected">
-
-                <option value="">Seleziona</option>
-                @foreach (var disp in _devices)
-                {
-                    <option value="@disp.ID">@disp.Label</option>
-                }
+                    <option value="">Seleziona</option>
+                    @foreach (var disp in _devices)
+                    {
+                        <option value="@disp.ID">@disp.Label</option>
+                    }
 
 
-            </select>
-        </div>
-        <p class="help is-danger">Selezionare la telecamera</p>
+                </select>
+            </div>
+
     </div>
     <div class="control">
         <a class="button is-info" @onclick="GetDevices">
@@ -35,13 +34,15 @@
     </div>
 </div>
 
+<div class="box">
+    <video id="videoPlayer" width="320" height="320" />
+</div>
+
 @code {
 
     private IJSObjectReference? _JSRecorder;
 
-    string _selected;
     List<Device> _devices = new List<Device>();
-
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -53,9 +54,9 @@
 
     private async Task GetDevices()
     {
-
+       
         _devices.Clear();
-        
+
         await _JSRecorder.InvokeVoidAsync("ListaDevices", DotNetObjectReference.Create(this), "AggungiDevice", "EndAggiorna");
 
     }
@@ -66,7 +67,7 @@
         Console.WriteLine($"{tipo} {label} {id}");
 
         if (tipo.StartsWith("video"))
-            _devices.Add(new Device { Label = $"1 {label}", ID = id });
+            _devices.Add(new Device { Label = $"{_devices.Count+1} {label}", ID = id });
     }
 
     [JSInvokable]
@@ -74,6 +75,18 @@
     {
         StateHasChanged();
     }
+
+
+    private async Task OnCameraSelected(ChangeEventArgs e)
+    {
+        if(string.IsNullOrEmpty(e?.Value.ToString()))
+        {
+            return;
+        }
+
+        await _JSRecorder.InvokeVoidAsync("startVideo", "videoPlayer", e.Value);
+    }
+
 
     void IDisposable.Dispose()
     {
