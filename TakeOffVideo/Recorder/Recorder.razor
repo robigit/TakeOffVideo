@@ -6,8 +6,9 @@
 
 
 
-
-<h3>Recorder</h3>
+<div class="box">
+<h2>Registrazione</h2>
+</div>
 
 <div class="field is-horizontal">
   
@@ -68,8 +69,16 @@
     </div>
 </div>
 
-<div class="box">
+<div class="notification @(_inregistrazione ? "is-danger" : "")">
     <video id="videoPlayer" width="320" height="320" />
+</div>
+
+<button class="button is-fullwidth   @(_inregistrazione ? "is-danger" : "is-primary")"
+        @onclick="OnRegistra">
+    @(_inregistrazione ? "Salva" : "Registra")
+ </button>
+<div class="block">
+    <p class="is-size-7">@(_inregistrazione ? "Registrazione in corso" : "Iniziare regitrazione")</p>
 </div>
 
 @code {
@@ -88,7 +97,7 @@
 
     private async Task GetDevices()
     {
-       
+
         _devices.Clear();
 
         await _JSRecorder.InvokeVoidAsync("ListaDevices", DotNetObjectReference.Create(this), "AggungiDevice", "EndAggiorna");
@@ -119,6 +128,14 @@
         }
 
         await _JSRecorder.InvokeVoidAsync("startVideo", "videoPlayer", e.Value);
+    }
+
+    bool _inregistrazione = false;
+
+    private void OnRegistra()
+    {
+        _inregistrazione = !_inregistrazione;
+        StateHasChanged();
     }
 
 
