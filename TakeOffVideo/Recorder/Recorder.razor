@@ -13,11 +13,11 @@
 <div class="field is-horizontal">
   
   <div class="field-body">
-    <div class="field">
-      <p class="control is-expanded">
+    @*<div class="field">*@
+        <p class="control  has-icons-left">
           <div class="select">
 
-                    <select @onchange="SelectedTurnoChanged">
+             <select @onchange="SelectedTurnoChanged">
                 @for(int i=1; i<7; ++i)
                 {
                     <option value="@i">Turno @i</option>
@@ -26,17 +26,19 @@
             </select>
               
          </div>
+                <div class="icon is-small is-left">
+                    <i class="fas fa-list-ol"></i>
+                </div>
+
       </p>
-    </div>
+    @*</div>*@
     <div class="field">
-      <p class="control is-expanded has-icons-left has-icons-right">
+      <p class="control is-expanded has-icons-left">
                 <input class="input is-success" placeholder="Pettorale" @bind="_pettorale" />
         <span class="icon is-small is-left">
-          <i class="fas fa-envelope"></i>
+          <i class="fas fa-solid fa-hashtag"></i>
         </span>
-        <span class="icon is-small is-right">
-          <i class="fas fa-check"></i>
-        </span>
+       
       </p>
     </div>
   </div>
@@ -46,7 +48,7 @@
 
 <label class="label">Selezionare la telecamera</label>
 <div class="field has-addons">
-    <div class="control is-expanded">
+    <div class="control is-expanded  has-icons-left">
          
             <div class="select is-fullwidth">
                 <select id="Dispositivo" @onchange="@OnCameraSelected">
@@ -60,7 +62,9 @@
 
                 </select>
             </div>
-
+        <div class="icon is-small is-left">
+            <i class="fas fa-video"></i>
+        </div>
     </div>
     <div class="control">
         <a class="button is-info" @onclick="GetDevices">
@@ -73,10 +77,30 @@
     <video id="videoPlayer" width="320" height="320" />
 </div>
 
+<p class="buttons">
 <button id="recbutton" class="button is-fullwidth   @(_inregistrazione ? "is-danger" : "is-primary")"
         @onclick="OnRegistra">
-    @(_inregistrazione ? "Salva" : "Registra")
+
+@* 
+    @if(_inregistrazione)
+    {
+        <span class="icon">
+            <i class="fab fa-floppy-disk"></i>
+        </span>
+    }
+    else
+    {
+        <span class="icon">
+            <i class="fab fa-square"></i>
+        </span>
+    }
+        *@
+        <span>    
+        @(_inregistrazione ? "Salva" : "Registra")
+   </span>
+
  </button>
+ </p>
 <div class="block">
     <p class="is-size-7">@_messaggio</p>
 </div>
@@ -157,6 +181,13 @@
 
     private async Task OnRegistra()
     {
+
+        if(string.IsNullOrEmpty(_cameraselected))
+        {
+
+        }
+
+
         _inregistrazione = !_inregistrazione;
 
         if (_inregistrazione)
