@@ -60,3 +60,96 @@ export function startVideo(src, id) {
         });
     }
 }
+
+let dotnetHelper = null;
+let media_recorder = null;
+let blobs_recorded = [];
+
+export function StartRec(src, idstopbutton, idcamera, dotHelper) {
+
+    dotnetHelper = dotHelper
+
+    navigator.mediaDevices.getUserMedia({ video: { deviceId: idcamera } })
+        .then(function (stream) {
+            let video = document.getElementById(src);
+            if ("srcObject" in video) {
+                video.srcObject = stream;
+            } else {
+                video.src = window.URL.createObjectURL(stream);
+            }
+
+
+            video.onloadedmetadata = function (e) {
+                video.play();
+            };
+            //mirror image
+            //video.style.webkitTransform = "scaleX(-1)";
+            //video.style.transform = "scaleX(-1)";
+
+            blobs_recorded = [];
+            
+            // set MIME type of recording as video/webm
+            media_recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+
+            // event : new recorded video blob available 
+            media_recorder.addEventListener('dataavailable', function (e) {
+                blobs_recorded.push(e.data);
+            });
+
+            // event : recording stopped & all blobs sent
+            media_recorder.addEventListener('stop', function () {
+                // create local object URL from the recorded video blobs
+                let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
+                
+                dotnetHelper.invokeMethodAsync("SalvaUrlVideo", video_local);
+
+                //??
+                //media_recorder.removeEventListener('stop', arguments.callee);
+            });
+
+            let stop_button = document.getElementById(idstopbutton);
+            stop_button.addEventListener('click', function () {
+                media_recorder.stop();
+            });
+
+            // start recording with each recorded blob having 1 second video
+            media_recorder.start(1000);
+        });
+
+}
+
+export function downloadBlob(blobUrl, name) {
+
+
+    // Create a link element
+    const link = document.createElement("a");
+
+    // Set link's href to point to the Blob URL
+    link.href = blobUrl;
+    link.download = name;
+
+    // Append link to the body
+    document.body.appendChild(link);
+
+
+
+    link.addEventListener('click', function (e) {
+        e.stopPropagation();
+        this.removeEventListener('click', arguments.callee);
+    });
+
+    link.click();
+
+    // Dispatch click event on the link
+    // This is necessary as link.click() does not work on the latest firefox
+    //link.dispatchEvent(
+    //    new MouseEvent('click', {
+    //        bubbles: true,
+    //        cancelable: true,
+    //        view: window
+    //    })
+    //);
+
+    // Remove link from body
+    document.body.removeChild(link);
+}

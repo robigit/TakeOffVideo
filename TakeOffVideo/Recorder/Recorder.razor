@@ -16,11 +16,11 @@
     <div class="field">
       <p class="control is-expanded">
           <div class="select">
-                
-            <select>
+
+                    <select @onchange="SelectedTurnoChanged">
                 @for(int i=1; i<7; ++i)
                 {
-                    <option>Turno @i</option>
+                    <option value="@i">Turno @i</option>
                
                 }
             </select>
@@ -30,7 +30,7 @@
     </div>
     <div class="field">
       <p class="control is-expanded has-icons-left has-icons-right">
-        <input class="input is-success" placeholder="Pettorale" >
+                <input class="input is-success" placeholder="Pettorale" @bind="_pettorale" />
         <span class="icon is-small is-left">
           <i class="fas fa-envelope"></i>
         </span>
@@ -73,25 +73,34 @@
     <video id="videoPlayer" width="320" height="320" />
 </div>
 
-<button class="button is-fullwidth   @(_inregistrazione ? "is-danger" : "is-primary")"
+<button id="recbutton" class="button is-fullwidth   @(_inregistrazione ? "is-danger" : "is-primary")"
         @onclick="OnRegistra">
     @(_inregistrazione ? "Salva" : "Registra")
  </button>
 <div class="block">
-    <p class="is-size-7">@(_inregistrazione ? "Registrazione in corso" : "Iniziare regitrazione")</p>
+    <p class="is-size-7">@_messaggio</p>
 </div>
 
 @code {
 
     private IJSObjectReference? _JSRecorder;
+    private DotNetObjectReference<Recorder>? _reference;
 
     List<Device> _devices = new List<Device>();
+
+    private string _messaggio = "-";
+
+    private string _pettorale;
+
+    private int _turno=1;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             _JSRecorder = await JS.InvokeAsync<IJSObjectReference>("import", "./script/recorderj.js");
+            _reference = DotNetObjectReference.Create(this);
+
         }
     }
 
@@ -99,8 +108,8 @@
     {
 
         _devices.Clear();
-
-        await _JSRecorder.InvokeVoidAsync("ListaDevices", DotNetObjectReference.Create(this), "AggungiDevice", "EndAggiorna");
+        if(_JSRecorder != null)
+            await _JSRecorder.InvokeVoidAsync("ListaDevices", _reference, "AggungiDevice", "EndAggiorna");
 
     }
 
@@ -119,23 +128,67 @@
         StateHasChanged();
     }
 
+    string? _cameraselected;
 
     private async Task OnCameraSelected(ChangeEventArgs e)
     {
-        if(string.IsNullOrEmpty(e?.Value.ToString()))
+        _cameraselected = null;
+        if (_JSRecorder==null || e==null || string.IsNullOrEmpty(e.Value.ToString()))
         {
             return;
         }
 
-        await _JSRecorder.InvokeVoidAsync("startVideo", "videoPlayer", e.Value);
+        _cameraselected = e.Value.ToString();
+
+        await _JSRecorder.InvokeVoidAsync("startVideo", "videoPlayer", _cameraselected);
     }
+
+
+    private void SelectedTurnoChanged(ChangeEventArgs e)
+    {
+        int.TryParse(e?.Value?.ToString(), out _turno);
+    }
+
 
     bool _inregistrazione = false;
 
-    private void OnRegistra()
+    // da mettere nei parametrri
+    List<string> _urls = new List<string>();
+
+    private async Task OnRegistra()
     {
         _inregistrazione = !_inregistrazione;
+
+        if (_inregistrazione)
+        {
+            _messaggio = "Registrazione in corso";
+
+            await _JSRecorder.InvokeVoidAsync("StartRec", "videoPlayer", "recbutton", _cameraselected, _reference);
+        }
+        else
+        {
+            _messaggio = "-";
+        }
         StateHasChanged();
+    }
+
+    [JSInvokable]
+    public async Task SalvaUrlVideo(string url)
+    {
+
+        if (!_urls.Contains(url))
+        {
+            _urls.Add(url);
+
+            // download
+
+            var nome = $"{DateTime.Today.ToString("yyyyMMdd")}_{DateTime.Now.ToString("HH-mm-ss")}_{_turno}_{_pettorale}.webm";
+
+            await _JSRecorder.InvokeVoidAsync("downloadBlob", url, nome);
+
+            StateHasChanged();
+
+        }
     }
 
 
