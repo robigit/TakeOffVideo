@@ -1,10 +1,36 @@
-﻿<h3>Analyzer</h3>
+﻿@using TakeOffVideo.Services
+
+@inject IJSRuntime JS
+@inject IVideoFileManager videofilemanager
+
+
 <h1 class="title is-2">
-    Superhero Scaffolding
+    Analisi
 </h1>
-<h2 class="subtitle is-4">
-    Let this cover page describe a product or service.
-</h2>
+
+<p class="control  has-icons-left">
+    <div class="select is-fullwidth">
+
+        <select @onchange="OnVideoSelected">
+            
+            @foreach(var v in videofilemanager.GetElenco().ToList())
+            {
+                <option value="@v.ID">@v.ToString()</option>
+            }
+
+        </select>
+
+    </div>
+    <div class="icon is-small is-left">
+        <i class="fas fa-video"></i>
+    </div>
+
+</p>
+<div class="content">
+    <video id="videoanalyzer" width="480" height="480" />
+</div>
+
+
 <br>
 <p class="has-text-centered">
     <figure class="image is-16by9">
@@ -13,5 +39,41 @@
 </p>
 
 @code {
+
+    private IJSObjectReference? _JScript;
+    private DotNetObjectReference<Analyzer>? _reference;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _JScript = await JS.InvokeAsync<IJSObjectReference>("import", "./script/analizzatore.js");
+            _reference = DotNetObjectReference.Create(this);
+
+            videofilemanager.RegistraOnNuovo(OnNuovo);
+
+        }
+    }
+
+    private async Task OnVideoSelected(ChangeEventArgs e)
+    {
+        if (e?.Value is null )
+            return;
+
+        if(int.TryParse(e.Value.ToString(), out int id))
+        {
+            var video = videofilemanager.GetById(id);
+
+            if(video != null)
+                await _JScript.InvokeVoidAsync("caricavideo", "videoanalyzer", video.Url);
+        }
+    }
+
+    private async Task OnNuovo(VideoFile v)
+    {
+        await _JScript.InvokeVoidAsync("caricavideo", "videoanalyzer", v.Url);
+
+        StateHasChanged();
+    }
 
 }

@@ -1,14 +1,15 @@
 ﻿@using Microsoft.JSInterop
+@using TakeOffVideo.Services
 @implements IAsyncDisposable
 @implements IDisposable
 
 @inject IJSRuntime JS
+@inject IVideoFileManager videofilemanager
 
 
-
-<div class="box">
-<h2>Registrazione</h2>
-</div>
+<h1 class="title is-2">
+    Registrazione
+</h1>
 
 <div class="field is-horizontal">
   
@@ -177,14 +178,19 @@
     bool _inregistrazione = false;
 
     // da mettere nei parametrri
-    List<string> _urls = new List<string>();
+    //List<string> _urls = new List<string>();
+
+
 
     private async Task OnRegistra()
     {
 
+        if (_JSRecorder == null)
+            return;
+
         if(string.IsNullOrEmpty(_cameraselected))
         {
-
+            return;
         }
 
 
@@ -206,20 +212,25 @@
     [JSInvokable]
     public async Task SalvaUrlVideo(string url)
     {
+        if (_JSRecorder == null)
+            return;
 
-        if (!_urls.Contains(url))
-        {
-            _urls.Add(url);
+        await videofilemanager.AggiungiNuovo(url, _turno, _pettorale);
+        StateHasChanged();
 
-            // download
+        //if (!_urls.Contains(url))
+        //{
+        //    _urls.Add(url);
 
-            var nome = $"{DateTime.Today.ToString("yyyyMMdd")}_{DateTime.Now.ToString("HH-mm-ss")}_{_turno}_{_pettorale}.webm";
+        //    // download
 
-            await _JSRecorder.InvokeVoidAsync("downloadBlob", url, nome);
+        //    var nome = $"{DateTime.Today.ToString("yyyyMMdd")}_{DateTime.Now.ToString("HH-mm-ss")}_{_turno}_{_pettorale}.webm";
 
-            StateHasChanged();
+        //    await _JSRecorder.InvokeVoidAsync("downloadBlob", url, nome);
 
-        }
+        //    StateHasChanged();
+
+        //}
     }
 
 
