@@ -3,6 +3,30 @@
 @inject IJSRuntime JS
 @inject IVideoFileManager videofilemanager
 
+<style>
+    #vLine {
+        position: absolute;
+        margin-left: 0;
+        left: calc(50% - 1px);
+        width: 1px;
+        height: 480px;
+        top: 0;
+        z-index: 0;
+        background-color: yellow;
+    }
+
+    #videocontainer {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+    #mvideo {
+        width: 100%;
+        height: 100%;
+    }
+
+</style>
 
 <h1 class="title is-2">
     Analisi
@@ -23,14 +47,64 @@
     </div>
     <div class="icon is-small is-left">
         <i class="fas fa-video"></i>
+
+        
     </div>
 
 </p>
-<div class="content">
-    <video id="videoanalyzer" width="480" height="480" />
+
+<div class="container">
+    <div id="videocontainer" >
+        <div id="mvideo">
+            <video id="videoanalyzer" controls width="480" height="480" />
+        </div>
+
+        @if (_mostralinea)
+        {
+            <div id="vLine"></div>
+        }
+    </div>
+
+
+    <div class="field is-grouped has-addons">
+        <button class="button" @onclick="@(() => MostraLinea())">
+            @if(_mostralinea)
+            {
+                 <p>Nascondi linea</p>
+            }
+            else
+            {
+                <p>Mostra linea</p>
+            }
+        </button>
+        @if (_mostralinea)
+        {
+            <button class="button" @onclick="@(() => Move("sx", 10))">
+                <span class="icon is-small">
+                    <i class="fas fa-angles-left"></i>
+                </span>
+            </button>
+
+            <button class="button" @onclick="@(() => Move("sx", 1))">
+                <span class="icon is-small">
+                    <i class="fas fa-chevron-left"></i>
+                </span>
+            </button>
+
+            <button class="button" @onclick="@(() => Move("dx", 1))">
+                <span class="icon is-small">
+                    <i class="fas fa-chevron-right"></i>
+                </span>
+            </button>
+
+            <button class="button" @onclick="@(() => Move("dx", 10))">
+                <span class="icon is-small">
+                <i class="fas fa-angles-right"></i>
+                </span>
+            </button>
+        }
+    </div>
 </div>
-
-
 <br>
 <p class="has-text-centered">
     <figure class="image is-16by9">
@@ -42,6 +116,8 @@
 
     private IJSObjectReference? _JScript;
     private DotNetObjectReference<Analyzer>? _reference;
+
+    private bool _mostralinea = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -57,7 +133,7 @@
 
     private async Task OnVideoSelected(ChangeEventArgs e)
     {
-        if (e?.Value is null )
+        if (e?.Value is null || _JScript == null)
             return;
 
         if(int.TryParse(e.Value.ToString(), out int id))
@@ -71,9 +147,25 @@
 
     private async Task OnNuovo(VideoFile v)
     {
+        if (_JScript == null)
+            return;
         await _JScript.InvokeVoidAsync("caricavideo", "videoanalyzer", v.Url);
 
         StateHasChanged();
+    }
+
+    private void MostraLinea()
+    {
+        _mostralinea = !_mostralinea;
+    }
+
+    private async Task Move(string direction, int pixels)
+    {
+        if (_JScript == null)
+            return;
+
+
+        await _JScript.InvokeVoidAsync("move", direction, "videocontainer", "vLine", pixels);
     }
 
 }
