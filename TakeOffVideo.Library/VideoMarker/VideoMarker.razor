@@ -1,0 +1,149 @@
+﻿@using Microsoft.JSInterop
+
+@inject IJSRuntime JS
+
+<style>
+
+    .vmcontainer {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+
+    .vmlinea {
+        position: absolute;
+        margin-left: 0;
+        left: calc(50% - 1px);
+        width: 1px;
+        height: 100%;
+        top: 0;
+        z-index: 1000;
+        background-color: yellow;
+    }
+
+
+    .vmvideo {
+        width: 100%;
+        height: 100%;
+    }
+
+</style>
+
+<div class="container">
+    <div class="vmcontainer" @ref="_container" >
+        <div class="vmvideo">
+            <video controls width="@WidthVideo" height="@HeigthVideo" @ref="_video" />
+        </div>
+
+        @if (_mostralinea)
+        {
+            <div class="vmlinea" @ref="_linea"></div>
+        }
+    </div>
+
+
+    <div class="field is-grouped has-addons">
+        <button class="button" @onclick="@(() => MostraLinea())">
+            @if (_mostralinea)
+            {
+                <p>Nascondi linea</p>
+            }
+            else
+            {
+                <p>Mostra linea</p>
+            }
+        </button>
+        @if (_mostralinea)
+        {
+            <button class="button" @onclick="@(() => Move("sx", 10))">
+                <span class="icon is-small">
+                    <i class="fas fa-angles-left"></i>
+                </span>
+            </button>
+
+            <button class="button" @onclick="@(() => Move("sx", 1))">
+                <span class="icon is-small">
+                    <i class="fas fa-chevron-left"></i>
+                </span>
+            </button>
+
+            <button class="button" @onclick="@(() => Move("dx", 1))">
+                <span class="icon is-small">
+                    <i class="fas fa-chevron-right"></i>
+                </span>
+            </button>
+
+            <button class="button" @onclick="@(() => Move("dx", 10))">
+                <span class="icon is-small">
+                    <i class="fas fa-angles-right"></i>
+                </span>
+            </button>
+        }
+    </div>
+</div>
+
+
+
+@code {
+
+    private bool _mostralinea = true;
+
+    private IJSObjectReference? _JScript;
+    private DotNetObjectReference<VideoMarker>? _reference;
+
+    private ElementReference _video;
+    private ElementReference _container;
+    private ElementReference _linea;
+
+    [Parameter] public string? Url { get; set; }
+    [Parameter] public int WidthVideo { get; set; } = 320;
+    [Parameter] public int HeigthVideo { get; set; } = 320;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _JScript = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/TakeOffVideo.Library/VideoMarker/VideoMarker.razor.js");
+            _reference = DotNetObjectReference.Create(this);
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Url != null && _JScript!=null)
+        {
+            await _JScript.InvokeVoidAsync("caricavideo", _video, Url);
+        }
+    }
+
+    private void MostraLinea()
+    {
+        _mostralinea = !_mostralinea;
+    }
+
+    private async Task Move(string direction, int pixels)
+    {
+        if (_JScript == null)
+            return;
+
+
+        await _JScript.InvokeVoidAsync("move", direction, _container, _linea, pixels);
+    }
+
+    public async Task StartVideo(string camera)
+    {
+        if (_JScript == null)
+            return;
+        await _JScript.InvokeVoidAsync("startVideo", _video, camera);
+    }
+
+
+    public async Task StartRegistrazione()
+    {
+        if (_JScript == null)
+            return;
+        await _JScript.InvokeVoidAsync("StartRec", "videoPlayer", "recbutton", _cameraselected, _reference);
+    }
+
+}

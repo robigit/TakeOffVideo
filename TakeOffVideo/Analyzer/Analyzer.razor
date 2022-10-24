@@ -1,32 +1,10 @@
-﻿@using TakeOffVideo.Services
+﻿@using TakeOffVideo.Library.VideoMarker
+@using TakeOffVideo.Services
 
-@inject IJSRuntime JS
+
 @inject IVideoFileManager videofilemanager
 
-<style>
-    #vLine {
-        position: absolute;
-        margin-left: 0;
-        left: calc(50% - 1px);
-        width: 1px;
-        height: 480px;
-        top: 0;
-        z-index: 0;
-        background-color: yellow;
-    }
 
-    #videocontainer {
-        width: 100%;
-        height: 100%;
-        position: relative;
-    }
-
-    #mvideo {
-        width: 100%;
-        height: 100%;
-    }
-
-</style>
 
 <h1 class="title is-2">
     Analisi
@@ -53,58 +31,9 @@
 
 </p>
 
-<div class="container">
-    <div id="videocontainer" >
-        <div id="mvideo">
-            <video id="videoanalyzer" controls width="480" height="480" />
-        </div>
 
-        @if (_mostralinea)
-        {
-            <div id="vLine"></div>
-        }
-    </div>
+<VideoMarker Url="@_urlattuale" WidthVideo="640" HeigthVideo="640" />
 
-
-    <div class="field is-grouped has-addons">
-        <button class="button" @onclick="@(() => MostraLinea())">
-            @if(_mostralinea)
-            {
-                 <p>Nascondi linea</p>
-            }
-            else
-            {
-                <p>Mostra linea</p>
-            }
-        </button>
-        @if (_mostralinea)
-        {
-            <button class="button" @onclick="@(() => Move("sx", 10))">
-                <span class="icon is-small">
-                    <i class="fas fa-angles-left"></i>
-                </span>
-            </button>
-
-            <button class="button" @onclick="@(() => Move("sx", 1))">
-                <span class="icon is-small">
-                    <i class="fas fa-chevron-left"></i>
-                </span>
-            </button>
-
-            <button class="button" @onclick="@(() => Move("dx", 1))">
-                <span class="icon is-small">
-                    <i class="fas fa-chevron-right"></i>
-                </span>
-            </button>
-
-            <button class="button" @onclick="@(() => Move("dx", 10))">
-                <span class="icon is-small">
-                <i class="fas fa-angles-right"></i>
-                </span>
-            </button>
-        }
-    </div>
-</div>
 @*<br>
 <p class="has-text-centered">
     <figure class="image is-16by9">
@@ -114,58 +43,43 @@
 
 @code {
 
-    private IJSObjectReference? _JScript;
-    private DotNetObjectReference<Analyzer>? _reference;
 
-    private bool _mostralinea = true;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
-            _JScript = await JS.InvokeAsync<IJSObjectReference>("import", "./script/analizzatore.js");
-            _reference = DotNetObjectReference.Create(this);
-
             videofilemanager.RegistraOnNuovo(OnNuovo);
 
         }
     }
 
-    private async Task OnVideoSelected(ChangeEventArgs e)
+    string? _urlattuale;
+
+    private void OnVideoSelected(ChangeEventArgs e)
     {
-        if (e?.Value is null || _JScript == null)
+        if (e?.Value is null )
             return;
 
         if(int.TryParse(e.Value.ToString(), out int id))
         {
             var video = videofilemanager.GetById(id);
 
+
             if(video != null)
-                await _JScript.InvokeVoidAsync("caricavideo", "videoanalyzer", video.Url);
+                _urlattuale =  video.Url;
         }
     }
 
-    private async Task OnNuovo(VideoFile v)
+    private async Task OnNuovo(VideoFile video)
     {
-        if (_JScript == null)
-            return;
-        await _JScript.InvokeVoidAsync("caricavideo", "videoanalyzer", v.Url);
+        if(video!=null)
+            _urlattuale = video.Url;
+
+
 
         StateHasChanged();
     }
 
-    private void MostraLinea()
-    {
-        _mostralinea = !_mostralinea;
-    }
-
-    private async Task Move(string direction, int pixels)
-    {
-        if (_JScript == null)
-            return;
-
-
-        await _JScript.InvokeVoidAsync("move", direction, "videocontainer", "vLine", pixels);
-    }
-
+    
 }

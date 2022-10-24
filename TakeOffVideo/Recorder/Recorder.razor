@@ -1,4 +1,5 @@
 ﻿@using Microsoft.JSInterop
+@using TakeOffVideo.Library.VideoMarker
 @using TakeOffVideo.Services
 @implements IAsyncDisposable
 @implements IDisposable
@@ -75,8 +76,13 @@
 </div>
 
 <div class="notification @(_inregistrazione ? "is-danger" : "")">
-    <video id="videoPlayer" width="320" height="320" />
+    @*<video id="videoPlayer" width="320" height="320" />*@
+
+    <VideoMarker @ref="_videoMarker" WidthVideo="320" HeigthVideo="320" />
+
 </div>
+
+
 
 <p class="buttons">
 <button id="recbutton" class="button is-fullwidth   @(_inregistrazione ? "is-danger" : "is-primary")"
@@ -118,6 +124,8 @@
     private string _pettorale;
 
     private int _turno=1;
+
+    VideoMarker? _videoMarker;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -164,8 +172,10 @@
         }
 
         _cameraselected = e.Value.ToString();
+        if(_cameraselected!=null)
+            _videoMarker?.StartVideo(_cameraselected);
 
-        await _JSRecorder.InvokeVoidAsync("startVideo", "videoPlayer", _cameraselected);
+        //await _JSRecorder.InvokeVoidAsync("startVideo", "videoPlayer", _cameraselected);
     }
 
 
@@ -212,8 +222,7 @@
     [JSInvokable]
     public async Task SalvaUrlVideo(string url)
     {
-        if (_JSRecorder == null)
-            return;
+        
 
         await videofilemanager.AggiungiNuovo(url, _turno, _pettorale);
         StateHasChanged();

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -18,6 +18,10 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\css\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TakeOffVideo.Library\TakeOffVideo.Library.csproj" />
   </ItemGroup>
 
 </Project>
