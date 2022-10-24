@@ -108,8 +108,10 @@ export function StartRec(src, idstopbutton, idcamera, dotHelper) {
             });
 
             let stop_button = document.getElementById(idstopbutton);
-            stop_button.addEventListener('click', function () {
+            stop_button.addEventListener('click', function onst() {
                 media_recorder.stop();
+
+                this.removeEventListener('click', onst);
             });
 
             // start recording with each recorded blob having 1 second video

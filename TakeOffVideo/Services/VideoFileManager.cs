@@ -1,4 +1,5 @@
 ﻿using Microsoft.JSInterop;
+using System;
 
 namespace TakeOffVideo.Services
 {
@@ -19,24 +20,26 @@ namespace TakeOffVideo.Services
         public int ID { get; set; }
         public DateTime OraRegistrazione { get; set; }
 
-        public string Url { get; set; }
+        public string? Url { get; set; }
         public int Turno { get; set; }
-        public string Pettorale { get; set; }
+        public string? Pettorale { get; set; }
+
+        public bool Pinned { get; set; } = false;
 
         public string NomeFile => $"{OraRegistrazione:yyyyMMdd}_{OraRegistrazione:HH-mm-ss}_{Turno}_{Pettorale}.webm";
 
+
         public override string ToString()
         {
-            return $"{OraRegistrazione:HH:mm:ss} turno {Turno} #{Pettorale}"; 
+            return $"{OraRegistrazione:HH:mm:ss} turno {Turno} #{Pettorale}";
         }
 
-        
     }
 
     public class VideoFileManager : IVideoFileManager
     {
 
-        private IJSObjectReference? _JSRecorder = null;
+        private IJSObjectReference? _JScriptfile = null;
 
         List<Func<VideoFile, Task>> _actions = new ();
 
@@ -50,9 +53,9 @@ namespace TakeOffVideo.Services
 
         private async Task<IJSObjectReference> GetRef()
         {
-            _JSRecorder ??= await _JS.InvokeAsync<IJSObjectReference>("import", "./script/videofilemanager.js");
+            _JScriptfile ??= await _JS.InvokeAsync<IJSObjectReference>("import", "./script/videofilemanager.js");
 
-            return _JSRecorder;
+            return _JScriptfile;
         }
 
 
@@ -69,6 +72,7 @@ namespace TakeOffVideo.Services
             {
                 var v = new VideoFile
                 {
+                   
                     ID = _maxid++,
                     Url = url,
                     Turno = turno,
@@ -77,6 +81,8 @@ namespace TakeOffVideo.Services
                 };
 
                 _urls.Add(v);
+
+                await PulisciOld();
 
                 // salva su file
 
@@ -92,8 +98,31 @@ namespace TakeOffVideo.Services
                 // ripulire i vecchi
             }
 
+        }
+
+        private async Task PulisciOld()
+        {
+           
+            int MAX_TO_KEEP = 3;
+            var listaelim1 = _urls.Where(v => !v.Pinned).OrderByDescending(v => v.OraRegistrazione);
+
+            if (_urls.Count <= MAX_TO_KEEP)
+                return;
+            
+            var listaelim = listaelim1.TakeLast(_urls.Count - MAX_TO_KEEP);
+
+            var r = await GetRef();
+ 
+            
+            foreach(var v in listaelim)
+            {
+                await r.InvokeVoidAsync("rimuoviblob", v.Url);
+            }
+
+            _urls.RemoveAll(v => listaelim.Contains(v));
 
         }
+
 
         public IEnumerable<VideoFile> GetElenco()
         {

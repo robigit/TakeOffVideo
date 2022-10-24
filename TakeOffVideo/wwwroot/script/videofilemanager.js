@@ -13,9 +13,9 @@
 
 
 
-    link.addEventListener('click', function (e) {
+    link.addEventListener('click', function onck(e) {
         e.stopPropagation();
-        this.removeEventListener('click', arguments.callee);
+        this.removeEventListener('click', onck);
     });
 
     link.click();
@@ -32,4 +32,11 @@
 
     // Remove link from body
     document.body.removeChild(link);
+}
+
+
+export function rimuoviblob(link) {
+    console.log("rimuoviblob "+link)
+
+    URL.revokeObjectURL(link);
 }
