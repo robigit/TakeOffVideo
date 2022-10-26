@@ -75,39 +75,20 @@
     </div>
 </div>
 
-<div class="notification @(_inregistrazione ? "is-danger" : "")">
+
+@*
+<div class="notification @(_inregistrazione ? "is-danger" : "")">*@
     @*<video id="videoPlayer" width="320" height="320" />*@
 
-    <VideoMarker @ref="_videoMarker" WidthVideo="320" HeigthVideo="320" />
+    <VideoMarker @ref="_videoMarker" WidthVideo="320" HeigthVideo="320"
+        ConRecorder="true" OnVideoRecorded="SalvaUrlVideo"
+        />
+@*
+</div>*@
 
-</div>
 
 
 
-<p class="buttons">
-<button id="recbutton" class="button is-fullwidth   @(_inregistrazione ? "is-danger" : "is-primary")"
-        @onclick="OnRegistra">
-
-@* 
-    @if(_inregistrazione)
-    {
-        <span class="icon">
-            <i class="fab fa-floppy-disk"></i>
-        </span>
-    }
-    else
-    {
-        <span class="icon">
-            <i class="fab fa-square"></i>
-        </span>
-    }
-        *@
-        <span>    
-        @(_inregistrazione ? "Salva" : "Registra")
-   </span>
-
- </button>
- </p>
 <div class="block">
     <p class="is-size-7">@_messaggio</p>
 </div>
@@ -185,45 +166,12 @@
     }
 
 
-    bool _inregistrazione = false;
-
-    // da mettere nei parametrri
-    //List<string> _urls = new List<string>();
-
-
-
-    private async Task OnRegistra()
-    {
-
-        if (_JSRecorder == null)
-            return;
-
-        if(string.IsNullOrEmpty(_cameraselected))
-        {
-            return;
-        }
-
-
-        _inregistrazione = !_inregistrazione;
-
-        if (_inregistrazione)
-        {
-            _messaggio = "Registrazione in corso";
-
-            await _JSRecorder.InvokeVoidAsync("StartRec", "videoPlayer", "recbutton", _cameraselected, _reference);
-        }
-        else
-        {
-            _messaggio = "-";
-        }
-        StateHasChanged();
-    }
+    
 
     [JSInvokable]
     public async Task SalvaUrlVideo(string url)
     {
-        
-
+ 
         await videofilemanager.AggiungiNuovo(url, _turno, _pettorale);
         StateHasChanged();
 
@@ -233,7 +181,8 @@
 
     void IDisposable.Dispose()
     {
-        //_JSRecorder?.Dispose();
+        if(_reference !=null)
+            _reference.Dispose();
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()

@@ -111,7 +111,7 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
             });
 
             
-            stop_button.addEventListener('click', function onst() {
+            stopbutton.addEventListener('click', function onst() {
                 media_recorder.stop();
 
                 this.removeEventListener('click', onst);

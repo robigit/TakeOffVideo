@@ -2,6 +2,9 @@
 
 @inject IJSRuntime JS
 
+@implements IAsyncDisposable
+@implements IDisposable
+
 
 <div class="container">
     <div class="vmcontainer" @ref="_container" >
@@ -66,6 +69,10 @@
                         )
                 </span>
             </button>
+@if(_inregistrazione)
+{
+            <progress class="progress is-danger" max="100">30%</progress>
+}
         </p>
     }
 </div>
@@ -137,7 +144,7 @@
 
 
     string? _cameraselected;
-   
+
 
     private async Task OnRegistra()
     {
@@ -160,7 +167,27 @@
         {
             //_messaggio = "-";
         }
-        
+
+    }
+
+
+    [JSInvokable]
+    public async Task SalvaUrlVideo(string url)
+    {
+        await OnVideoRecorded.InvokeAsync(url);
+
+
+    }
+
+
+    void IDisposable.Dispose() => _reference?.Dispose();
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (_JScript is not null)
+        {
+            await _JScript.DisposeAsync();
+        }
     }
 
 }
