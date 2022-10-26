@@ -26,7 +26,7 @@ namespace TakeOffVideo.Services
 
         public bool Pinned { get; set; } = false;
 
-        public string NomeFile => $"{OraRegistrazione:yyyyMMdd}_{OraRegistrazione:HH-mm-ss}_{Turno}_{Pettorale}.webm";
+        public string NomeFile => $"TOV_{OraRegistrazione:yyyyMMdd}_{OraRegistrazione:HH-mm-ss}_{Turno}_{Pettorale}.webm";
 
 
         public override string ToString()

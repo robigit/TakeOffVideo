@@ -12,25 +12,18 @@
             <video controls width="@WidthVideo" height="@HeigthVideo" @ref="_video" />
         </div>
 
-        @if (_mostralinea)
+        @if (_lineavisibile)
         {
             <div class="vmlinea" @ref="_linea"></div>
         }
     </div>
 
 
-    <div class="field is-grouped has-addons">
+    <div class="buttons are-small">
         <button class="button" @onclick="@(() => MostraLinea())">
-            @if (_mostralinea)
-            {
-                <p>Nascondi linea</p>
-            }
-            else
-            {
-                <p>Mostra linea</p>
-            }
+            @_textlinea
         </button>
-        @if (_mostralinea)
+        @if (_lineavisibile)
         {
             <button class="button" @onclick="@(() => Move("sx", 10))">
                 <span class="icon is-small">
@@ -81,7 +74,9 @@
 
 @code {
 
-    private bool _mostralinea = true;
+    private bool _lineavisibile = true;
+
+    private string _textlinea => _lineavisibile ? "Nascondi Linea" : "Mostra Linea";
 
     private IJSObjectReference? _JScript;
     private DotNetObjectReference<VideoMarker>? _reference;
@@ -122,7 +117,7 @@
 
     private void MostraLinea()
     {
-        _mostralinea = !_mostralinea;
+        _lineavisibile = !_lineavisibile;
     }
 
     private async Task Move(string direction, int pixels)
