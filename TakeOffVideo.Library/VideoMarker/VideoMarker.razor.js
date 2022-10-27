@@ -122,3 +122,12 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
         });
 
 }
+
+export function pressbutton(button) {
+
+
+    button.click();
+
+   
+}
+

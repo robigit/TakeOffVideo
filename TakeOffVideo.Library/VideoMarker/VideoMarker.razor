@@ -97,6 +97,28 @@
     private bool _inregistrazione = false;
 
 
+    System.Timers.Timer? _timer;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _timer = new System.Timers.Timer(10000)
+            {
+                AutoReset = false,
+                Enabled = false
+            };
+        _timer.Elapsed += async(source, e) => 
+        {
+            _timer.Enabled = false;
+            if (_inregistrazione && _JScript!=null)
+            {
+                await _JScript.InvokeVoidAsync("pressbutton", _stopbutton);
+            }
+        };
+
+
+    }
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -141,6 +163,7 @@
     string? _cameraselected;
 
 
+
     private async Task OnRegistra()
     {
 
@@ -155,7 +178,8 @@
         if (_inregistrazione)
         {
             //_messaggio = "Registrazione in corso";
-
+            if(_timer != null)
+                _timer.Enabled = true;
             await _JScript.InvokeVoidAsync("StartRec", _video, _stopbutton, _cameraselected, _reference);
         }
         else
