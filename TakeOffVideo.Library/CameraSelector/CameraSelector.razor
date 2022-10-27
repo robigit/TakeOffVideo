@@ -13,20 +13,22 @@
     <div class="control is-expanded  has-icons-left">
          
             <div class="select is-fullwidth">
-                <select id="Dispositivo" @onchange="@OnCameraSelected">
+            <select id="Dispositivo" @onchange="@OnLocalCameraSelected">
 
-                    <option value="">Seleziona</option>
+                <option value="">Seleziona</option>
+                @if (_devices != null)
+                {
                     @foreach (var disp in _devices)
                     {
                         <option value="@disp.ID">@disp.Label</option>
                     }
+                }
 
-
-                </select>
-            </div>
-        <div class="icon is-small is-left">
+            </select>
+     </div>
+    <div class="icon is-small is-left">
             <i class="fas fa-video"></i>
-        </div>
+    </div>
     </div>
     <div class="control">
         <a class="button is-info" @onclick="GetDevices">
@@ -52,31 +54,30 @@
     }
 
 
-    private async Task OnCameraSelected(ChangeEventArgs e)
+    private async Task OnLocalCameraSelected(ChangeEventArgs e)
     {
+        if(e?.Value != null)
+            await OnCameraSelected.InvokeAsync(e?.Value.ToString());
 
-        await OnCameraSelected.InvokeAsync(e?.Value);
-        
     }
 
     private async Task GetDevices()
     {
-        _devices.Clear();
-        if(_JSRecorder != null)
+
+        _devices?.Clear();
+        if (_JScript != null)
             await _JScript.InvokeVoidAsync("ListaDevices", _reference, "ElencoDevice");
 
     }
 
-    List<CameraDevice> _devices;
+    List<CameraDevice>? _devices;
 
 
     [JSInvokable]
     public void ElencoDevice(List<CameraDevice> elenco)
     {
-        
-        _devices = elenco;
-
-
+        _devices = elenco.Where(d => !string.IsNullOrEmpty(d.ID) && d.Kind.StartsWith("video")).ToList();
+        StateHasChanged();
     }
 
     void IDisposable.Dispose() => _reference?.Dispose();

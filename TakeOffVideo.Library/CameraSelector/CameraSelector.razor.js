@@ -23,26 +23,26 @@ export function ListaDevices(dotnetHelper, funelenco) {
                     devices.forEach((device) => {
                         //trovati = trovati + `${device.kind}: ${device.label} id = ${device.deviceId}`;
                         //console.info("lista trov " + device.kind);
-                        dotnetHelper.invokeMethodAsync(funaggiorna, `${device.kind}`, `${device.label}`, `${device.deviceId}`);
-                        let dev =  {
-                            "Kind" : device.kind,
-                            "Label" : device.label,
-                            "ID" : device.deviceId
-                        };    
-                        devices.push(dev);
+                        if (device && device.deviceId && device.deviceId !== "") {
+                            let dev = {
+                                "Kind": device.kind,
+                                "Label": device.label,
+                                "ID": device.deviceId
+                            };
+                            devices.push(dev);
+                        }
 
 
                     });
-                    dotnetHelper.invokeMethodAsync(funelenco);
+                    dotnetHelper.invokeMethodAsync(funelenco, devices);
 
                 })
                 .catch((err) => {
-                    console.info("lista err");
+                    console.info("lista err " + err.message);
                     //dotnetHelper.invokeMethodAsync('AggiornaDevices', `${err.name}}`, `${err.message}`, "");
                 });
         }
     }
 
-    return devices;
 
 }

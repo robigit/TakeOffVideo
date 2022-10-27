@@ -9,7 +9,7 @@
 <div class="container">
     <div class="vmcontainer" @ref="_container" >
         <div class="vmvideo">
-            <video controls width="@WidthVideo" height="@HeigthVideo" @ref="_video" />
+            <video  controls="@_controls"   width="@WidthVideo" height="@HeigthVideo" @ref="_video" />
         </div>
 
         @if (_lineavisibile)
@@ -77,6 +77,8 @@
     private bool _lineavisibile = true;
 
     private string _textlinea => _lineavisibile ? "Nascondi Linea" : "Mostra Linea";
+
+    private string _controls = "false";
 
     private IJSObjectReference? _JScript;
     private DotNetObjectReference<VideoMarker>? _reference;

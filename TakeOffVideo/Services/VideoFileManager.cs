@@ -7,7 +7,7 @@ namespace TakeOffVideo.Services
 
     public interface IVideoFileManager
     {
-        Task AggiungiNuovo(string url, int turno, string pettorale);
+        Task AggiungiNuovo(string url, int turno, string? pettorale);
 
         IEnumerable<VideoFile> GetElenco();
 
@@ -66,7 +66,7 @@ namespace TakeOffVideo.Services
 
         private int _maxid = 1;
 
-        public async Task AggiungiNuovo(string url, int turno, string pettorale)
+        public async Task AggiungiNuovo(string url, int turno, string? pettorale)
         {
             if (!_urls.Any(v=> v.Url == url))
             {

@@ -1,10 +1,10 @@
 ﻿@using Microsoft.JSInterop
 @using TakeOffVideo.Library.VideoMarker
 @using TakeOffVideo.Services
-@implements IAsyncDisposable
-@implements IDisposable
+@*@implements IAsyncDisposable
+@implements IDisposable*@
 
-@inject IJSRuntime JS
+@*@inject IJSRuntime JS*@
 @inject IVideoFileManager videofilemanager
 
 
@@ -46,46 +46,12 @@
   </div>
 </div>
 
+<TakeOffVideo.Library.CameraSelector.CameraSelector OnCameraSelected="OnCameraSelected2" />
 
 
-<label class="label">Selezionare la telecamera</label>
-<div class="field has-addons">
-    <div class="control is-expanded  has-icons-left">
-         
-            <div class="select is-fullwidth">
-                <select id="Dispositivo" @onchange="@OnCameraSelected">
 
-                    <option value="">Seleziona</option>
-                    @foreach (var disp in _devices)
-                    {
-                        <option value="@disp.ID">@disp.Label</option>
-                    }
-
-
-                </select>
-            </div>
-        <div class="icon is-small is-left">
-            <i class="fas fa-video"></i>
-        </div>
-    </div>
-    <div class="control">
-        <a class="button is-info" @onclick="GetDevices">
-            Aggiorna
-        </a>
-    </div>
-</div>
-
-
-@*
-<div class="notification @(_inregistrazione ? "is-danger" : "")">*@
-    @*<video id="videoPlayer" width="320" height="320" />*@
-
-    <VideoMarker @ref="_videoMarker" WidthVideo="320" HeigthVideo="320"
-        ConRecorder="true" OnVideoRecorded="SalvaUrlVideo"
-        />
-@*
-</div>*@
-
+<VideoMarker @ref="_videoMarker" WidthVideo="320" HeigthVideo="320"
+        ConRecorder="true" OnVideoRecorded="SalvaUrlVideo"/>
 
 
 
@@ -95,69 +61,76 @@
 
 @code {
 
-    private IJSObjectReference? _JSRecorder;
-    private DotNetObjectReference<Recorder>? _reference;
+    //private IJSObjectReference? _JSRecorder;
+    //private DotNetObjectReference<Recorder>? _reference;
 
-    List<Device> _devices = new List<Device>();
+    //List<Device> _devices = new List<Device>();
 
     private string _messaggio = "-";
 
-    private string _pettorale;
+    private string? _pettorale;
 
     private int _turno=1;
 
     VideoMarker? _videoMarker;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            _JSRecorder = await JS.InvokeAsync<IJSObjectReference>("import", "./script/recorderj.js");
-            _reference = DotNetObjectReference.Create(this);
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        _JSRecorder = await JS.InvokeAsync<IJSObjectReference>("import", "./script/recorderj.js");
+    //        _reference = DotNetObjectReference.Create(this);
 
-        }
-    }
+    //    }
+    //}
 
-    private async Task GetDevices()
-    {
+    //private async Task GetDevices()
+    //{
 
-        _devices.Clear();
-        if(_JSRecorder != null)
-            await _JSRecorder.InvokeVoidAsync("ListaDevices", _reference, "AggungiDevice", "EndAggiorna");
+    //    _devices.Clear();
+    //    if(_JSRecorder != null)
+    //        await _JSRecorder.InvokeVoidAsync("ListaDevices", _reference, "AggungiDevice", "EndAggiorna");
 
-    }
+    //}
 
-    [JSInvokable]
-    public void AggungiDevice(string tipo, string label, string id)
-    {
-        Console.WriteLine($"{tipo} {label} {id}");
+    //[JSInvokable]
+    //public void AggungiDevice(string tipo, string label, string id)
+    //{
+    //    Console.WriteLine($"{tipo} {label} {id}");
 
-        if (tipo.StartsWith("video"))
-            _devices.Add(new Device { Label = $"{_devices.Count+1} {label}", ID = id });
-    }
+    //    if (tipo.StartsWith("video"))
+    //        _devices.Add(new Device { Label = $"{_devices.Count+1} {label}", ID = id });
+    //}
 
-    [JSInvokable]
-    public void EndAggiorna()
-    {
-        StateHasChanged();
-    }
+    //[JSInvokable]
+    //public void EndAggiorna()
+    //{
+    //    StateHasChanged();
+    //}
 
     string? _cameraselected;
 
-    private async Task OnCameraSelected(ChangeEventArgs e)
+
+    private void OnCameraSelected2(string camera)
     {
-        _cameraselected = null;
-        if (_JSRecorder==null || e==null || string.IsNullOrEmpty(e.Value.ToString()))
-        {
-            return;
-        }
-
-        _cameraselected = e.Value.ToString();
-        if(_cameraselected!=null)
+        _cameraselected = camera;
+        if (_cameraselected != null)
             _videoMarker?.StartVideo(_cameraselected);
-
-        //await _JSRecorder.InvokeVoidAsync("startVideo", "videoPlayer", _cameraselected);
     }
+
+    //private async Task OnCameraSelected(ChangeEventArgs e)
+    //{
+    //    _cameraselected = null;
+    //    if (_JSRecorder==null || e==null || string.IsNullOrEmpty(e.Value.ToString()))
+    //    {
+    //        return;
+    //    }
+
+    //    _cameraselected = e.Value.ToString();
+    //    if(_cameraselected!=null)
+    //        _videoMarker?.StartVideo(_cameraselected);
+
+    //}
 
 
     private void SelectedTurnoChanged(ChangeEventArgs e)
@@ -168,30 +141,29 @@
 
     
 
-    [JSInvokable]
+    //[JSInvokable]
     public async Task SalvaUrlVideo(string url)
     {
  
         await videofilemanager.AggiungiNuovo(url, _turno, _pettorale);
         StateHasChanged();
-
        
     }
 
 
-    void IDisposable.Dispose()
-    {
-        if(_reference !=null)
-            _reference.Dispose();
-    }
+    //void IDisposable.Dispose()
+    //{
+    //    if(_reference !=null)
+    //        _reference.Dispose();
+    //}
 
-    async ValueTask IAsyncDisposable.DisposeAsync()
-    {
-        if (_JSRecorder is not null)
-        {
-            await _JSRecorder.DisposeAsync();
-        }
-    }
+    //async ValueTask IAsyncDisposable.DisposeAsync()
+    //{
+    //    if (_JSRecorder is not null)
+    //    {
+    //        await _JSRecorder.DisposeAsync();
+    //    }
+    //}
 
 
 
