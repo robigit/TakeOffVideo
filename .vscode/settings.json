@@ -1,0 +1,13 @@
+{
+    "json.format.enable": true,
+    "json.schemas": [
+    
+    ],
+
+
+    "workbench.colorCustomizations": {
+        "tab.activeBorder": "#ff0000",
+        "tab.unfocusedActiveBorder": "#000000",
+        "tab.activeBackground": "#0000ff"
+    }
+}
