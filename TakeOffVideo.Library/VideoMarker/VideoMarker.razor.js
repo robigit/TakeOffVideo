@@ -124,10 +124,15 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
 }
 
 export function pressbutton(button) {
-
-
-    button.click();
-
-   
+    button.click(); 
 }
 
+export function SettaControlsVideo(video, setta) {
+
+    if (setta) {
+        video.setAttribute("controls", "controls")
+    } else {
+        video.removeAttribute("controls")
+    }
+
+}

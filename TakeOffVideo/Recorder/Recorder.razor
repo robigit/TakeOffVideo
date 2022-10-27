@@ -20,6 +20,7 @@
           <div class="select">
 
              <select @onchange="SelectedTurnoChanged">
+                <option value="0">Prove</option>
                 @for(int i=1; i<7; ++i)
                 {
                     <option value="@i">Turno @i</option>
@@ -46,8 +47,9 @@
   </div>
 </div>
 
-<TakeOffVideo.Library.CameraSelector.CameraSelector OnCameraSelected="OnCameraSelected2" />
 
+
+<TakeOffVideo.Library.CameraSelector.CameraSelector OnCameraSelected="OnCameraSelected2" />
 
 
 <VideoMarker @ref="_videoMarker" WidthVideo="320" HeigthVideo="320"
@@ -70,46 +72,14 @@
 
     private string? _pettorale;
 
-    private int _turno=1;
+    private int _turno=0;
 
     VideoMarker? _videoMarker;
 
-    //protected override async Task OnAfterRenderAsync(bool firstRender)
-    //{
-    //    if (firstRender)
-    //    {
-    //        _JSRecorder = await JS.InvokeAsync<IJSObjectReference>("import", "./script/recorderj.js");
-    //        _reference = DotNetObjectReference.Create(this);
-
-    //    }
-    //}
-
-    //private async Task GetDevices()
-    //{
-
-    //    _devices.Clear();
-    //    if(_JSRecorder != null)
-    //        await _JSRecorder.InvokeVoidAsync("ListaDevices", _reference, "AggungiDevice", "EndAggiorna");
-
-    //}
-
-    //[JSInvokable]
-    //public void AggungiDevice(string tipo, string label, string id)
-    //{
-    //    Console.WriteLine($"{tipo} {label} {id}");
-
-    //    if (tipo.StartsWith("video"))
-    //        _devices.Add(new Device { Label = $"{_devices.Count+1} {label}", ID = id });
-    //}
-
-    //[JSInvokable]
-    //public void EndAggiorna()
-    //{
-    //    StateHasChanged();
-    //}
 
     string? _cameraselected;
 
+    
 
     private void OnCameraSelected2(string camera)
     {
@@ -118,53 +88,24 @@
             _videoMarker?.StartVideo(_cameraselected);
     }
 
-    //private async Task OnCameraSelected(ChangeEventArgs e)
-    //{
-    //    _cameraselected = null;
-    //    if (_JSRecorder==null || e==null || string.IsNullOrEmpty(e.Value.ToString()))
-    //    {
-    //        return;
-    //    }
-
-    //    _cameraselected = e.Value.ToString();
-    //    if(_cameraselected!=null)
-    //        _videoMarker?.StartVideo(_cameraselected);
-
-    //}
-
-
     private void SelectedTurnoChanged(ChangeEventArgs e)
     {
         int.TryParse(e?.Value?.ToString(), out _turno);
     }
 
 
-    
+
 
     //[JSInvokable]
     public async Task SalvaUrlVideo(string url)
     {
- 
+
         await videofilemanager.AggiungiNuovo(url, _turno, _pettorale);
         StateHasChanged();
-       
+
     }
 
-
-    //void IDisposable.Dispose()
-    //{
-    //    if(_reference !=null)
-    //        _reference.Dispose();
-    //}
-
-    //async ValueTask IAsyncDisposable.DisposeAsync()
-    //{
-    //    if (_JSRecorder is not null)
-    //    {
-    //        await _JSRecorder.DisposeAsync();
-    //    }
-    //}
-
+    
 
 
 

@@ -7,9 +7,12 @@
 
 
 <div class="container">
+
+    
+
     <div class="vmcontainer" @ref="_container" >
         <div class="vmvideo">
-            <video  controls="@_controls"   width="@WidthVideo" height="@HeigthVideo" @ref="_video" />
+            <video  width="@WidthVideo" height="@HeigthVideo" @ref="_video" />
         </div>
 
         @if (_lineavisibile)
@@ -62,11 +65,19 @@
                         )
                 </span>
             </button>
-@if(_inregistrazione)
-{
-            <progress class="progress is-danger" max="100">30%</progress>
-}
+        @if(_inregistrazione)
+        {
+                    <progress class="progress is-danger" max="100">30%</progress>
+        }
         </p>
+    }
+
+    @if (!string.IsNullOrEmpty(_notifica))
+    {
+        <div class="notification is-danger">
+            <button class="delete" @onclick="DelNotification"></button>
+            @_notifica
+        </div>
     }
 </div>
 
@@ -93,11 +104,13 @@
     [Parameter] public int WidthVideo { get; set; } = 320;
     [Parameter] public int HeigthVideo { get; set; } = 320;
     [Parameter] public bool ConRecorder { get; set; } = false;
+    [Parameter] public bool ConControls { get; set; } = false;
 
     [Parameter] public EventCallback<string> OnVideoRecorded { get; set; }
 
     private bool _inregistrazione = false;
 
+    string? _notifica;
 
     System.Timers.Timer? _timer;
     protected override void OnInitialized()
@@ -128,6 +141,8 @@
         {
             _JScript = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/TakeOffVideo.Library/VideoMarker/VideoMarker.razor.js");
             _reference = DotNetObjectReference.Create(this);
+
+            await _JScript.InvokeVoidAsync("SettaControlsVideo", _video, ConControls);
         }
     }
 
@@ -171,9 +186,10 @@
 
         if (_JScript == null || string.IsNullOrEmpty(_cameraselected))
         {
+            _notifica = "Selezionare una Videocamera";
             return;
         }
-
+        _notifica = null;
 
         _inregistrazione = !_inregistrazione;
 
@@ -184,11 +200,7 @@
                 _timer.Enabled = true;
             await _JScript.InvokeVoidAsync("StartRec", _video, _stopbutton, _cameraselected, _reference);
         }
-        else
-        {
-            //_messaggio = "-";
-        }
-
+        
     }
 
 
@@ -198,6 +210,11 @@
         await OnVideoRecorded.InvokeAsync(url);
 
 
+    }
+
+    void DelNotification()
+    {
+        _notifica = null;
     }
 
 
