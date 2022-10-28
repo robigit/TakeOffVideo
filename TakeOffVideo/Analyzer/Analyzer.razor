@@ -10,30 +10,42 @@
     Analisi
 </h1>
 
-<p class="control  has-icons-left">
-    <div class="select is-fullwidth">
+<div class="columns">
+    <div class="column">
+        <p class="control  has-icons-left">
+            <div class="select is-fullwidth">
 
-        <select @onchange="OnVideoSelected">
+                <select @onchange="OnVideoSelected">
             
             
-            @foreach(var v in videofilemanager.GetElenco().ToList())
-            {
-                <option value="@v.ID">@v.ToString()</option>
-            }
+                    @foreach(var v in videofilemanager.GetElenco().ToList())
+                    {
+                        <option value="@v.ID">@v.ToString()</option>
+                    }
 
-        </select>
+                </select>
 
-    </div>
-    <div class="icon is-small is-left">
-        <i class="fas fa-video"></i>
+            </div>
+            <div class="icon is-small is-left">
+                <i class="fas fa-video"></i>
 
         
+            </div>
+    
+        </p>
+    </div>
+    <div class="column is-2">
+        <TakeOffVideo.Library.VideoUploader.VideoUploader OnVideoUploaded="OnVideoUploaded" />
     </div>
 
-</p>
+</div>
+
+
 
 
 <VideoMarker Url="@_urlattuale" WidthVideo="640" HeigthVideo="640" ConControls=true />
+
+
 
 @*<br>
 <p class="has-text-centered">
@@ -78,8 +90,15 @@
             _urlattuale = video.Url;
 
 
-
         StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+    private async Task OnVideoUploaded(string url)
+    {
+        await videofilemanager.AggiungiDaFile(url);
+
+        await Task.CompletedTask;
     }
 
     

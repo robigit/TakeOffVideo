@@ -1,0 +1,62 @@
+﻿
+@using Microsoft.JSInterop
+
+@inject IJSRuntime JS
+
+@implements IAsyncDisposable
+@implements IDisposable
+
+
+
+<div class="file is-small is-info">
+    <label class="file-label">
+        <input class="file-input" type="file" name="resume" accept=".webm" @ref="_input">
+        <span class="file-cta">
+            <span class="file-icon">
+                <i class="fas fa-upload"></i>
+            </span>
+            <span class="file-label">
+                Carica…
+            </span>
+        </span>
+    </label>
+</div>
+
+@code {
+
+    private IJSObjectReference? _JScript;
+    private DotNetObjectReference<VideoUploader>? _reference;
+
+    private ElementReference _input;
+
+    [Parameter] public EventCallback<string> OnVideoUploaded { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _JScript = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/TakeOffVideo.Library/VideoUploader/VideoUploader.razor.js");
+            _reference = DotNetObjectReference.Create(this);
+
+            await _JScript.InvokeVoidAsync("init", _input, _reference, "OnUploaded");
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnUploaded(string nomefile)
+    {
+        await OnVideoUploaded.InvokeAsync(nomefile);
+    }
+
+
+    void IDisposable.Dispose() => _reference?.Dispose();
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (_JScript is not null)
+        {
+            await _JScript.DisposeAsync();
+        }
+    }
+
+}

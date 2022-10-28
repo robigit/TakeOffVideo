@@ -13,6 +13,9 @@ namespace TakeOffVideo.Services
 
         void RegistraOnNuovo(Func<VideoFile, Task> action);
         VideoFile? GetById(int id);
+
+        Task AggiungiDaFile(string url);
+
     }
 
     public class VideoFile
@@ -72,7 +75,6 @@ namespace TakeOffVideo.Services
             {
                 var v = new VideoFile
                 {
-                   
                     ID = _maxid++,
                     Url = url,
                     Turno = turno,
@@ -135,5 +137,27 @@ namespace TakeOffVideo.Services
         }
 
 
+        public async Task AggiungiDaFile(string url)
+        {
+            if (!_urls.Any(v => v.Url == url))
+            {
+                var v = new VideoFile
+                {
+                    ID = _maxid++,
+                    Url = url,
+                    Turno = 0, //prendere dal nome??
+                    Pettorale = "DAFILE",  //prendere dal nome??
+                    OraRegistrazione = DateTime.Now, //prendere dal nome??
+                    Pinned = true,
+                };
+
+                _urls.Add(v);
+
+                await PulisciOld();
+
+                foreach (var action in _actions)
+                    await action(v);
+            }
+        }
     }
 }
