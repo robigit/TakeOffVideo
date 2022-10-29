@@ -1,10 +1,7 @@
 ﻿@using Microsoft.JSInterop
 @using TakeOffVideo.Library.VideoMarker
-@using TakeOffVideo.Services
-@*@implements IAsyncDisposable
-@implements IDisposable*@
+@using TakeOffVideo.Library.VideoFileManager
 
-@*@inject IJSRuntime JS*@
 @inject IVideoFileManager videofilemanager
 
 
@@ -60,6 +57,10 @@
 <div class="block">
     <p class="is-size-7">@_messaggio</p>
 </div>
+
+
+
+
 
 @code {
 

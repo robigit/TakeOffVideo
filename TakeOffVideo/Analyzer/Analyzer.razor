@@ -1,6 +1,6 @@
 ﻿@using TakeOffVideo.Library.VideoMarker
 @using TakeOffVideo.Library.VideoUploader
-@using TakeOffVideo.Services
+@using TakeOffVideo.Library.VideoFileManager
 
 
 @inject IVideoFileManager videofilemanager
@@ -11,32 +11,23 @@
     Analisi
 </h1>
 
+@if(false && string.IsNullOrEmpty(_urlattuale))
+{
+    <p class="has-text-centered">
+        <figure class="image is-16by9">
+            <img src="image/tovlogo.png">
+        </figure>
+    </p>
+}
+
+<VideoMarker Url="@_urlattuale" WidthVideo="640" HeigthVideo="640" ConControls=true />
+
 <div class="columns">
     <div class="column">
-        <p class="control  has-icons-left">
-            <div class="select is-fullwidth">
-
-                <select @onchange="OnVideoSelected">
-            
-            
-                    @foreach(var v in videofilemanager.GetElenco().ToList())
-                    {
-                        <option value="@v.ID">@v.ToString()</option>
-                    }
-
-                </select>
-
-            </div>
-            <div class="icon is-small is-left">
-                <i class="fas fa-video"></i>
-
-        
-            </div>
-    
-        </p>
+        <VideoFileManagerTable OnPlayVideo="OnVideoSelected" />
     </div>
     <div class="column is-2">
-        <TakeOffVideo.Library.VideoUploader.VideoUploader OnVideoUploaded="OnVideoUploaded" />
+        <VideoUploader OnVideoUploaded="OnVideoUploaded" />
     </div>
 
 </div>
@@ -44,16 +35,10 @@
 
 
 
-<VideoMarker Url="@_urlattuale" WidthVideo="640" HeigthVideo="640" ConControls=true />
 
 
 
-@*<br>
-<p class="has-text-centered">
-    <figure class="image is-16by9">
-        <img src="image/tovlogo.png">
-    </figure>
-</p>*@
+
 
 @code {
 
@@ -70,19 +55,12 @@
 
     string? _urlattuale;
 
-    private void OnVideoSelected(ChangeEventArgs e)
+    private void OnVideoSelected(VideoFile video)
     {
-        if (e?.Value is null )
-            return;
+                
+        if(video != null)
+            _urlattuale =  video.Url;
 
-        if(int.TryParse(e.Value.ToString(), out int id))
-        {
-            var video = videofilemanager.GetById(id);
-
-
-            if(video != null)
-                _urlattuale =  video.Url;
-        }
     }
 
     private async Task OnNuovo(VideoFile video)
@@ -99,7 +77,7 @@
     {
         var ret = await videofilemanager.AggiungiDaFile(e.Url, e.Nomefile);
 
-       
+
     }
 
     

@@ -1,0 +1,92 @@
+﻿@using TakeOffVideo.Library.VideoFileManager
+
+@inject IVideoFileManager videofilemanager
+<div class="has-text-left ml-4 mr-4">
+<table class="table is-fullwidth is-narrow is-scrollable" >
+    <thead>
+    <tr>
+            <th><abbr title="Play">Play</abbr></th>
+            <th>Ora</th>
+            <th><abbr title="Turno">Turno</abbr></th>
+            <th><abbr title="Pettorale">#</abbr></th>
+            <th><abbr title="Non cancellare">Bloccato</abbr></th>
+    </tr>
+    </thead>
+    <tbody>
+         
+        @foreach(var v in videofilemanager.GetElenco())
+        {
+            <tr class="@(_videoplaying == v ?"is-selected" :"")" >
+                <td>
+                    @if (v != _videoplaying)
+                    {
+                        <button class="button" @onclick="() => Play(v)" >
+                            <span class="icon is-small">
+                                <i class="fas fa-play"></i>
+                            </span>
+                        </button>
+                    }
+
+                </td>
+                <td>@v.OraRegistrazione.ToString("HH:mm:ss")</td>
+                <td>@v.Turno</td>
+                <td>@v.Pettorale</td>
+                <td>
+                        <button class="button" @onclick="() => OnPin(v)">
+                        <span class="icon is-small">
+                            @if (v.Pinned)
+                            {
+                                <i class="fas fa-link"></i>
+                            }
+                            else
+                            {
+                                <i class="fas fa-link-slash"></i>
+                            }
+
+
+                        </span>
+                    </button>
+
+                </td>
+            </tr>
+        }
+        
+    </tbody>
+</table>
+</div>
+
+@code {
+
+    [Parameter] public EventCallback<VideoFile> OnPlayVideo { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            videofilemanager.RegistraOnNuovo(OnNuovo);
+
+        }
+    }
+
+    VideoFile? _videoplaying;
+
+    private async Task OnNuovo(VideoFile video)
+    {
+        _videoplaying = video;
+        StateHasChanged();
+        await Task.CompletedTask;
+    }
+
+    private void Play(VideoFile video)
+    {
+        _videoplaying = video;
+        OnPlayVideo.InvokeAsync(video);
+    }
+
+    private void OnPin(VideoFile video)
+    {
+       video.Pinned = !video.Pinned;
+       StateHasChanged();
+    }
+
+}

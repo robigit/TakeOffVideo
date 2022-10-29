@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using TakeOffVideo;
-using TakeOffVideo.Services;
+using TakeOffVideo.Library.VideoFileManager;
+
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
