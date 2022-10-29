@@ -1,5 +1,6 @@
 ﻿using Microsoft.JSInterop;
 using System;
+using System.Text.RegularExpressions;
 
 namespace TakeOffVideo.Services
 {
@@ -14,7 +15,7 @@ namespace TakeOffVideo.Services
         void RegistraOnNuovo(Func<VideoFile, Task> action);
         VideoFile? GetById(int id);
 
-        Task AggiungiDaFile(string url);
+        Task<bool> AggiungiDaFile(string url, string nome);
 
     }
 
@@ -106,12 +107,17 @@ namespace TakeOffVideo.Services
         {
            
             int MAX_TO_KEEP = 3;
+
+            int ndaelim = _urls.Where(v => !v.Pinned).Count();
+
+            if (ndaelim <= MAX_TO_KEEP)
+                return;
+
             var listaelim1 = _urls.Where(v => !v.Pinned).OrderByDescending(v => v.OraRegistrazione);
 
-            if (_urls.Count <= MAX_TO_KEEP)
-                return;
             
-            var listaelim = listaelim1.TakeLast(_urls.Count - MAX_TO_KEEP);
+            
+            var listaelim = listaelim1.TakeLast(ndaelim - MAX_TO_KEEP);
 
             var r = await GetRef();
  
@@ -137,27 +143,62 @@ namespace TakeOffVideo.Services
         }
 
 
-        public async Task AggiungiDaFile(string url)
+        public async Task<bool> AggiungiDaFile(string url, string nomefile)
         {
-            if (!_urls.Any(v => v.Url == url))
+            bool ret = false;
+
+            var m = Regex.Match(nomefile,
+                @"^TOV_(?<anno>\d{4})(?<mese>\d{2})(?<giorno>\d{2})_(?<ora>\d{2})-(?<min>\d{2})-(?<sec>\d{2})_(?<turno>\d+)_(?<pett>\w*).webm$");
+
+            try
             {
-                var v = new VideoFile
+                if (m.Success)
                 {
-                    ID = _maxid++,
-                    Url = url,
-                    Turno = 0, //prendere dal nome??
-                    Pettorale = "DAFILE",  //prendere dal nome??
-                    OraRegistrazione = DateTime.Now, //prendere dal nome??
-                    Pinned = true,
-                };
 
-                _urls.Add(v);
+                    var date = new DateTime(int.Parse(m.Groups["anno"].Value), int.Parse(m.Groups["mese"].Value), int.Parse(m.Groups["giorno"].Value)
+    
+                               ,int.Parse(m.Groups["ora"].Value), int.Parse(m.Groups["min"].Value), int.Parse(m.Groups["sec"].Value)
+                        );
 
-                await PulisciOld();
+                    if (date.Date == DateTime.Today.Date)
+                    {
 
-                foreach (var action in _actions)
-                    await action(v);
+                        ret = true;
+
+                        int.TryParse(m.Groups["turno"].Value, out int turno);
+                        var pett = m.Groups["pett"].Value;
+
+                        var v = new VideoFile
+                        {
+                            ID = _maxid++,
+                            Url = url,
+                            Turno = turno, 
+                            Pettorale = pett,  
+                            OraRegistrazione = date, 
+                            Pinned = true,
+                        };
+
+                        _urls.Add(v);
+
+                        await PulisciOld();
+
+
+                        foreach (var action in _actions)
+                            await action(v);
+                    }
+                }
             }
+            catch
+            {
+
+            }
+
+            if (!ret)
+            {
+                await (await GetRef()).InvokeVoidAsync("rimuoviblob", url);
+            }
+
+            return ret;
         }
     }
 }

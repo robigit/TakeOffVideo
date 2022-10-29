@@ -9,7 +9,7 @@ export function init(inputelement, dotnetHelper, funct) {
 
                 var url = URL.createObjectURL(file)
 
-                dotnetHelper.invokeMethodAsync(funct, url);
+                dotnetHelper.invokeMethodAsync(funct, url, file.name);
 
             }
         }

@@ -29,7 +29,7 @@
 
     private ElementReference _input;
 
-    [Parameter] public EventCallback<string> OnVideoUploaded { get; set; }
+    [Parameter] public EventCallback<OnVideoUploadesArgs> OnVideoUploaded { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -43,9 +43,9 @@
     }
 
     [JSInvokable]
-    public async Task OnUploaded(string nomefile)
+    public async Task OnUploaded(string url ,string nomefile)
     {
-        await OnVideoUploaded.InvokeAsync(nomefile);
+        await OnVideoUploaded.InvokeAsync(new OnVideoUploadesArgs(url, nomefile));
     }
 
 

@@ -183,6 +183,8 @@
 
     private async Task OnRegistra()
     {
+        if (_timer != null)
+            _timer.Enabled = false;
 
         if (_JScript == null || string.IsNullOrEmpty(_cameraselected))
         {
@@ -196,9 +198,14 @@
         if (_inregistrazione)
         {
             //_messaggio = "Registrazione in corso";
-            if(_timer != null)
-                _timer.Enabled = true;
+            
             await _JScript.InvokeVoidAsync("StartRec", _video, _stopbutton, _cameraselected, _reference);
+            if (_timer != null)
+            {
+                
+                _timer.Enabled = true;
+            }
+        
         }
         
     }

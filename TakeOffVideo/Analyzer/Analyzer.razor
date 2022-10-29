@@ -1,4 +1,5 @@
 ﻿@using TakeOffVideo.Library.VideoMarker
+@using TakeOffVideo.Library.VideoUploader
 @using TakeOffVideo.Services
 
 
@@ -94,11 +95,11 @@
         await Task.CompletedTask;
     }
 
-    private async Task OnVideoUploaded(string url)
+    private async Task OnVideoUploaded(OnVideoUploadesArgs e)
     {
-        await videofilemanager.AggiungiDaFile(url);
+        var ret = await videofilemanager.AggiungiDaFile(e.Url, e.Nomefile);
 
-        await Task.CompletedTask;
+       
     }
 
     
