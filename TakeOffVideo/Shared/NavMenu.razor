@@ -1,4 +1,6 @@
-﻿<div class="hero-head">
+﻿@inject NavigationManager NavManager
+
+<div class="hero-head">
     <nav class="navbar">
         <div class="container">
             <div class="navbar-brand">
@@ -6,19 +8,27 @@
                     <img src="image/tovlogo.png" alt="Logo">
                 </a>
                 <h1 class="title">Take Off Video</h1>
-                <span class="navbar-burger burger" data-target="navbarMenu">
+                @*<span class="navbar-burger burger" data-target="navbarMenu">
                     <span></span>
                     <span></span>
                     <span></span>
-                </span>
+                </span>*@
             </div>
             <div id="navbarMenu" class="navbar-menu">
                 <div class="navbar-end">
                     <div class="tabs is-right">
                         <ul>
-                            <li class="is-active"><a>Home</a></li>
-                            <li><a href="">Ingrandisci</a></li>
-                            <li><a href="">Documentazione</a></li>
+                            <li class="@GetClass(0)">
+                                <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="()=>SetPage(0)">
+                                     Home
+                                 </NavLink>
+                            </li>
+                            
+                            <li class="@GetClass(1)">
+                                <NavLink class="nav-link" href="documentazione" Match="NavLinkMatch.All" @onclick="()=>SetPage(1)">
+                                    Documentazione
+                                </NavLink>
+                             </li>
                            
                         </ul>
                     </div>
@@ -27,3 +37,18 @@
         </div>
     </nav>
 </div>
+
+@code
+{
+    int _page = 0;
+
+    string GetClass(int page)
+    {
+        return _page == page ? "is-active" : "";
+    }
+
+    void SetPage(int page)
+    {
+        _page = page;
+    }
+}
