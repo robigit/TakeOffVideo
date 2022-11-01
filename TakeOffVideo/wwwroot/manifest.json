@@ -8,12 +8,12 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "tovlogo512.png",
+      "src": "logos/tovlogo512.png",
       "type": "image/png",
       "sizes": "512x512"
     },
     {
-      "src": "tovlogo192.png",
+      "src": "logos/tovlogo192.png",
       "type": "image/png",
       "sizes": "192x192"
     }

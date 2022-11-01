@@ -30,25 +30,25 @@
         {
             <button class="button" @onclick="@(() => Move("sx", 10))">
                 <span class="icon is-small">
-                    <i class="fas fa-angles-left"></i>
+                    <img src="image/dopchevronleft24.png">
                 </span>
             </button>
 
             <button class="button" @onclick="@(() => Move("sx", 1))">
                 <span class="icon is-small">
-                    <i class="fas fa-chevron-left"></i>
+                    <img src="image/chevronleft24.png">
                 </span>
             </button>
 
             <button class="button" @onclick="@(() => Move("dx", 1))">
                 <span class="icon is-small">
-                    <i class="fas fa-chevron-right"></i>
+                    <img src="image/chevronright24.png">
                 </span>
             </button>
 
             <button class="button" @onclick="@(() => Move("dx", 10))">
                 <span class="icon is-small">
-                    <i class="fas fa-angles-right"></i>
+                    <img src="image/dopchevronright24.png">
                 </span>
             </button>
         }
@@ -64,6 +64,7 @@
                         _inregistrazione ? "Salva" : "Registra"
                         )
                 </span>
+
             </button>
         @if(_inregistrazione)
         {
