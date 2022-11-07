@@ -9,6 +9,11 @@
     Registrazione
 </h1>
 
+<TakeOffVideo.Library.CameraSelector.CameraSelector OnCameraSelected="OnCameraSelected2" />
+
+<VideoMarker @ref="_videoMarker" WidthVideo="320" HeigthVideo="320"
+             ConRecorder="true" OnVideoRecorded="SalvaUrlVideo" />
+
 <div class="field is-horizontal">
   
   <div class="field-body">
@@ -51,11 +56,10 @@
 
 
 
-<TakeOffVideo.Library.CameraSelector.CameraSelector OnCameraSelected="OnCameraSelected2" />
 
 
-<VideoMarker @ref="_videoMarker" WidthVideo="320" HeigthVideo="320"
-        ConRecorder="true" OnVideoRecorded="SalvaUrlVideo"/>
+
+
 
 
 
