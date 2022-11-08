@@ -1,187 +1,211 @@
 ﻿@page "/documentazione"
 
-<section class="hero bd-hero bd-is-basic">
-    <div class="hero-body">
+@using TakeOffVideo.Library.AnchorLink
 
-        <div class="container has-text-left">
+<div class="columns">
 
-            <div class="bd-hero-body">
-                <div class="bd-hero-heading">
-                    <h1 class="title algolia-lvl0">
+  <div class="column is-8">
 
-                        Take Off Video
+    <section id="tovideo" class="hero bd-hero bd-is-basic">
+        <div class="hero-body">
 
-                    </h1>
-                    <div class="subtitle is-4 algolia-lvl1">
-                        <p>Documentazione</p>
+            <div class="container has-text-left">
+
+                <div class="bd-hero-body">
+                    <div class="bd-hero-heading">
+                        <h1 class="title algolia-lvl0">
+
+                            Take Off Video
+
+                        </h1>
+                        <div class="subtitle is-4 algolia-lvl1">
+                            <p>Documentazione</p>
+
+                        </div>
 
                     </div>
-
                 </div>
+
             </div>
 
         </div>
+    </section>
 
-    </div>
-</section>
+        <div class="content r has-text-left">
+            Il programma è pensato per coadiuvare la rilevazione dei nulli nei salti in estensione
+            <br />
+            E' sufficiente avere un PC con collegata una WebCam che punti alla pedana di stacco.
 
-<div class="content r has-text-left">
-    Il programma è pensato per coadiuvare la rilevazione dei nulli nei salti in estensione
-    <br />
-    E' sufficiente avere un PC con collegata una WebCam che punti alla pedana di stacco.
+            <br />
+          Nella parte sinistra si trova la zona di registrazione in cui si registra il salto. Mentre nella parte
+          destra si trova il video in cui si effettua l'analisi del salto
+        </div>
 
-    <br />
-  Nella parte sinistra si trova la zona di registrazione in cui si registra il salto. Mentre nella parte
-  destra si trova il video in cui si effettua l'analisi del salto
-</div>
+    <section id="rec" class="hero bd-hero bd-is-basic">
+        <div class="hero-body">
 
-<section class="hero bd-hero bd-is-basic">
-    <div class="hero-body">
+            <div class="container has-text-left">
 
-        <div class="container has-text-left">
+                <div class="bd-hero-body">
+                    <div class="bd-hero-heading">
+                        <h1 class="title algolia-lvl0">
 
-            <div class="bd-hero-body">
-                <div class="bd-hero-heading">
-                    <h1 class="title algolia-lvl0">
-
-                        Registrazione
-                    </h1>
+                            Registrazione
+                        </h1>
                     
 
+                    </div>
                 </div>
+
             </div>
 
         </div>
+    </section>
 
-    </div>
-</section>
+        <div class="content has-text-left">
+            Come prima cosa bisogna selezionare la telecamera da utilizzare, premendo Aggiorna per ottenere
+            l'elenco delle webcam collegate al dispositivo.
+            <br />
+            ATTENZIONE: la prima volta è necessatio concedere al browser l'autorizzazione all'accesso ai video
+            <br />
+            Una volta selezionata la camera, è possibile controllare il corretto allineamento utilizzando la riga
+            gialla, la cui posizione è regolabile tramite le freccette.
 
+            <br />
 
-<div class="content has-text-left">
-    Come prima cosa bisogna selezionare la telecamera da utilizzare, premendo Aggiorna per ottenere
-    l'elenco delle webcam collegate al dispositivo.
-    <br />
-    ATTENZIONE: la prima volta è necessatio concedere al browser l'autorizzazione all'accesso ai video
-    <br />
-    Una volta selezionata la camera, è possibile controllare il corretto allineamento utilizzando la riga
-    gialla, la cui posizione è regolabile tramite le freccette.
+            Premendo il bottone Registra si inizia la registrazione dello stacco che procede sino alla pressione
+            di Salva (E' previstio un contatore che dopo 10 secondi interrompe la registrazione e viene fatto il
+            salvatiaggio automaticamente)
+            <br/>
+            Al salvataggio il video viene salvato automanticamente nella cartella di download (si consiglia di configurare il browser 
+            in modo che il salvataggio venga effettuato senza richiedere la cartella)e  automaticamente 
+            caricato sulla parte destra di Analisi.
+            <br />
 
-    <br />
-
-    Premendo il bottone Registra si inizia la registrazione dello stacco che procede sino alla pressione
-    di Salva (E' previstio un contatore che dopo 10 secondi interrompe la registrazione e viene fatto il
-    salvatiaggio automaticamente)
-    <br/>
-    Al salvataggio il video viene salvato automanticamente nella cartella di download (si consiglia di configurare il browser 
-    in modo che il salvataggio venga effettuato senza richiedere la cartella)e  automaticamente 
-    caricato sulla parte destra di Analisi.
-    <br />
-
-    Sotto l'immagine è possibile selezionare il turno di salto e il numero di pettorale (può essere anche il nome).
-    Questi dati non sono obbligatori ma aiutano a riconoscere il file del video salvato e renderne più
-    agevole un successivo riconoscimento.
-    <br />
-    Il file video viene salvato con il nome formato nel seguente modo:
-    <br />
-        TOV_[data formato YYYYMMDD]_[Ora formato HH-MM-SS]_[Turno (0 se prove)]_[Pettorare].webm
-    <br/>
-    es. TOV_20221107_09-31-44_1_125.webm
-    <br />
+            Sotto l'immagine è possibile selezionare il turno di salto e il numero di pettorale (può essere anche il nome).
+            Questi dati non sono obbligatori ma aiutano a riconoscere il file del video salvato e renderne più
+            agevole un successivo riconoscimento.
+            <br />
+            Il file video viene salvato con il nome formato nel seguente modo:
+            <br />
+                TOV_[data formato YYYYMMDD]_[Ora formato HH-MM-SS]_[Turno (0 se prove)]_[Pettorare].webm
+            <br/>
+            es. TOV_20221107_09-31-44_1_125.webm
+            <br />
 
 
 
-
-</div>
-
-
-<section class="hero bd-hero bd-is-basic">
-    <div class="hero-body">
-
-        <div class="container has-text-left">
-
-            <div class="bd-hero-body">
-                <div class="bd-hero-heading">
-                    <h1 class="title algolia-lvl0">
-
-                        Analisi
-                    </h1>
-
-
-                </div>
-            </div>
 
         </div>
 
-    </div>
-</section>
+    <section id="analisi" class="hero bd-hero bd-is-basic">
+        <div class="hero-body">
 
-<div class="content has-text-left">
-    La parte essenziale di analisi consiste nella finestra dove è possibile riprodurre il salto 
-    fino a verificare la correttezza o meno dello stacco.
-    <br />
-    Con i controlli base del video del browser è possibile effettuale il play e pause e sfruttare
-    la barra inferiore per muovere velocemente alla ricerca del punto interessato. E' anche possibile 
-    mettere il video a tutto schermo.
-    <br />
-    Anche in questa finestra è eventualmente possibile avere la linea gialla verticale in ausilio alla decisione,
-    <br />
-    Sotto l'immagine è presente una tabella in cui è possibile trovare e visualizzare agevolmente gli
-    ultimi 3 video caricati mediante l'icona di play a sinistra. 
-    <br />
-    I video precedenti vengono automaticamente scaricati ma è possibile ricaricarli tramite il bottone Carica sulla destra
-    <br />
-    Nel caso si voglia mantenere nella lista un video, sarà sufficiente cliccare sulla casella Bloccato
-    facendo così in modo che non venga scaricato e mantenuto assieme agli ultimi 3 registrati.    
-    <br />
-    Sulla tabella i video sono caricati sempre in ordine cronologico inverso
-</div>
+            <div class="container has-text-left">
+
+                <div class="bd-hero-body">
+                    <div class="bd-hero-heading">
+                        <h1 class="title algolia-lvl0">
+
+                            Analisi
+                        </h1>
 
 
-
-<section class="hero bd-hero bd-is-basic">
-    <div class="hero-body">
-
-        <div class="container has-text-left">
-
-            <div class="bd-hero-body">
-                <div class="bd-hero-heading">
-                    <h1 class="title algolia-lvl0">
-
-                        Applicazione Web
-                    </h1>
-
-
+                    </div>
                 </div>
+
             </div>
 
         </div>
+    </section>
 
-    </div>
-</section>
+        <div class="content has-text-left">
+            La parte essenziale di analisi consiste nella finestra dove è possibile riprodurre il salto 
+            fino a verificare la correttezza o meno dello stacco.
+            <br />
+            Con i controlli base del video del browser è possibile effettuale il play e pause e sfruttare
+            la barra inferiore per muovere velocemente alla ricerca del punto interessato. E' anche possibile 
+            mettere il video a tutto schermo.
+            <br />
+            Anche in questa finestra è eventualmente possibile avere la linea gialla verticale in ausilio alla decisione,
+            <br />
+            Sotto l'immagine è presente una tabella in cui è possibile trovare e visualizzare agevolmente gli
+            ultimi 3 video caricati mediante l'icona di play a sinistra. 
+            <br />
+            I video precedenti vengono automaticamente scaricati ma è possibile ricaricarli tramite il bottone Carica sulla destra
+            <br />
+            Nel caso si voglia mantenere nella lista un video, sarà sufficiente cliccare sulla casella Bloccato
+            facendo così in modo che non venga scaricato e mantenuto assieme agli ultimi 3 registrati.    
+            <br />
+            Sulla tabella i video sono caricati sempre in ordine cronologico inverso
+        </div>
+
+    <section id="web" class="hero bd-hero bd-is-basic">
+        <div class="hero-body">
+
+            <div class="container has-text-left">
+
+                <div class="bd-hero-body">
+                    <div class="bd-hero-heading">
+                        <h1 class="title algolia-lvl0">
+
+                            Applicazione Web
+                        </h1>
 
 
-<div class="content has-text-left">
-    Essendo questa un'Applicazione Web vanno mantenute alcune accortezze particolari durante
-    l'utilizzo
-    <br />
-    In particolare se si aggiorna la pagina sul browser viene resettato tutto, anche se ciò non causa 
-    particolari problemi in quanto i video sono tutti salvati su file e per ripristinare la situazione
-    basta ricaricare la camera e rimettere turno e pettorale. 
-    <br />
-    Comunque, pur essendo un'applicazione web, a parte il primo caricamento, non richiede un collegamento
-    continuo a Internet e quindi non risente problemi nel caso di caduta del collegamento.
-    <br />
-    Inoltre, nel caso si debba lavorare in ambiente dove non è disponibile internet è anche possibile
-    precaricare sul PC l'applicazione e lanciarla da link sul desktop come una normale applicazione.
-    <br />
-    Per ottenere ciò è sufficiente andare sulla barra del browser e selezionare l'icona App Disponibile
-       (richiede Browser di ultima generazione)
-    <br />
-<figure class="image is-256x256">
-  <img src="image/PWA.png">
-</figure>
-    
-    <br /><br />
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+        <div class="content has-text-left">
+            Essendo questa un'Applicazione Web vanno mantenute alcune accortezze particolari durante
+            l'utilizzo
+            <br />
+            In particolare se si aggiorna la pagina sul browser viene resettato tutto, anche se ciò non causa 
+            particolari problemi in quanto i video sono tutti salvati su file e per ripristinare la situazione
+            basta ricaricare la camera e rimettere turno e pettorale. 
+            <br />
+            Comunque, pur essendo un'applicazione web, a parte il primo caricamento, non richiede un collegamento
+            continuo a Internet e quindi non risente problemi nel caso di caduta del collegamento.
+            <br />
+            Inoltre, nel caso si debba lavorare in ambiente dove non è disponibile internet è anche possibile
+            precaricare sul PC l'applicazione e lanciarla da link sul desktop come una normale applicazione.
+            <br />
+            Per ottenere ciò è sufficiente andare sulla barra del browser e selezionare l'icona App Disponibile
+               (richiede Browser di ultima generazione)
+            <br />
+            <div class="columns">
+                  <div class="column is-half">
+                        <figure class="image">
+                          <img src="image/PWA.png">
+                        </figure>
+                
+                  </div>
+            </div>
+        </div>
+
+  </div>
+
+  <div class="column is-2">
+  </div>
+  <aside class="menu">
+  <p class="menu-label">
+    Indice
+  </p>
+  <ul class="menu-list">
+    <li><AnchorLink href="#tovideo">Take Off Video</AnchorLink></li>
+    <li><AnchorLink href="#rec">Registrazione</AnchorLink></li>
+    <li><AnchorLink href="#analisi">Analisi</AnchorLink></li>
+     
+
+     <li><AnchorLink href="#web">Applicazione Web</AnchorLink></li>
+  </ul>
+  
+</aside>
 </div>
 
 @code {

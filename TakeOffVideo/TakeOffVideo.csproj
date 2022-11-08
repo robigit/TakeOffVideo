@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="AnchorLink\" />
     <Folder Include="wwwroot\css\" />
   </ItemGroup>
 
