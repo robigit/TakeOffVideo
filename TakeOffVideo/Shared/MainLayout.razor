@@ -1,19 +1,25 @@
 ﻿@inherits LayoutComponentBase
 
-
-<section class="hero is-fullheight is-default is-bold">
-    <NavMenu />
-
+<NavMenu />
+@*
+<section class="hero is-small">
+   
+    
     <div class="hero-body">
         <div class="container has-text-centered">
-
-            @Body
+            
+           
 
         </div>
 
-    </div>
+    </div>*@
+ <div class="container">
+    <section class="section">
+    @Body
+    </section>
+</div>
 
-    <div class="hero-foot">
+    @*<div class="hero-foot">
         <div class="container">
             <div class="tabs is-centered">
                 <ul>
@@ -21,6 +27,15 @@
                 </ul>
             </div>
         </div>
-    </div>
+    </div>*@
 
-</section>
+@*</section>*@
+
+<footer class="footer is-small">
+    <div class="content has-text-centered">
+        <p>
+            <strong>Take OffVideo </strong> by <a href="">RG Progr</a>. The source code is licensed
+            <a href="http://opensource.org/licenses/mit-license.php">MIT</a>
+        </p>
+    </div>
+</footer>

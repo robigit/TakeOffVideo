@@ -2,9 +2,9 @@
 
 @using TakeOffVideo.Library.AnchorLink
 
-<div class="columns">
+<article id="content" class="columns">
 
-  <div class="column is-8">
+  <div id="left" class="column is-8">
 
     <section id="tovideo" class="hero bd-hero bd-is-basic">
         <div class="hero-body">
@@ -190,23 +190,22 @@
 
   </div>
 
-  <div class="column is-2">
-  </div>
-  <aside class="menu">
-  <p class="menu-label">
-    Indice
-  </p>
-  <ul class="menu-list">
-    <li><AnchorLink href="#tovideo">Take Off Video</AnchorLink></li>
-    <li><AnchorLink href="#rec">Registrazione</AnchorLink></li>
-    <li><AnchorLink href="#analisi">Analisi</AnchorLink></li>
-     
-
-     <li><AnchorLink href="#web">Applicazione Web</AnchorLink></li>
-  </ul>
+  <div id="right" class="column is-2">
   
-</aside>
-</div>
+          <aside id="menu" class="menu">
+          <p class="menu-label">
+            Indice
+          </p>
+          <ul class="menu-list">
+            <li><AnchorLink href="#tovideo">Take Off Video</AnchorLink></li>
+            <li><AnchorLink href="#rec">Registrazione</AnchorLink></li>
+            <li><AnchorLink href="#analisi">Analisi</AnchorLink></li>
+            <li><AnchorLink href="#web">Applicazione Web</AnchorLink></li>
+          </ul>
+  
+        </aside>
+    </div>
+</article>
 
 @code {
 
