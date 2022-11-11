@@ -1,20 +1,43 @@
 ﻿@inject NavigationManager NavManager
 
 <div class="hero-head">
-    <nav class="navbar">
+    <nav class="navbar ">
         <div class="container">
             <div class="navbar-brand">
                 <a class="navbar-item" href="../">
                     <img src="image/tovlogo.png" alt="Logo">
                 </a>
-                <h1 class="title">Take Off Video</h1>
-                @*<span class="navbar-burger burger" data-target="navbarMenu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </span>*@
+                <h1 class="title navbar-item">Take Off Video</h1>
+
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
             </div>
-            <div id="navbarMenu" class="navbar-menu">
+
+            <div  class="navbar-menu">
+                <div class="navbar-start">
+                   
+
+
+                  <section class="navbar-item">
+                        <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="()=>SetPage(0)">
+                            Home
+                        </NavLink>
+                  </section>
+
+                  <section class="navbar-item">
+                          <NavLink class="nav-link" href="documentazione" Match="NavLinkMatch.All" @onclick="()=>SetPage(1)">
+                                    Documentazione
+                         </NavLink>
+                  </section>
+                  </div>
+           </div>
+
+
+
+           @* <div id="navbarMenu" class="navbar-menu">
                 <div class="navbar-end">
                     <div class="tabs is-right">
                         <ul>
@@ -33,7 +56,7 @@
                         </ul>
                     </div>
                 </div>
-            </div>
+            </div>*@
         </div>
     </nav>
 </div>
