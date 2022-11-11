@@ -44,21 +44,21 @@ export function startVideo(video, id) {
 
         //console.info("id " + id);
 
-        navigator.mediaDevices.getUserMedia({ video: { deviceId: id } }).then(function (stream) {
+        navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact : id } } }).then(function (stream) {
             
-            if ("srcObject" in video) {
+            //if ("srcObject" in video) {
                 video.srcObject = stream;
-            } else {
-                video.src = window.URL.createObjectURL(stream);
-            }
+            //} else {
+            //    video.src = window.URL.createObjectURL(stream);
+            //}
 
 
-            video.onloadedmetadata = function (e) {
-                video.play();
-            };
+            //video.onloadedmetadata = function (e) {
+            //    video.play();
+            //};
             //mirror image
-            video.style.webkitTransform = "scaleX(-1)";
-            video.style.transform = "scaleX(-1)";
+            //video.style.webkitTransform = "scaleX(-1)";
+            //video.style.transform = "scaleX(-1)";
         });
     }
 }
