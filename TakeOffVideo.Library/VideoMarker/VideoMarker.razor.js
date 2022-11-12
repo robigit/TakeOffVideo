@@ -101,6 +101,9 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
 
             // event : recording stopped & all blobs sent
             media_recorder.addEventListener('stop', function () {
+
+                dotnetHelper.invokeMethodAsync("ReportJS", "media stop");
+
                 // create local object URL from the recorded video blobs
                 let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
 
@@ -112,6 +115,9 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
 
             
             stopbutton.addEventListener('click', function onst() {
+
+                dotnetHelper.invokeMethodAsync("ReportJS", "click stop");
+
                 media_recorder.stop();
 
                 this.removeEventListener('click', onst);

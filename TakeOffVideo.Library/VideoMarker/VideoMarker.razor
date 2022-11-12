@@ -207,23 +207,25 @@
         }
         _notifica = null;
 
-        _logger.Info($"Registra {_inregistrazione}");
+        
 
         _inregistrazione = !_inregistrazione;
 
         if (_inregistrazione)
         {
             //_messaggio = "Registrazione in corso";
-            
+
+            _logger.Info($"Inizio Registrazione");
+
             await _JScript.InvokeVoidAsync("StartRec", _video, _stopbutton, _cameraselected, _reference);
             if (_timer != null)
             {
-                
+
                 _timer.Enabled = true;
             }
-        
+
         }
-        
+
     }
 
 
@@ -235,6 +237,17 @@
 
 
     }
+
+
+    [JSInvokable]
+    public async Task ReportJS(string msg)
+    {
+        _logger.Info($"ReportJS {msg}");
+
+       
+
+    }
+
 
     void DelNotification()
     {
