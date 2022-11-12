@@ -75,7 +75,7 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
     navigator.mediaDevices.getUserMedia({ video: { deviceId: idcamera } })
         .then(function (stream) {
 
-            dotnetHelper.invokeMethodAsync("ReportJS", "StartRec");
+            dotnetHelper.invokeMethodAsync("ReportJS", "StartRec2");
 
             //if ("srcObject" in video) {
                 video.srcObject = stream;
@@ -96,6 +96,8 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
 
             // set MIME type of recording as video/webm
             media_recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+
+            dotnetHelper.invokeMethodAsync("ReportJS", "AddEvents");
 
             // event : new recorded video blob available 
             media_recorder.addEventListener('dataavailable', function (e) {
@@ -129,6 +131,8 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
 
             // start recording with each recorded blob having 1 second video
             media_recorder.start(1000);
+        }).catch((err) => {
+            dotnetHelper.invokeMethodAsync("ReportJS", `The following error occurred: ${err}`);
         });
 
 }
