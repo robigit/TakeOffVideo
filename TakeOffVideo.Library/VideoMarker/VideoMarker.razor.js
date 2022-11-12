@@ -74,15 +74,18 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
 
     navigator.mediaDevices.getUserMedia({ video: { deviceId: idcamera } })
         .then(function (stream) {
-            
-            if ("srcObject" in video) {
+
+            dotnetHelper.invokeMethodAsync("ReportJS", "StartRec");
+
+            //if ("srcObject" in video) {
                 video.srcObject = stream;
-            } else {
-                video.src = window.URL.createObjectURL(stream);
-            }
+            //} else {
+            //    video.src = window.URL.createObjectURL(stream);
+            //}
 
 
             video.onloadedmetadata = function (e) {
+                dotnetHelper.invokeMethodAsync("ReportJS", "Play");
                 video.play();
             };
             //mirror image
@@ -96,6 +99,7 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
 
             // event : new recorded video blob available 
             media_recorder.addEventListener('dataavailable', function (e) {
+                dotnetHelper.invokeMethodAsync("ReportJS", "dataavailable");
                 blobs_recorded.push(e.data);
             });
 
