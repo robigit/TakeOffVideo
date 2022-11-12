@@ -1,10 +1,11 @@
-﻿@using TakeOffVideo.Library.VideoMarker
+﻿@using TakeOffVideo.Library.RLogger;
+@using TakeOffVideo.Library.VideoMarker
 @using TakeOffVideo.Library.VideoUploader
 @using TakeOffVideo.Library.VideoFileManager
 
 
 @inject IVideoFileManager videofilemanager
-
+@inject IRLogger _logger
 
 
 <h1 class="title is-2">
@@ -64,6 +65,7 @@
         if(video!=null)
             _urlattuale = video.Url;
 
+        _logger.Info($"Caricato un video nuovo {_urlattuale}");
 
         StateHasChanged();
         await Task.CompletedTask;

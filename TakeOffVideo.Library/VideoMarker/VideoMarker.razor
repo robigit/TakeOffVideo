@@ -1,9 +1,13 @@
 ﻿@using Microsoft.JSInterop
+@using TakeOffVideo.Library.RLogger;
 
 @inject IJSRuntime JS
+@inject IRLogger _logger
 
 @implements IAsyncDisposable
 @implements IDisposable
+
+
 
 
 <div class="container">
@@ -66,19 +70,25 @@
                 </span>
 
             </button>
+        </p>
         @if(_inregistrazione)
         {
+            <div class="container">
                     <progress class="progress is-danger" max="100">30%</progress>
+                </div>
+                <br />
         }
-        </p>
+       
     }
 
     @if (!string.IsNullOrEmpty(_notifica))
     {
+        
         <div class="notification is-danger">
             <button class="delete" @onclick="DelNotification"></button>
             @_notifica
         </div>
+        
     }
 </div>
 
@@ -174,6 +184,9 @@
         if (_JScript == null)
             return;
         _cameraselected = camera;
+
+        _logger.Info($"Inizio video {camera}");
+
         await _JScript.InvokeVoidAsync("startVideo", _video, camera);
     }
 
@@ -193,6 +206,8 @@
             return;
         }
         _notifica = null;
+
+        _logger.Info($"Registra {_inregistrazione}");
 
         _inregistrazione = !_inregistrazione;
 
@@ -215,6 +230,7 @@
     [JSInvokable]
     public async Task SalvaUrlVideo(string url)
     {
+        _logger.Info($"SalvaUrlVideo {url}");
         await OnVideoRecorded.InvokeAsync(url);
 
 
