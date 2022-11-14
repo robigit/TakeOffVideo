@@ -130,7 +130,7 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
 
                 dotnetHelper.invokeMethodAsync("ReportJS", "media stop");
 
-                var optionblob = { type: `video${tipo}` };
+                var optionblob = { type: `video/${tipo}` };
 
                 // create local object URL from the recorded video blobs
                 let video_local = URL.createObjectURL(new Blob(blobs_recorded, optionblob));

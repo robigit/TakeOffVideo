@@ -54,9 +54,12 @@
 
     private void OnVideoSelected(VideoFile video)
     {
-                
+
         if(video != null)
+        {
             _urlattuale =  video.Url;
+            _logger.Info($"OnVideoSelected {_urlattuale}");
+        }
 
     }
 
