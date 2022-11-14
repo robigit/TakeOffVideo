@@ -21,7 +21,7 @@
     </p>
 }
 
-<VideoMarker Url="@_urlattuale" WidthVideo="640" HeigthVideo="640" ConControls=true />
+<VideoMarker  WidthVideo="640" HeigthVideo="640" ConControls=true @ref="_videoMarker" />
 
 <div class="columns">
     <div class="column">
@@ -38,8 +38,7 @@
 
 
 @code {
-
-
+    VideoMarker? _videoMarker;
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -52,13 +51,15 @@
 
     string? _urlattuale;
 
-    private void OnVideoSelected(VideoFile video)
+    private async Task OnVideoSelected(VideoFile video)
     {
 
         if(video != null)
         {
             _urlattuale =  video.Url;
             _logger.Info($"OnVideoSelected {_urlattuale}");
+
+            await _videoMarker.SetVideo(_urlattuale);
         }
 
     }
@@ -70,7 +71,8 @@
 
         _logger.Info($"Caricato un video nuovo {_urlattuale}");
 
-        StateHasChanged();
+        await _videoMarker.SetVideo(_urlattuale);
+        //StateHasChanged();
         await Task.CompletedTask;
     }
 

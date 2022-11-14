@@ -169,6 +169,19 @@
         }
     }
 
+    public async Task SetVideo(string url)
+    {
+        Url = url;
+
+        if (Url != null && _JScript != null)
+        {
+            await _JScript.InvokeVoidAsync("caricavideo", _video, Url);
+
+            _logger.Info($"carica video2 {Url}");
+        }
+
+    }
+
     private void MostraLinea()
     {
         _lineavisibile = !_lineavisibile;
