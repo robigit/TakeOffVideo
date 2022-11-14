@@ -164,6 +164,8 @@
         if(Url != null && _JScript!=null)
         {
             await _JScript.InvokeVoidAsync("caricavideo", _video, Url);
+
+            _logger.Info($"carica video {Url}");
         }
     }
 

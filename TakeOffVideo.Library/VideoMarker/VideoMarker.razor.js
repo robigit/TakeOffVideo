@@ -1,7 +1,12 @@
 ﻿
 export function caricavideo(video, href) {
 
+    try {
     video.src = href;
+    }
+    catch(err) {
+        dotnetHelper.invokeMethodAsync("ReportJS", `caricavideo eccezione: ${err}`);
+    }
 }
 
 
