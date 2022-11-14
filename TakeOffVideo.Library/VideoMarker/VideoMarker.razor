@@ -111,13 +111,15 @@
 
     private ElementReference _stopbutton;
 
+
+
     [Parameter] public string? Url { get; set; }
     [Parameter] public int WidthVideo { get; set; } = 320;
     [Parameter] public int HeigthVideo { get; set; } = 320;
     [Parameter] public bool ConRecorder { get; set; } = false;
     [Parameter] public bool ConControls { get; set; } = false;
 
-    [Parameter] public EventCallback<string> OnVideoRecorded { get; set; }
+    [Parameter] public EventCallback<OnVideoRecordedArgs> OnVideoRecorded { get; set; }
 
     private bool _inregistrazione = false;
 
@@ -207,7 +209,7 @@
         }
         _notifica = null;
 
-        
+
 
         _inregistrazione = !_inregistrazione;
 
@@ -230,10 +232,10 @@
 
 
     [JSInvokable]
-    public async Task SalvaUrlVideo(string url)
+    public async Task SalvaUrlVideo(string url, string tipo)
     {
         _logger.Info($"SalvaUrlVideo {url}");
-        await OnVideoRecorded.InvokeAsync(url);
+        await OnVideoRecorded.InvokeAsync(new OnVideoRecordedArgs(url, tipo));
 
 
     }

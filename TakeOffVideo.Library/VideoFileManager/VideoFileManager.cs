@@ -8,7 +8,7 @@ namespace TakeOffVideo.Library.VideoFileManager
 
     public interface IVideoFileManager
     {
-        Task AggiungiNuovo(string url, int turno, string? pettorale);
+        Task AggiungiNuovo(string url, string tipo, int turno, string? pettorale);
 
         IEnumerable<VideoFile> GetElenco();
 
@@ -25,12 +25,14 @@ namespace TakeOffVideo.Library.VideoFileManager
         public DateTime OraRegistrazione { get; set; }
 
         public string? Url { get; set; }
+
+        public string? Tipo { get; set; }
         public int Turno { get; set; }
         public string? Pettorale { get; set; }
 
         public bool Pinned { get; set; } = false;
 
-        public string NomeFile => $"TOV_{OraRegistrazione:yyyyMMdd}_{OraRegistrazione:HH-mm-ss}_{Turno}_{Pettorale}.webm";
+        public string NomeFile => $"TOV_{OraRegistrazione:yyyyMMdd}_{OraRegistrazione:HH-mm-ss}_{Turno}_{Pettorale}.{Tipo}";
 
 
         public override string ToString()
@@ -70,7 +72,7 @@ namespace TakeOffVideo.Library.VideoFileManager
 
         private int _maxid = 1;
 
-        public async Task AggiungiNuovo(string url, int turno, string? pettorale)
+        public async Task AggiungiNuovo(string url, string tipo, int turno, string? pettorale)
         {
             if (!_urls.Any(v=> v.Url == url))
             {
@@ -80,7 +82,8 @@ namespace TakeOffVideo.Library.VideoFileManager
                     Url = url,
                     Turno = turno,
                     Pettorale = pettorale,
-                    OraRegistrazione = DateTime.Now
+                    OraRegistrazione = DateTime.Now,
+                    Tipo = tipo
                 };
 
                 _urls.Add(v);
@@ -88,8 +91,6 @@ namespace TakeOffVideo.Library.VideoFileManager
                 await PulisciOld();
 
                 // salva su file
-
-                //var nome = $"{DateTime.Today:yyyyMMdd}_{DateTime.Now:HH-mm-ss}_{turno}_{pettorale}.webm";
 
                 var r = await GetRef();
                 await r.InvokeVoidAsync("downloadBlob", url, v.NomeFile);
@@ -148,7 +149,7 @@ namespace TakeOffVideo.Library.VideoFileManager
             bool ret = false;
 
             var m = Regex.Match(nomefile,
-                @"^TOV_(?<anno>\d{4})(?<mese>\d{2})(?<giorno>\d{2})_(?<ora>\d{2})-(?<min>\d{2})-(?<sec>\d{2})_(?<turno>\d+)_(?<pett>\w*).webm$");
+                @"^TOV_(?<anno>\d{4})(?<mese>\d{2})(?<giorno>\d{2})_(?<ora>\d{2})-(?<min>\d{2})-(?<sec>\d{2})_(?<turno>\d+)_(?<pett>\w*).(?<tipo>\w*)");
 
             try
             {
@@ -168,6 +169,8 @@ namespace TakeOffVideo.Library.VideoFileManager
                         int.TryParse(m.Groups["turno"].Value, out int turno);
                         var pett = m.Groups["pett"].Value;
 
+                        var tipo = m.Groups["tipo"].Value;
+
                         var v = new VideoFile
                         {
                             ID = _maxid++,
@@ -176,6 +179,7 @@ namespace TakeOffVideo.Library.VideoFileManager
                             Pettorale = pett,  
                             OraRegistrazione = date, 
                             Pinned = true,
+                            Tipo = tipo
                         };
 
                         _urls.Add(v);

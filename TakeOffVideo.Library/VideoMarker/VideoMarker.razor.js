@@ -72,10 +72,31 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
 
     dotnetHelper = dotHelper
 
+    let options;
+    let tipo;
+
+    //if (MediaRecorder.isTypeSupported('video/webm; codecs=vp9')) {
+    //    options = { mimeType: 'video/webm; codecs=vp9' };
+    //    tipo = "webm";
+    //} else
+    if (MediaRecorder.isTypeSupported('video/webm')) {
+        options = { mimeType: 'video/webm' };
+        tipo = "webm";
+    } else if (MediaRecorder.isTypeSupported('video/mp4')) {
+        options = { mimeType: 'video/mp4', videoBitsPerSecond: 100000 };
+        tipo = "mp4";
+    } else {
+        dotnetHelper.invokeMethodAsync("ReportJS", "no suitable mimetype found for this device");
+        return;
+    }
+
+
+    dotnetHelper.invokeMethodAsync("ReportJS", "tipo3 " + tipo);
+
     navigator.mediaDevices.getUserMedia({ video: { deviceId: idcamera } })
         .then(function (stream) {
 
-            dotnetHelper.invokeMethodAsync("ReportJS", "StartRec2");
+            //dotnetHelper.invokeMethodAsync("ReportJS", "StartRec2");
 
             //if ("srcObject" in video) {
                 video.srcObject = stream;
@@ -95,13 +116,12 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
             blobs_recorded = [];
 
             // set MIME type of recording as video/webm
-            media_recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+            media_recorder = new MediaRecorder(stream, options );
 
-            dotnetHelper.invokeMethodAsync("ReportJS", "AddEvents");
-
+            
             // event : new recorded video blob available 
             media_recorder.addEventListener('dataavailable', function (e) {
-                dotnetHelper.invokeMethodAsync("ReportJS", "dataavailable");
+                
                 blobs_recorded.push(e.data);
             });
 
@@ -110,10 +130,12 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
 
                 dotnetHelper.invokeMethodAsync("ReportJS", "media stop");
 
-                // create local object URL from the recorded video blobs
-                let video_local = URL.createObjectURL(new Blob(blobs_recorded, { type: 'video/webm' }));
+                var optionblob = { type: `video${tipo}` };
 
-                dotnetHelper.invokeMethodAsync("SalvaUrlVideo", video_local);
+                // create local object URL from the recorded video blobs
+                let video_local = URL.createObjectURL(new Blob(blobs_recorded, optionblob));
+
+                dotnetHelper.invokeMethodAsync("SalvaUrlVideo", video_local, tipo);
 
                 //??
                 //media_recorder.removeEventListener('stop', arguments.callee);

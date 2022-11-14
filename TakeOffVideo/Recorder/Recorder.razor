@@ -109,10 +109,10 @@
 
 
     //[JSInvokable]
-    public async Task SalvaUrlVideo(string url)
+    public async Task SalvaUrlVideo(OnVideoRecordedArgs e)
     {
 
-        await videofilemanager.AggiungiNuovo(url, _turno, _pettorale);
+        await videofilemanager.AggiungiNuovo(e.Url,e.Tipo, _turno, _pettorale);
         StateHasChanged();
 
     }
