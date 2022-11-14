@@ -1,5 +1,9 @@
 ﻿@page "/"
+@page "/{Modalita}"
+@using TakeOffVideo.Library.RLogger;
+
 @inject IJSRuntime jsRuntime
+@inject IRLogger logger
 
 <PageTitle>Take Off Video</PageTitle>
 
@@ -10,9 +14,20 @@
     <div class="column is-6 is-offset-1">
         <TakeOffVideo.Analyzer.Analyzer/>
     </div>
+
+                   
 </div>
 
 @code {
+
+    [Parameter]
+    public string? Modalita { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (Modalita == "debug")
+            logger.Enable(true);
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

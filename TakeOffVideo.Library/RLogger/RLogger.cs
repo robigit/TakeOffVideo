@@ -14,7 +14,11 @@ namespace TakeOffVideo.Library.RLogger
         void Error(string message);
 
         IEnumerable<RLog> GetMessages(int fromid);
-        
+
+        void Enable(bool value);
+
+        bool IsEnabled();
+
 
     }
 
@@ -33,6 +37,8 @@ namespace TakeOffVideo.Library.RLogger
 
         public TipoLog Log { get; set; }
 
+        
+
     }
 
     public class RLogger : IRLogger
@@ -40,7 +46,11 @@ namespace TakeOffVideo.Library.RLogger
         private readonly List<RLog> _log = new ();
 
         public void Error(string message)
-        {
+        {   
+            if (!_enabled)
+            {
+                return;
+            }
             lock (_log)
             {
                 _log.Add(new RLog { Message = message, Log = TipoLog.Error });
@@ -49,6 +59,7 @@ namespace TakeOffVideo.Library.RLogger
 
         public void Info(string message)
         {
+            if(!_enabled) { return;  }
             lock (_log)
             {
                 _log.Add(new RLog { Message = message, Log = TipoLog.Info });
@@ -57,6 +68,7 @@ namespace TakeOffVideo.Library.RLogger
 
         public void Warn(string message)
         {
+            if (!_enabled) { return; }
             lock (_log)
             {
                 _log.Add(new RLog { Message = message, Log = TipoLog.Warn });
@@ -67,6 +79,15 @@ namespace TakeOffVideo.Library.RLogger
         public IEnumerable<RLog> GetMessages(int fromid)
         {
             return _log.Where(m => m._id>=fromid);
+        }
+
+        private bool _enabled = false;
+
+        public bool IsEnabled() => _enabled;
+
+        public void Enable(bool value)
+        {
+            _enabled= value;
         }
     }
 }

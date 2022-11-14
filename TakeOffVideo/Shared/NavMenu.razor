@@ -1,4 +1,7 @@
-﻿@inject NavigationManager NavManager
+﻿@using TakeOffVideo.Library.RLogger;
+@inject NavigationManager NavManager
+
+@inject IRLogger logger
 
 <div class="hero-head">
     <nav class="navbar ">
@@ -30,13 +33,18 @@
                                     Documentazione
                          </NavLink>
                   </section>
+                    @if (logger.IsEnabled())
+                    {
 
-                    <section class="navbar-item">
-                        <NavLink class="nav-link" href="log" Match="NavLinkMatch.All" @onclick="()=>SetPage(1)">
-                            Log
-                        </NavLink>
-                    </section>
-                  </div>
+
+                        <section class="navbar-item">
+                            <NavLink class="nav-link" href="log" Match="NavLinkMatch.All" @onclick="()=>SetPage(1)">
+                                Log
+                            </NavLink>
+                        </section>
+                    }
+                    
+                </div>
            </div>
 
 

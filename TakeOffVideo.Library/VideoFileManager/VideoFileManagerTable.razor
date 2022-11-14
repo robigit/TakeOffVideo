@@ -5,11 +5,14 @@
 <table class="table is-fullwidth is-narrow is-scrollable" >
     <thead>
     <tr>
-            <th><abbr title="Play">Play</abbr></th>
+            <th>Play</th>
             <th>Ora</th>
-            <th><abbr title="Turno">Turno</abbr></th>
-            <th><abbr title="Pettorale">#</abbr></th>
-            <th><abbr title="Non cancellare">Bloccato</abbr></th>
+            <th>Turno</th>
+            <th>Pettorale</th>
+            <th> <span class="icon is-small">
+                        <img src="image/lockclose24.png">
+                  </span>
+            </th>
     </tr>
     </thead>
     <tbody>
@@ -18,7 +21,7 @@
         {
             <tr class="@(_videoplaying == v ?"is-selected" :"")" >
                 <td>
-                    @if (v != _videoplaying)
+                    @if (true || v != _videoplaying)
                     {
                         <button class="button" @onclick="() => Play(v)" >
                             <span class="icon is-small">
@@ -36,13 +39,13 @@
                         <span class="icon is-small">
                             @if (v.Pinned)
                             {
-                               
-                                <img src="image/lockclose24.png">
+
+                                <img src="image/check24.png">
                             }
-                            else
+                            @*else
                             {
                                 <img src="image/quadro24.png">
-                            }
+                            }*@
 
 
                         </span>
