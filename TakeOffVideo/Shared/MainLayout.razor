@@ -34,10 +34,12 @@
 <footer class="footer is-small">
     <div class="content has-text-centered">
         <p>
-            <strong>Take OffVideo </strong> by <a href="">RG Progr</a>. 
+            <strong>Take Off Video Application </strong> by <a href="">RG Progr</a>. 
             
-            The source code is licensed
-            <a href="http://opensource.org/licenses/mit-license.php">MIT</a>
+            Net version @_version
+
+           @* The source code is licensed
+            <a href="http://opensource.org/licenses/mit-license.php">MIT</a>*@
 
             <a href="https://bulma.io">
                 <img src="https://bulma.io/images/made-with-bulma.png"
@@ -45,6 +47,22 @@
                      width="128"
                      height="24">
             </a>
+
+            <a href="mailto:takeoffvideo@robig.it">Scrivi una mail</a>
         </p>
     </div>
 </footer>
+
+
+@code
+{
+
+    string? _version;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _version = Environment.Version.ToString();
+    }
+}
