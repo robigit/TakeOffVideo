@@ -70,6 +70,21 @@ export function startVideo(video, id) {
 }
 
 
+export function InitKeyboard(stopbutton) {
+    window.addEventListener('keydown', function (e) {
+        if (e.key == " " ||
+            e.code == "Space" ||
+            e.keyCode == 32) {
+
+            stopbutton.click();
+
+            e.preventDefault();
+        }
+        
+    }, false);
+}
+
+
 let dotnetHelper = null;
 let media_recorder = null;
 let blobs_recorded = [];
@@ -156,6 +171,10 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
 
                 this.removeEventListener('click', onst);
             });
+
+
+           
+
 
             // start recording with each recorded blob having 1 second video
             media_recorder.start(1000);

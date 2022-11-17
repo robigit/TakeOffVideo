@@ -156,6 +156,8 @@
             _reference = DotNetObjectReference.Create(this);
 
             await _JScript.InvokeVoidAsync("SettaControlsVideo", _video, ConControls);
+
+            await _JScript.InvokeVoidAsync("InitKeyboard", _stopbutton);
         }
     }
 
