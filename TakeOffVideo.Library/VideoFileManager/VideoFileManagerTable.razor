@@ -1,6 +1,9 @@
 ﻿@using TakeOffVideo.Library.VideoFileManager
 
 @inject IVideoFileManager videofilemanager
+@implements IDisposable
+
+
 <div class="has-text-left ml-4 mr-4">
 <table class="table is-fullwidth is-narrow is-scrollable" >
     <thead>
@@ -67,9 +70,14 @@
     {
         if (firstRender)
         {
-            videofilemanager.RegistraOnNuovo(OnNuovo);
+            videofilemanager.OnNuovo += OnNuovo;
 
         }
+    }
+
+    public void Dispose()
+    {
+        videofilemanager.OnNuovo -= OnNuovo;
     }
 
     VideoFile? _videoplaying;

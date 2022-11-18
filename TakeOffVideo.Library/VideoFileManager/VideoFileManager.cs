@@ -12,7 +12,10 @@ namespace TakeOffVideo.Library.VideoFileManager
 
         IEnumerable<VideoFile> GetElenco();
 
-        void RegistraOnNuovo(Func<VideoFile, Task> action);
+        //void RegistraOnNuovo(Func<VideoFile, Task> action);
+
+        event Func<VideoFile, Task>? OnNuovo;
+
         VideoFile? GetById(int id);
 
         Task<bool> AggiungiDaFile(string url, string nome);
@@ -47,11 +50,21 @@ namespace TakeOffVideo.Library.VideoFileManager
 
         private IJSObjectReference? _JScriptfile = null;
 
-        List<Func<VideoFile, Task>> _actions = new ();
+        //List<Func<VideoFile, Task>> _actions = new ();
+
+        public event Func<VideoFile, Task>? OnNuovo;
+
+        private async Task NotifyOnNuovo(VideoFile v)
+        { 
+            if(OnNuovo!=null) 
+                await OnNuovo.Invoke(v);
+        }
 
         List<VideoFile> _urls = new();
 
         IJSRuntime _JS;
+
+
         public VideoFileManager(IJSRuntime jS)
         {
             _JS = jS;
@@ -67,7 +80,7 @@ namespace TakeOffVideo.Library.VideoFileManager
 
         public void RegistraOnNuovo(Func<VideoFile, Task> action)
         {
-            _actions.Add(action);
+            OnNuovo += action;
         }
 
         private int _maxid = 1;
@@ -95,8 +108,10 @@ namespace TakeOffVideo.Library.VideoFileManager
                 var r = await GetRef();
                 await r.InvokeVoidAsync("downloadBlob", url, v.NomeFile);
 
-                foreach (var action in _actions)
-                    await action(v);
+                //foreach (var action in _actions)
+                //    await action(v);
+
+                await NotifyOnNuovo(v);
 
 
                 // ripulire i vecchi
@@ -187,8 +202,9 @@ namespace TakeOffVideo.Library.VideoFileManager
                         await PulisciOld();
 
 
-                        foreach (var action in _actions)
-                            await action(v);
+                        await NotifyOnNuovo(v);
+                        //foreach (var action in _actions)
+                        //    await action(v);
                     }
                 }
             }

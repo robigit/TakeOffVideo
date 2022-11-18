@@ -7,6 +7,7 @@
 @inject IVideoFileManager videofilemanager
 @inject IRLogger _logger
 
+@implements IDisposable
 
 <h1 class="title is-2">
     Analisi
@@ -44,9 +45,14 @@
     {
         if (firstRender)
         {
-            videofilemanager.RegistraOnNuovo(OnNuovo);
+            videofilemanager.OnNuovo += OnNuovo;
 
         }
+    }
+
+    public void Dispose()
+    {
+         videofilemanager.OnNuovo -= OnNuovo;
     }
 
     string? _urlattuale;
