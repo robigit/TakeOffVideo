@@ -6,17 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="VideoFileManager\videofilemanager.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="VideoFileManager\videofilemanager.js">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />
