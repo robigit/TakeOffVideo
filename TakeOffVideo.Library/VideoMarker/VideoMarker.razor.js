@@ -197,3 +197,14 @@ export function SettaControlsVideo(video, setta) {
     }
 
 }
+
+
+
+export function AdvanceFrame(video, steps) {
+    const expectedFramerate = 60; // yourVideo's framerate
+
+    if (video.paused) video.currentTime += Math.sign(steps) * 1 / expectedFramerate
+    //else video.currentTime += d
+
+
+}

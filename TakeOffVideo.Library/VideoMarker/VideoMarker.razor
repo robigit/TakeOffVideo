@@ -25,38 +25,80 @@
         }
     </div>
 
+    <section class="content">
+    <nav class="level">
 
-    <div class="buttons are-small">
-        <button class="button" @onclick="@(() => MostraLinea())">
-            @_textlinea
-        </button>
-        @if (_lineavisibile)
-        {
-            <button class="button" @onclick="@(() => Move("sx", 10))">
-                <span class="icon is-small">
-                    <img src="image/dopchevronleft24.png">
-                </span>
-            </button>
+        <div class="level-left">
+            <div class="level-item">
+                <div class="buttons are-small">
+                <button class="button" @onclick="@(() => MostraLinea())">
+                    @_textlinea
+                </button>
+                @if (_lineavisibile)
+                {
+                    <button class="button" @onclick="@(() => Move("sx", 10))">
+                        <span class="icon is-small">
+                            <img src="image/dopchevronleft24.png">
+                        </span>
+                    </button>
 
-            <button class="button" @onclick="@(() => Move("sx", 1))">
-                <span class="icon is-small">
-                    <img src="image/chevronleft24.png">
-                </span>
-            </button>
+                    <button class="button" @onclick="@(() => Move("sx", 1))">
+                        <span class="icon is-small">
+                            <img src="image/chevronleft24.png">
+                        </span>
+                    </button>
 
-            <button class="button" @onclick="@(() => Move("dx", 1))">
-                <span class="icon is-small">
-                    <img src="image/chevronright24.png">
-                </span>
-            </button>
+                    <button class="button" @onclick="@(() => Move("dx", 1))">
+                        <span class="icon is-small">
+                            <img src="image/chevronright24.png">
+                        </span>
+                    </button>
 
-            <button class="button" @onclick="@(() => Move("dx", 10))">
-                <span class="icon is-small">
-                    <img src="image/dopchevronright24.png">
-                </span>
-            </button>
+                    <button class="button" @onclick="@(() => Move("dx", 10))">
+                        <span class="icon is-small">
+                            <img src="image/dopchevronright24.png">
+                        </span>
+                    </button>
+                }
+            </div>
+            </div>
+        </div>
+         @if (!ConRecorder)
+            {
+                <div class="level-right">
+                    <p class="level-item"><strong>Frames</strong></p>
+                    <div class="level-item">
+                        <div class="buttons are-small">
+                        <button class="button" @onclick="@(() => AdvanceFrame(-10))">
+                            <span class="icon is-small">
+                                <img src="image/dopchevronleft24.png">
+                            </span>
+                        </button>
+
+                            <button class="button" @onclick="@(() => AdvanceFrame(-2))">
+                            <span class="icon is-small">
+                                <img src="image/chevronleft24.png">
+                            </span>
+                        </button>
+
+                            <button class="button" @onclick="@(() => AdvanceFrame(2))">
+                            <span class="icon is-small">
+                                <img src="image/chevronright24.png">
+                            </span>
+                        </button>
+
+
+                        <button class="button" @onclick="@(() => AdvanceFrame(10))">
+                            <span class="icon is-small">
+                                <img src="image/dopchevronright24.png">
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         }
-    </div>
+    </nav>
+    </section>
 
     @if (ConRecorder)
     {
@@ -196,6 +238,15 @@
 
 
         await _JScript.InvokeVoidAsync("move", direction, _container, _linea, pixels);
+    }
+
+    private async Task AdvanceFrame(int steps)
+    {
+        if (_JScript == null)
+            return;
+
+
+        await _JScript.InvokeVoidAsync("AdvanceFrame", _video, steps);
     }
 
     public async Task StartVideo(string camera)
