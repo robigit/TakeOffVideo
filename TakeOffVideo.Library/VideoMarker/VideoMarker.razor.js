@@ -198,7 +198,21 @@ export function SettaControlsVideo(video, setta) {
 
 }
 
+export function SettaAttributeVideo(video, attribute, setta) {
 
+    if (setta) {
+        video.setAttribute(attribute, attribute)
+    } else {
+        video.removeAttribute(attribute)
+    }
+
+}
+
+
+
+export function SettaCurrentTime(video, time) {
+    video.currentTime = time;
+}
 
 export function AdvanceFrame(video, steps) {
     const expectedFramerate = 60; // yourVideo's framerate

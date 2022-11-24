@@ -16,7 +16,7 @@
 
     <div class="vmcontainer" @ref="_container" >
         <div class="vmvideo">
-            <video  width="@WidthVideo" height="@HeigthVideo" @ref="_video" preload="auto" playsInline autoplay  />
+            <video  width="@WidthVideo" height="@HeigthVideo" @ref="_video"   />
         </div>
 
         @if (_lineavisibile)
@@ -93,6 +93,12 @@
                                 <img src="image/dopchevronright24.png">
                             </span>
                         </button>
+
+                       @* <button class="button" @onclick="@(() => SettaCurrentTime(6.415))">
+                            <span class="icon is-small">
+                                <img src="image/dopchevronright24.png">
+                            </span>
+                        </button>*@
                     </div>
                 </div>
             </div>
@@ -197,8 +203,13 @@
             _JScript = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/TakeOffVideo.Library/VideoMarker/VideoMarker.razor.js");
             _reference = DotNetObjectReference.Create(this);
 
-            await _JScript.InvokeVoidAsync("SettaControlsVideo", _video, ConControls);
+            //await _JScript.InvokeVoidAsync("SettaControlsVideo", _video, ConControls);
 
+            await _JScript.InvokeVoidAsync("SettaAttributeVideo", _video, "controls", ConControls);
+
+            await _JScript.InvokeVoidAsync("SettaAttributeVideo", _video, "autoplay", ConRecorder);
+
+           
             await _JScript.InvokeVoidAsync("InitKeyboard", _stopbutton);
         }
     }
@@ -247,6 +258,15 @@
 
 
         await _JScript.InvokeVoidAsync("AdvanceFrame", _video, steps);
+    }
+
+    private async Task SettaCurrentTime(double secs)
+    {
+        if (_JScript == null)
+            return;
+
+
+        await _JScript.InvokeVoidAsync("SettaCurrentTime", _video, secs);
     }
 
     public async Task StartVideo(string camera)
