@@ -1,8 +1,11 @@
 ﻿@using Microsoft.JSInterop
 @using TakeOffVideo.Library.RLogger;
+@using TakeOffVideo.Library.TOVFileManagerNS;
 
 @inject IJSRuntime JS
 @inject IRLogger _logger
+
+@inject TOVFileManager filemanager
 
 @implements IAsyncDisposable
 @implements IDisposable
@@ -325,6 +328,7 @@
         _logger.Info($"SalvaUrlVideo {url}");
         await OnVideoRecorded.InvokeAsync(new OnVideoRecordedArgs(url, tipo));
 
+        await filemanager.SalvaFileSuCartella("nome.webm", url);
 
     }
 

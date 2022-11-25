@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using TakeOffVideo;
 using TakeOffVideo.Library.RLogger;
+using TakeOffVideo.Library.TOVFileManagerNS;
 using TakeOffVideo.Library.VideoFileManager;
 
 
@@ -15,5 +16,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddSingleton<IVideoFileManager, VideoFileManager>();
 
 builder.Services.AddSingleton<IRLogger, RLogger>();
+
+builder.Services.AddScoped<TOVFileManager>();
 
 await builder.Build().RunAsync();

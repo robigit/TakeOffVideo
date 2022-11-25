@@ -1,6 +1,10 @@
 ﻿using Microsoft.JSInterop;
 using System;
 using System.Text.RegularExpressions;
+using TakeOffVideo.Library.TOVFileManagerNS;
+//using static System.Runtime.InteropServices.JavaScript.JSType;
+
+
 
 namespace TakeOffVideo.Library.VideoFileManager
 {
@@ -59,29 +63,27 @@ namespace TakeOffVideo.Library.VideoFileManager
             if(OnNuovo!=null) 
                 await OnNuovo.Invoke(v);
         }
-
         List<VideoFile> _urls = new();
-
         IJSRuntime _JS;
-
 
         public VideoFileManager(IJSRuntime jS)
         {
             _JS = jS;
+ 
         }
 
         private async Task<IJSObjectReference> GetRef()
         {
-            _JScriptfile ??= await _JS.InvokeAsync<IJSObjectReference>("import", "./script/videofilemanager.js");
+            _JScriptfile ??= await _JS.InvokeAsync<IJSObjectReference>("import", "./_content/TakeOffVideo.Library/videofilemanager.js");
 
             return _JScriptfile;
         }
 
 
-        public void RegistraOnNuovo(Func<VideoFile, Task> action)
-        {
-            OnNuovo += action;
-        }
+        //public void RegistraOnNuovo(Func<VideoFile, Task> action)
+        //{
+        //    OnNuovo += action;
+        //}
 
         private int _maxid = 1;
 
@@ -101,12 +103,14 @@ namespace TakeOffVideo.Library.VideoFileManager
 
                 _urls.Add(v);
 
-                await PulisciOld();
+                await RimuoviVideoVecchi();
 
                 // salva su file
 
                 var r = await GetRef();
                 await r.InvokeVoidAsync("downloadBlob", url, v.NomeFile);
+
+                
 
                 //foreach (var action in _actions)
                 //    await action(v);
@@ -119,7 +123,7 @@ namespace TakeOffVideo.Library.VideoFileManager
 
         }
 
-        private async Task PulisciOld()
+        private async Task RimuoviVideoVecchi()
         {
            
             int MAX_TO_KEEP = 3;
@@ -199,7 +203,7 @@ namespace TakeOffVideo.Library.VideoFileManager
 
                         _urls.Add(v);
 
-                        await PulisciOld();
+                        await RimuoviVideoVecchi();
 
 
                         await NotifyOnNuovo(v);

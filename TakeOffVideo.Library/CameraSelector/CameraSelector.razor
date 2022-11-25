@@ -1,12 +1,19 @@
 @using Microsoft.JSInterop
+@using TakeOffVideo.Library.TOVFileManagerNS;
 
 @inject IJSRuntime JS
 
 @implements IAsyncDisposable
 @implements IDisposable
 
+@inject TOVFileManager filemanager
 
+<section class="section">
+    <a class="button is-primary" @onclick="GetDir">
+        @NomeCartella
+    </a>
 
+</section>
 
 <label class="label">Selezionare la telecamera</label>
 <div class="field has-addons">
@@ -89,6 +96,15 @@
         {
             await _JScript.DisposeAsync();
         }
+    }
+
+    string NomeCartella = "Sel Dir";
+    private async Task GetDir()
+    {
+        var dir = await filemanager.ShowDirectoryPicker();
+
+        if (dir != null)
+            NomeCartella = dir.Name;
     }
 
 
