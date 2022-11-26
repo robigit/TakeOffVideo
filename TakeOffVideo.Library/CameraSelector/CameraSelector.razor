@@ -9,42 +9,71 @@
 
 @inject TOVFileManager filemanager
 
-<section class="section">
-    <a class="button is-primary" @onclick="GetDir">
-        @NomeCartella
-    </a>
+<div class="columns">
+    <div class="column is-4 ">
 
-</section>
+        <label class="label is-small">Cartella di download</label>
+        <div class="field has-addons">
+            @*    <p class="control">
+            <label class="label">Cartella download</label>
+            </p>*@
+            <p class="control">
+                <input class="input is-small" readonly value="@NomeCartella">
+            </p>
+            <div class="control">
+                <a class="button is-primary is-small" @onclick="GetDir">
+                    <span class="icon is-small">
+                        <img src="image/folder24.png">
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>
 
-<label class="label">Selezionare la telecamera</label>
-<div class="field has-addons">
-    <div class="control is-expanded  has-icons-left">
-         
-            <div class="select is-fullwidth">
-            <select id="Dispositivo" @onchange="@OnLocalCameraSelected">
+    <div class="column">
+        <label class="label is-small">Selezionare la telecamera</label>
+        <div class="field has-addons">
+            <div class="control is-expanded  has-icons-left">
 
-                <option value="">Seleziona</option>
-                @if (_devices != null)
-                {
-                    @foreach (var disp in _devices)
-                    {
-                        <option value="@disp.ID">@disp.Label</option>
-                    }
-                }
+                <div class="select is-fullwidth is-small">
+                    <select id="Dispositivo" @onchange="@OnLocalCameraSelected">
 
-            </select>
-     </div>
-    <div class="icon is-small is-left">
+                
+                        @if (_devices != null && _devices.Any())
+                        {
+                            <option value="">Seleziona</option>
+                            @foreach (var disp in _devices)
+                            {
+                                <option value="@disp.ID">@disp.Label</option>
+                            }
+                        }
+                        else
+                        {
+                            <option value="">Premere aggiorna per cercare</option>
+                        }
+
+                    </select>
+             </div>
+            <div class="icon is-small is-left">
             
-            <img src="image/video24.png">
-    </div>
-    </div>
-    <div class="control">
-        <a class="button is-primary" @onclick="GetDevices">
-            Aggiorna
-        </a>
-    </div>
+                    <img src="image/video24.png">
+            </div>
+            </div>
+            <div class="control">
+                <a class="button is-primary is-small" @onclick="GetDevices">
+                    <span class="icon is-small">
+                        <img src="image/refresh24.png">
+                    </span>
+                </a>
+            </div>
+    
+
 </div>
+
+</div>
+</div>
+
+
 
 @if(!string.IsNullOrWhiteSpace(TestoDialog))
 {
@@ -116,16 +145,29 @@
         }
     }
 
-    string NomeCartella = "Sel Dir";
+    string NomeCartella = "<Download>";
     private async Task GetDir()
     {
-        
-        var dir = await filemanager.ShowDirectoryPicker();
 
-        if (dir != null)
-            NomeCartella = dir.Name;
-        else
-            MostraDialog("Funzione non supportata");
+        try
+        {
+            var dir = await filemanager.ShowDirectoryPicker();
+            if (dir != null)
+            {
+                if (dir.Tipo == TOVFileManager.TipoScelta.Ok)
+                    NomeCartella = dir.Nome;
+                else
+                {
+                    if (dir.Tipo == TOVFileManager.TipoScelta.NotSupported)
+                        MostraDialog($"Funzione non supportata. I video verranno salvati nella cartella di Download standard.");
+
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            MostraDialog($"{e} {e.Message}");
+        }
     }
 
 

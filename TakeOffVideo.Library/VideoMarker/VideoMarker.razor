@@ -19,7 +19,7 @@
 
     <div class="vmcontainer" @ref="_container" >
         <div class="vmvideo">
-            <video  width="@WidthVideo" height="@HeigthVideo" @ref="_video"   />
+            <video width="@WidthVideo" height="@HeigthVideo" @ref="_video" preload="auto" playsInline />
         </div>
 
         @if (_lineavisibile)
@@ -328,7 +328,7 @@
         _logger.Info($"SalvaUrlVideo {url}");
         await OnVideoRecorded.InvokeAsync(new OnVideoRecordedArgs(url, tipo));
 
-        await filemanager.SalvaFileSuCartella("nome.webm", url);
+        //await filemanager.SalvaFileSuCartella("nome.webm", url);
 
     }
 

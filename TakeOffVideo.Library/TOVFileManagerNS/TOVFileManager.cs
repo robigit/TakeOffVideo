@@ -15,6 +15,9 @@ public partial class TOVFileManager : JSModule
 
     public event Func<VideoFile, Task>? OnNuovo;
 
+    public enum TipoScelta{ Ok, Cancel, NotSupported }
+    public record DirScelta(string? Nome, TipoScelta Tipo );
+
     private async Task NotifyOnNuovo(VideoFile v)
     {
         if (OnNuovo != null)
@@ -27,7 +30,7 @@ public partial class TOVFileManager : JSModule
     {
     }
 
-    public record JSDirectory(string Name, IJSObjectReference Instance) : IAsyncDisposable
+    public record JSDirectory(string Name, IJSObjectReference Instance, bool Supported) : IAsyncDisposable
     {
         // When .NET is done with this JSDirectory, also release the underlying JS object
         public ValueTask DisposeAsync() => Instance.DisposeAsync();
@@ -35,16 +38,30 @@ public partial class TOVFileManager : JSModule
 
     JSDirectory? _directory;
 
-    public async ValueTask<JSDirectory> ShowDirectoryPicker()
+    public async ValueTask<DirScelta> ShowDirectoryPicker()
     {
-        _directory = await InvokeAsync<JSDirectory>("showDirectoryPicker");
-        return _directory;
+        
+        var dir = await InvokeAsync<JSDirectory>("showDirectoryPicker");
+        
+        if(dir.Supported)
+        {
+            _directory= dir;
+            return new DirScelta(dir.Name, TipoScelta.Ok);
+        }
+        
+        return new DirScelta(null, dir.Name.Contains("Abort") ? TipoScelta.Cancel : TipoScelta.NotSupported);
+
+
     }
 
     public async ValueTask<bool> SalvaFileSuCartella(string nome, string url )
     {
-        if(_directory== null) { return false;  }
-        await InvokeVoidAsync("salvaFile", _directory.Instance, nome, url);
+        if (_directory== null) 
+        { 
+            await InvokeVoidAsync("downloadBlob", url, nome);
+        }
+        else
+            await InvokeVoidAsync("salvaFile", _directory.Instance, nome, url);
         return true;
     }
 
@@ -73,7 +90,10 @@ public partial class TOVFileManager : JSModule
 
             // salva su file
 
-            await InvokeVoidAsync("downloadBlob", url, v.NomeFile);
+            await SalvaFileSuCartella(v.NomeFile, url);
+           
+
+
 
             await NotifyOnNuovo(v);
 

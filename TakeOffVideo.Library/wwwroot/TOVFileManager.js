@@ -1,16 +1,50 @@
 ﻿
 export async function showDirectoryPicker() {
-    const dir = await window.showDirectoryPicker();
+
+
+    let dir = null;
+
+    try {
+        dir = await window.showDirectoryPicker();
+
+        const newFileHandle = await dir.getFileHandle("tov.txt", { create: true });
+        const writable = await newFileHandle.createWritable();
+
+        let today = new Date().toLocaleString();
+
+        await writable.write("TakeOffVideo Application "+today);
+
+        await writable.close();
+
+
+    }
+    catch(err) {
+        return {
+            name: err.name,
+            instance: null,
+            supported: false
+        };
+    }
+
+
+    
 
     // Track the dir in history.state
     const state = history.state || {};
     state.currentDir = dir;
     history.replaceState(state, '');
 
+
+
+
     return {
         name: dir.name,
-        instance: DotNet.createJSObjectReference(dir)
+        instance: DotNet.createJSObjectReference(dir),
+        supported: dir!=null
     };
+
+
+
 }
 
 
