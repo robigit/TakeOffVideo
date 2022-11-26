@@ -39,7 +39,7 @@
             <p>
             L'idea base è quella che sia sufficiente avere un PC con collegata una WebCam 
             che punti alla pedana di stacco e il giudice può registrare lo stacco e valutare
-            correttamente il salto.
+            correttamente il salto senza doversi preoccupare di conoscere sotware di video editing.
             </p>
 
         </div>
@@ -66,62 +66,63 @@
     </section>
 
         <div class="content has-text-left">
-            <article class="message is-primary">
-              <div class="message-header">
-                <p>Configurazione</p>
-                
-              </div>
-              <div class="message-body">
-   
+
             <p>
-            Nella parte sinistra si effettua la registrazione del salto.
+                Nella parte sinistra si effettua la registrazione del salto.
             </p>
 
+            <p class="is-size-4">Configurazione</p>
+                
             <p>
-
-            Come prima cosa bisogna selezionare la telecamera da utilizzare, premendo Aggiorna per ottenere
+            All'inizio va configurata la telecamera da utilizzare, premendo Aggiorna per ottenere
             l'elenco delle webcam collegate al dispositivo.
             
-
-            <code>
+            <strong>
             ATTENZIONE: la prima volta è necessario concedere al browser l'autorizzazione all'accesso ai video
-                </code>
+                </strong>
             </p>
+            <br />
+            <p>Di default tutti i video registrati vengono salvati nella cartella <i>Download</i> standard del dispositivo.
+                <br /> In alcuni browser è possibile anche configurare una cartella personalizzata 
+                (ad esempio diversa per ciascuna gara) premendo il bottone apposito. Anche in questo caso è necessario dare doppia
+                autorizzazione al browser (autorizzazione di accesso e di scrittura)
 
-                </div>
-            </article>
+            </p>
+ 
 
             <p>
             Una volta selezionata la camera, è possibile controllare il corretto allineamento utilizzando la riga
             gialla, la cui posizione è regolabile tramite le freccette.
             </p>
+
+            <p class="is-size-4">Registrazione stacco</p>
+
+
             <p>
 
             Premendo il bottone Registra si inizia la registrazione dello stacco che procede sino alla pressione
-            di Salva (E' previstio un contatore che dopo 10 secondi interrompe la registrazione e viene fatto il
-            salvatiaggio automaticamente)
+            di Salva oppure termina automaticamente dopo 10 secondi. 
+            E' possibile anche usare la barra spaziatrice per avviare e terminare la registrazione. 
             </p>
             <p>
-            Al salvataggio il video viene salvato automanticamente nella cartella di download (si consiglia di configurare il browser 
-            in modo che il salvataggio venga effettuato senza richiedere la cartella)e  automaticamente 
-            caricato sulla parte destra di Analisi.
+            Al termine, il video viene salvato automaticamente su file e caricato sulla parte destra di Analisi.
             </p>
             <p>
 
-            Sotto l'immagine è possibile selezionare il turno di salto e il numero di pettorale (può essere anche il nome).
+            Sotto l'immagine è possibile indicare il turno di salto e il numero di pettorale (si può inserire anche il nome o una nota).
             Questi dati non sono obbligatori ma aiutano a riconoscere il file del video salvato e renderne più
-            agevole un successivo riconoscimento.
+            agevole un successivo ritrovamento.
             </p>
             <p>
             Il file video viene salvato con il nome formato nel seguente modo:
+            <br/>
+            <code>
+                TOV_[data formato YYYYMMDD]_[Ora formato HH-MM-SS]_[Turno (0 se prove)]_[Pettorale]</code>
+            <br/>
+            es. TOV_20221107_09-31-44_1_125.webm (o .mp4 a seconda del browser)
+            <br/>
+            In questo modo quando vengono cercati su file, ordinandoli per nome, mantengono l'ordine cronologico di registrazione.
             </p>
-                TOV_[data formato YYYYMMDD]_[Ora formato HH-MM-SS]_[Turno (0 se prove)]_[Pettorare].webm
-            <p>
-            es. TOV_20221107_09-31-44_1_125.webm
-            </p>
-
-
-
 
         </div>
 
@@ -148,29 +149,40 @@
 
         <div class="content has-text-left">
             <p>
-            La parte essenziale di analisi consiste nella finestra dove è possibile riprodurre il salto 
+            Una volta terminata la registrazione si ha immediatamente a disposizione il video sulla 
+            finestra a destra dove è possibile riprodurre il salto 
             fino a verificare la correttezza o meno dello stacco.
             </p>
-            Con i controlli base del video del browser è possibile effettuale il play e pause e sfruttare
-            la barra inferiore per muovere velocemente alla ricerca del punto interessato. E' anche possibile 
-            mettere il video a tutto schermo.
             <p>
-            Anche in questa finestra è eventualmente possibile avere la linea gialla verticale in ausilio alla decisione,
-            </p>
+            Con i controlli base del video del browser è possibile effettuale il play e pause e sfruttare
+            la barra inferiore per muovere velocemente alla ricerca del punto interessato. E' anche possibile mettere il video a tutto schermo.
+            <br/>Quando il video è in pausa, con i bottoni <i>Frames</i>, è possibile mandare avanti e
+            indietro la riproduzione di piccoli passi (la dimensione degli step dipende dalla qualità della webcam).
+                <br />
+           
+            Anche in questa finestra è eventualmente possibile avere come ausilio la linea gialla verticale.
+            </p
+
+            <p class="is-size-4">Storico</p>
+
             <p>
             Sotto l'immagine è presente una tabella in cui è possibile trovare e visualizzare agevolmente gli
-            ultimi 3 video caricati mediante l'icona di play a sinistra. 
+            ultimi 3 video caricati. 
+            <br/> Il video caricato è quello selezionato, (normalmente è il primo della lista) ma è possibile  
+            riprodurre gli altri mediante il bottone di play a sinistra. 
             </p>
             <p>
-            I video precedenti vengono automaticamente scaricati ma è possibile ricaricarli tramite il bottone Carica sulla destra
+            I video più vecchi vengono automaticamente scaricati ma è possibile ricaricarli da file tramite il bottone <i>Carica</i>.
+                Restano infatti sempre disponibile sulla cartella di scaricamento.
             </p>
             <p>
-            Nel caso si voglia mantenere nella lista un video, sarà sufficiente cliccare sulla casella Bloccato
-            facendo così in modo che non venga scaricato e mantenuto assieme agli ultimi 3 registrati.    
+            Nel caso si voglia fare in modo che un video non venga scaricato (esempio per una successiva analisi), 
+            sarà sufficiente cliccare sulla casella più a destra.
+            In questo modo verrà mantenuto assieme agli ultimi 3 registrati.    
             </p>
             <p>
 
-            Sulla tabella i video sono caricati sempre in ordine cronologico inverso
+            Sulla tabella i video sono caricati sempre con i più recenti in alto.
             </p>
         </div>
 
@@ -183,7 +195,7 @@
                     <div class="bd-hero-heading">
                         <h1 class="title algolia-lvl0">
 
-                            Applicazione Web
+                            Connessione Internet
                         </h1>
 
 
@@ -196,26 +208,32 @@
     </section>
 
         <div class="content has-text-left">
-            Essendo questa un'Applicazione Web vanno mantenute alcune accortezze particolari durante
-            l'utilizzo
             <p>
-            In particolare se si aggiorna la pagina sul browser viene resettato tutto, anche se ciò non causa 
-            particolari problemi in quanto i video sono tutti salvati su file e per ripristinare la situazione
-            basta ricaricare la camera e rimettere turno e pettorale. 
+                Pur essendo un'applicazione Web <strong>TakeOffVideo Application</strong> 
+                non richiede particolari accortezze durante l'utilizzo.
+                </p>
+            <p>
+            L'unica cosa da ricordare è che non si deve mai fare aggiorna sul browser. 
+            In questo caso infatti viene resettato tutto e andranno riconfigurati la telecamera e
+            l'eventuale cartella di download. Comunque tutti i video precedenti sono salvati su file 
+            e possono essere agevolmente ricaricati. 
             </p>
             <p>
-            Comunque, pur essendo un'applicazione web, a parte il primo caricamento, non richiede un collegamento
-            continuo a Internet e quindi non risente problemi nel caso di caduta del collegamento.
+            A parte il primo caricamento, l'applicazione <strong>non richiede un collegamento
+            continuo a Internet</strong> e quindi non risente di alcun problema nel caso di caduta anche prolungata del collegamento.
             </p>
+
+             <p class="is-size-4">Progressive Web Application</p>
+
             <p>
-            Inoltre, nel caso si debba lavorare in ambiente dove non è disponibile internet è anche possibile
-            precaricare sul PC l'applicazione e lanciarla da link sul desktop come una normale applicazione.
+            
+            Nel caso si debba lavorare in ambiente dove non è disponibile internet è anche possibile
+            precaricare sul PC l'applicazione cliccando sul bottone apposito a destra della barra del browser
+            (vedi immagini sotto).
+            <br /> In questo modo verrà creato sul desktop un link tramite il quale sarà 
+            possibile lanciarla ed eseguirla come una normale applicazione anche senza connessione Internet.
             </p>
-            <p>
-            Per ottenere ciò è sufficiente andare sulla barra del browser e selezionare l'icona App Disponibile
-               (richiede Browser di ultima generazione)
-            </p>
-            <p>
+        
             <div class="columns">
                   <div class="column is-half">
                         <figure class="image">
@@ -223,10 +241,44 @@
                         </figure>
                 
                   </div>
+                    <div class="column is-half">
+                        <figure class="image">
+                          <img src="image/PWAchrome.png">
+                        </figure>
+                
+                  </div>
             </div>
+            <p>
+                Per effettuare l'aggiornamento dell'applicazione installata sul PC è sufficiente lanciarla
+                con computer collegato a Internet, l'applicazione provvederà automaticamente ad aggiornarsi 
+                e al successivo avvio sarà allineata all'ultima vesione
             </p>
-        </div>
 
+
+        </div>
+        <section id="contatti" class="hero bd-hero bd-is-basic">
+        <div class="hero-body">
+
+            <div class="container has-text-left">
+
+                <div class="bd-hero-body">
+                    <div class="bd-hero-heading">
+                        <h1 class="title algolia-lvl0">
+
+                            Contatti
+                        </h1>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+    <div class="content has-text-left">
+        Per qualsiasi osservazione è possibile inviare una mail a questo indirizzo: <a href="mailto:takeoffvideo@robig.it">takeoffvideo@robig.it</a>
+        </div>
   </div>
 
   <div id="right" class="column is-2">
@@ -239,7 +291,8 @@
             <li><AnchorLink href="#tovideo">Take Off Video</AnchorLink></li>
             <li><AnchorLink href="#rec">Registrazione</AnchorLink></li>
             <li><AnchorLink href="#analisi">Analisi</AnchorLink></li>
-            <li><AnchorLink href="#web">Applicazione Web</AnchorLink></li>
+            <li><AnchorLink href="#web">Connessione Internet</AnchorLink></li>
+            <li><AnchorLink href="#contatti">Contatti</AnchorLink></li>
           </ul>
   
         </aside>
