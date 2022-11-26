@@ -1,9 +1,9 @@
 ﻿@using Microsoft.JSInterop
 @using TakeOffVideo.Library.CameraSelector
 @using TakeOffVideo.Library.VideoMarker
-@using TakeOffVideo.Library.VideoFileManager
+@using TakeOffVideo.Library.TOVFileManagerNS
 
-@inject IVideoFileManager videofilemanager
+@inject TOVFileManager videofilemanager
 
 
 <h1 class="title is-2">
@@ -109,7 +109,6 @@
 
 
 
-    //[JSInvokable]
     public async Task SalvaUrlVideo(OnVideoRecordedArgs e)
     {
 

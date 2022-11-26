@@ -1,4 +1,5 @@
 @using Microsoft.JSInterop
+@using TakeOffVideo.Library.ModalDialog
 @using TakeOffVideo.Library.TOVFileManagerNS;
 
 @inject IJSRuntime JS
@@ -45,7 +46,24 @@
     </div>
 </div>
 
+@if(!string.IsNullOrWhiteSpace(TestoDialog))
+{
+    <ModalDialog Text="@TestoDialog" Title="Attenzione" OnClose="ChiudiDialog"  />
+}
+
 @code {
+    private string? TestoDialog;
+
+    private void MostraDialog(string testo)
+    {
+        TestoDialog = testo;
+        StateHasChanged();
+    }
+
+    private void ChiudiDialog(bool _)
+    {
+        TestoDialog = null;
+    }
 
     private IJSObjectReference? _JScript;
     private DotNetObjectReference<CameraSelector>? _reference;
@@ -101,10 +119,13 @@
     string NomeCartella = "Sel Dir";
     private async Task GetDir()
     {
+        
         var dir = await filemanager.ShowDirectoryPicker();
 
         if (dir != null)
             NomeCartella = dir.Name;
+        else
+            MostraDialog("Funzione non supportata");
     }
 
 

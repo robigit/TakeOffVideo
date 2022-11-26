@@ -1,10 +1,11 @@
 ﻿@using TakeOffVideo.Library.RLogger;
+@using TakeOffVideo.Library.TOVFileManagerNS;
 @using TakeOffVideo.Library.VideoMarker
 @using TakeOffVideo.Library.VideoUploader
 @using TakeOffVideo.Library.VideoFileManager
 
 
-@inject IVideoFileManager videofilemanager
+@inject TOVFileManager videofilemanager
 @inject IRLogger _logger
 
 @implements IDisposable
@@ -63,9 +64,10 @@
         if(video != null)
         {
             _urlattuale =  video.Url;
-            _logger.Info($"OnVideoSelected {_urlattuale}");
 
-            await _videoMarker.SetVideo(_urlattuale);
+            _logger.Info($"OnVideoSelected {_urlattuale}");
+            if(_videoMarker!=null)
+                await _videoMarker.SetVideo(_urlattuale);
         }
 
     }

@@ -1,0 +1,51 @@
+﻿
+
+@*<div id="modal-js-example" class="modal @active">
+  <div class="modal-background"></div>
+
+  <div class="modal-content">
+    <div class="box">
+      <p>@Title</p>
+      @Text
+    </div>
+  </div>
+
+  <button class="modal-close is-large" aria-label="close" @onclick="Chiudi"></button>
+</div>*@
+
+
+<div class="modal @active">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">@Title</p>
+            <button class="delete" aria-label="close" @onclick="Chiudi"></button>
+    </header>
+    <section class="modal-card-body">
+            @Text
+    </section>
+    <footer class="modal-card-foot">
+            <button class="button is-warning" @onclick="Chiudi">Chiudi</button>
+      
+    </footer>
+  </div>
+</div>
+
+
+@code {
+    string active = "is-active";
+
+    [Parameter]
+    public string? Title { get; set; }
+    [Parameter]
+    public string? Text { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    protected void Chiudi()
+    {
+        active = "";
+        OnClose.InvokeAsync(true);
+    }
+}
