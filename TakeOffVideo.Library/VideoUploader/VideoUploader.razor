@@ -6,17 +6,18 @@
 @implements IAsyncDisposable
 @implements IDisposable
 
+@inject IStringLocalizer<LangResources> Loc
 
 <section class="container">
 <div class="file is-small is-primary">
     <label class="file-label">
-            <input class="file-input" type="file" name="resume" accept="video/*" @ref="_input">
+            <input class="file-input" type="file" name="resume" accept=@Accept @ref="_input">
         <span class="file-cta">
             <span class="file-icon">
                 <img src="image/upload24.png">
             </span>
             <span class="file-label">
-                Carica…
+                @Testo
             </span>
         </span>
     </label>
@@ -29,7 +30,14 @@
 
     private ElementReference _input;
 
-    [Parameter] public EventCallback<OnVideoUploadesArgs> OnVideoUploaded { get; set; }
+    [Parameter] 
+    public EventCallback<OnVideoUploadesArgs> OnVideoUploaded { get; set; }
+
+    [Parameter]
+    public string Testo { get; set;  }
+
+    [Parameter]
+    public string Accept { get; set; } = "video/*";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

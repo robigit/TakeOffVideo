@@ -1,13 +1,18 @@
-﻿@using Microsoft.JSInterop
+﻿@using Microsoft.Extensions.Localization;
+@using Microsoft.JSInterop
 @using TakeOffVideo.Library.CameraSelector
 @using TakeOffVideo.Library.VideoMarker
 @using TakeOffVideo.Library.TOVFileManagerNS
+@using TakeOffVideo.Library.VideoUploader;
+@using TakeOffVideo.Localization;
 
 @inject TOVFileManager videofilemanager
 
+@inject IStringLocalizer<LangResources> Loc
+
 
 <h1 class="title is-2">
-    Registrazione
+    @Loc["Registrazione"]
 </h1>
 
 <CameraSelector OnCameraSelected="OnCameraSelected2" />
@@ -25,10 +30,10 @@
           <div class="select">
 
              <select @onchange="SelectedTurnoChanged">
-                <option value="0">Prove</option>
+                <option value="0">@Loc["Prove"]</option>
                 @for(int i=1; i<7; ++i)
                 {
-                    <option value="@i">Turno @i</option>
+                    <option value="@i">@Loc["Turno"] @i</option>
                
                 }
             </select>
@@ -42,7 +47,7 @@
     @*</div>*@
     <div class="field">
       <p class="control is-expanded has-icons-left">
-                <input class="input is-success" placeholder="Pettorale" @bind="_pettorale" />
+                <input class="input is-success" placeholder=@Loc["Pettorale"] @bind="_pettorale" />
         <span class="icon is-small is-left">
          
                 <img src="image/number24.png">
@@ -61,7 +66,7 @@
 
 </div>
 
-
+@*<VideoUploader Testo=@Loc["Iscritti…"] OnVideoUploaded="OnListaUploaded" Accept=".txt" />*@
 
 
 
@@ -92,7 +97,7 @@
 
     string? _cameraselected;
 
-    
+
 
     private void OnCameraSelected2(string camera)
     {
@@ -117,7 +122,10 @@
 
     }
 
-    
+    private async Task OnListaUploaded(OnVideoUploadesArgs e)
+    {
+        
+    }
 
 
 

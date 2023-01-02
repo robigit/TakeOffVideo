@@ -1,6 +1,8 @@
+
 @using Microsoft.JSInterop
 @using TakeOffVideo.Library.ModalDialog
 @using TakeOffVideo.Library.TOVFileManagerNS;
+
 
 @inject IJSRuntime JS
 
@@ -9,10 +11,12 @@
 
 @inject TOVFileManager filemanager
 
+@inject IStringLocalizer<LangResources> Loc
+
 <div class="columns">
     <div class="column is-4 ">
 
-        <label class="label is-small">Cartella di download</label>
+        <label class="label is-small">@Loc["DownloadFolder"]</label>
         <div class="field has-addons">
             @*    <p class="control">
             <label class="label">Cartella download</label>
@@ -31,7 +35,7 @@
     </div>
 
     <div class="column">
-        <label class="label is-small">Selezionare la telecamera</label>
+        <label class="label is-small">@Loc["Selezionare la telecamera"]</label>
         <div class="field has-addons">
             <div class="control is-expanded  has-icons-left">
 
@@ -41,7 +45,7 @@
                 
                         @if (_devices != null && _devices.Any())
                         {
-                            <option value="">Seleziona</option>
+                            <option value="">@Loc["Seleziona"]</option>
                             @foreach (var disp in _devices)
                             {
                                 <option value="@disp.ID">@disp.Label</option>
@@ -49,7 +53,7 @@
                         }
                         else
                         {
-                            <option value="">Premere aggiorna per cercare</option>
+                            <option value="">@Loc["Premere aggiorna per cercare"]</option>
                         }
 
                     </select>
@@ -77,7 +81,7 @@
 
 @if(!string.IsNullOrWhiteSpace(TestoDialog))
 {
-    <ModalDialog Text="@TestoDialog" Title="Attenzione" OnClose="ChiudiDialog"  />
+    <ModalDialog Text="@TestoDialog" Title=@Loc["Attenzione"] OnClose="ChiudiDialog"  />
 }
 
 @code {
@@ -159,7 +163,7 @@
                 else
                 {
                     if (dir.Tipo == TOVFileManager.TipoScelta.NotSupported)
-                        MostraDialog($"Funzione non supportata. I video verranno salvati nella cartella di Download standard.");
+                        MostraDialog(Loc["FolderNotSupported"]);
 
                 }
             }

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TakeOffVideo", "TakeOffVide
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TakeOffVideo.Library", "TakeOffVideo.Library\TakeOffVideo.Library.csproj", "{8B6F49AF-A0AA-400C-8E0E-28C05483CAF3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TakeOffVideo.Localization", "TakeOffVideo.Localization\TakeOffVideo.Localization.csproj", "{2DAFFFE2-C9F2-4EE6-BFA4-DEB72BF76A84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{8B6F49AF-A0AA-400C-8E0E-28C05483CAF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B6F49AF-A0AA-400C-8E0E-28C05483CAF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B6F49AF-A0AA-400C-8E0E-28C05483CAF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DAFFFE2-C9F2-4EE6-BFA4-DEB72BF76A84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DAFFFE2-C9F2-4EE6-BFA4-DEB72BF76A84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DAFFFE2-C9F2-4EE6-BFA4-DEB72BF76A84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DAFFFE2-C9F2-4EE6-BFA4-DEB72BF76A84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

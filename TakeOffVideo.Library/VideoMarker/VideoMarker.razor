@@ -10,6 +10,7 @@
 @implements IAsyncDisposable
 @implements IDisposable
 
+@inject IStringLocalizer<LangResources> Loc
 
 
 
@@ -116,7 +117,7 @@
         @onclick="OnRegistra">
                 <span>    
                     @(
-                        _inregistrazione ? "Salva" : "Registra"
+                        _inregistrazione ? Loc["Salva"] : Loc["Registra"]
                         )
                 </span>
 
@@ -149,7 +150,7 @@
 
     private bool _lineavisibile = true;
 
-    private string _textlinea => _lineavisibile ? "Nascondi Linea" : "Mostra Linea";
+    private string _textlinea => _lineavisibile ? Loc["Nascondi Linea"] : Loc["Mostra Linea"];
 
     private string _controls = "false";
 

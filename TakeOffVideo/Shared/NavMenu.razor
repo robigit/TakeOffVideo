@@ -1,7 +1,11 @@
-﻿@using TakeOffVideo.Library.RLogger;
+﻿@using Microsoft.Extensions.Localization;
+@using TakeOffVideo.Library.RLogger;
+@using TakeOffVideo.Localization;
 @inject NavigationManager NavManager
 
 @inject IRLogger logger
+
+@inject IStringLocalizer<LangResources> Loc
 
 <div class="hero-head">
     <nav class="navbar ">
@@ -30,7 +34,7 @@
 
                   <section class="navbar-item">
                           <NavLink class="nav-link" href="documentazione" Match="NavLinkMatch.All" @onclick="()=>SetPage(1)">
-                                    Documentazione
+                            @Loc["Documentazione"]
                          </NavLink>
                   </section>
                     @if (logger.IsEnabled())

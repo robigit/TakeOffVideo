@@ -5,11 +5,15 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+
+	<BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Localization" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,12 +21,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="AnchorLink\" />
     <Folder Include="wwwroot\css\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TakeOffVideo.Library\TakeOffVideo.Library.csproj" />
+    <ProjectReference Include="..\TakeOffVideo.Localization\TakeOffVideo.Localization.csproj" />
   </ItemGroup>
 
 </Project>

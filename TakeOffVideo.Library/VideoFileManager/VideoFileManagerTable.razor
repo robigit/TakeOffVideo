@@ -1,18 +1,21 @@
 ﻿
+
 @using TakeOffVideo.Library.TOVFileManagerNS;
+
 
 @inject TOVFileManager videofilemanager
 @implements IDisposable
 
+@inject IStringLocalizer<LangResources> Loc
 
 <div class="has-text-left ml-4 mr-4">
 <table class="table is-fullwidth is-narrow is-scrollable" >
     <thead>
     <tr>
             <th>Play</th>
-            <th>Ora</th>
-            <th>Turno</th>
-            <th>Pettorale</th>
+            <th>@Loc["Ora"]</th>
+            <th>@Loc["Turno"]</th>
+            <th>@Loc["Pettorale"]</th>
             <th> <span class="icon is-small">
                         <img src="image/lockclose24.png">
                   </span>

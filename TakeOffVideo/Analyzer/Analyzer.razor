@@ -1,9 +1,13 @@
-﻿@using TakeOffVideo.Library.RLogger;
+﻿@using Microsoft.Extensions.Localization;
+@using TakeOffVideo.Library.RLogger;
 @using TakeOffVideo.Library.TOVFileManagerNS;
 @using TakeOffVideo.Library.VideoMarker
 @using TakeOffVideo.Library.VideoUploader
 @using TakeOffVideo.Library.VideoFileManager
 
+@using Localization
+
+@inject IStringLocalizer<LangResources> Loc
 
 @inject TOVFileManager videofilemanager
 @inject IRLogger _logger
@@ -11,7 +15,7 @@
 @implements IDisposable
 
 <h1 class="title is-2">
-    Analisi
+    @Loc["Analisi"]
 </h1>
 
 @if(false && string.IsNullOrEmpty(_urlattuale))
@@ -30,7 +34,7 @@
         <VideoFileManagerTable OnPlayVideo="OnVideoSelected" />
     </div>
     <div class="column is-one-fifth">
-        <VideoUploader OnVideoUploaded="OnVideoUploaded" />
+        <VideoUploader Testo=@Loc["Carica…"] OnVideoUploaded="OnVideoUploaded" />
     </div>
 
 </div>
