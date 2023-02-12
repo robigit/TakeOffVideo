@@ -47,7 +47,8 @@
     @*</div>*@
     <div class="field">
       <p class="control is-expanded has-icons-left">
-                <input class="input is-success" placeholder=@Loc["Pettorale"] @bind="_pettorale" />
+                <input class="input is-success" placeholder=@Loc["Pettorale"] 
+                    @bind="_pettorale" @bind:event="oninput" />
         <span class="icon is-small is-left">
          
                 <img src="image/number24.png">
