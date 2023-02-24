@@ -16,6 +16,7 @@
             <th>@Loc["Ora"]</th>
             <th>@Loc["Turno"]</th>
             <th>@Loc["Pettorale"]</th>
+            <th>@Loc["Durata"] sec</th>
             <th> <span class="icon is-small">
                         <img src="image/lockclose24.png">
                   </span>
@@ -41,6 +42,8 @@
                 <td>@v.OraRegistrazione.ToString("HH:mm:ss")</td>
                 <td>@v.Turno</td>
                 <td>@v.Pettorale</td>
+                <td>@v.Durata.Seconds</td>
+
                 <td>
                         <button class="button" @onclick="() => OnPin(v)">
                         <span class="icon is-small">

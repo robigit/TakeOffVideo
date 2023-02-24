@@ -1,9 +1,7 @@
 ﻿@using Microsoft.JSInterop
-@using TakeOffVideo.Library.RLogger;
 @using TakeOffVideo.Library.TOVFileManagerNS;
 
 @inject IJSRuntime JS
-@inject IRLogger _logger
 
 @inject TOVFileManager filemanager
 
@@ -213,7 +211,7 @@
 
             await _JScript.InvokeVoidAsync("SettaAttributeVideo", _video, "autoplay", ConRecorder);
 
-           
+
             await _JScript.InvokeVoidAsync("InitKeyboard", _stopbutton);
         }
     }
@@ -224,11 +222,11 @@
         {
             await _JScript.InvokeVoidAsync("caricavideo", _video, Url);
 
-            _logger.Info($"carica video {Url}");
+            Console.WriteLine($"carica video {Url}");
         }
     }
 
-    public async Task SetVideo(string url)
+    public async Task SetVideo(string url, TimeSpan? position=null)
     {
         Url = url;
 
@@ -236,7 +234,12 @@
         {
             await _JScript.InvokeVoidAsync("caricavideo", _video, Url);
 
-            _logger.Info($"carica video2 {Url}");
+            if(position.HasValue)
+            {
+                await _JScript.InvokeVoidAsync("SettaCurrentTime", _video, position.Value.TotalSeconds-2);
+            }
+
+            Console.WriteLine($"carica video2 {Url}");
         }
 
     }
@@ -279,7 +282,7 @@
             return;
         _cameraselected = camera;
 
-        _logger.Info($"Inizio video {camera}");
+        Console.WriteLine($"Inizio video {camera}");
 
         await _JScript.InvokeVoidAsync("startVideo", _video, camera);
     }
@@ -287,7 +290,8 @@
 
     string? _cameraselected;
 
-
+    DateTime _startTime;
+    TimeSpan _durata;
 
     private async Task OnRegistra()
     {
@@ -305,20 +309,21 @@
 
         _inregistrazione = !_inregistrazione;
 
+
         if (_inregistrazione)
         {
-            //_messaggio = "Registrazione in corso";
+            _startTime = DateTime.Now;
 
-            _logger.Info($"Inizio Registrazione");
+            Console.WriteLine($"Inizio Registrazione");
 
             await _JScript.InvokeVoidAsync("StartRec", _video, _stopbutton, _cameraselected, _reference);
             if (_timer != null)
             {
-
                 _timer.Enabled = true;
             }
-
         }
+        else
+            _durata = DateTime.Now - _startTime;
 
     }
 
@@ -326,23 +331,15 @@
     [JSInvokable]
     public async Task SalvaUrlVideo(string url, string tipo)
     {
-        _logger.Info($"SalvaUrlVideo {url}");
-        await OnVideoRecorded.InvokeAsync(new OnVideoRecordedArgs(url, tipo));
+        Console.WriteLine($"SalvaUrlVideo {url}");
+        await OnVideoRecorded.InvokeAsync(new OnVideoRecordedArgs(url, tipo, _durata));
 
         //await filemanager.SalvaFileSuCartella("nome.webm", url);
 
     }
 
 
-    [JSInvokable]
-    public async Task ReportJS(string msg)
-    {
-        _logger.Info($"DaJS {msg}");
-
-       
-
-    }
-
+    
 
     void DelNotification()
     {

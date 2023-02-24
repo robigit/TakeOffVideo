@@ -1,5 +1,4 @@
 ﻿@using Microsoft.Extensions.Localization;
-@using TakeOffVideo.Library.RLogger;
 @using TakeOffVideo.Library.TOVFileManagerNS;
 @using TakeOffVideo.Library.VideoMarker
 @using TakeOffVideo.Library.VideoUploader
@@ -10,7 +9,6 @@
 @inject IStringLocalizer<LangResources> Loc
 
 @inject TOVFileManager videofilemanager
-@inject IRLogger _logger
 
 @implements IDisposable
 
@@ -69,7 +67,7 @@
         {
             _urlattuale =  video.Url;
 
-            _logger.Info($"OnVideoSelected {_urlattuale}");
+            Console.WriteLine($"OnVideoSelected {_urlattuale}");
             if(_videoMarker!=null)
                 await _videoMarker.SetVideo(_urlattuale);
         }
@@ -81,9 +79,9 @@
         if(video!=null)
             _urlattuale = video.Url;
 
-        _logger.Info($"Caricato un video nuovo {_urlattuale}");
+        Console.WriteLine($"Caricato un video nuovo {_urlattuale}");
 
-        await _videoMarker.SetVideo(_urlattuale);
+        await _videoMarker.SetVideo(_urlattuale, video.Durata);
         //StateHasChanged();
         await Task.CompletedTask;
     }

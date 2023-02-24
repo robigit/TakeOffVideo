@@ -34,9 +34,9 @@
 <footer class="footer is-small">
     <div class="content has-text-centered">
         <p>
-            <strong>Take Off Video Application </strong> by <a href="">RG Progr - </a> 
-            
-            Net version @_version - 
+            <strong>Take Off Video Application @_appVersion</strong> by <a href="">RG Progr  </a>
+                        
+            @*Net version @_version - *@
 
            @* The source code is licensed
             <a href="http://opensource.org/licenses/mit-license.php">MIT</a>*@
@@ -58,6 +58,8 @@
 {
 
     string? _version;
+
+    Version _appVersion = typeof(Program).Assembly.GetName().Version;
 
     protected override void OnInitialized()
     {

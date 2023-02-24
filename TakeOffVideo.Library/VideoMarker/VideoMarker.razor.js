@@ -6,7 +6,7 @@ export function caricavideo(video, href) {
         video.load();
     }
     catch(err) {
-        dotnetHelper.invokeMethodAsync("ReportJS", `caricavideo eccezione: ${err}`);
+        console.error( `caricavideo eccezione: ${err}`);
     }
 }
 
@@ -107,17 +107,16 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
         options = { mimeType: 'video/mp4', videoBitsPerSecond: 100000 };
         tipo = "mp4";
     } else {
-        dotnetHelper.invokeMethodAsync("ReportJS", "no suitable mimetype found for this device");
+        console.error("no suitable mimetype found for this device");
         return;
     }
 
 
-    dotnetHelper.invokeMethodAsync("ReportJS", "tipo3 " + tipo);
+    console.log( "tipo3 " + tipo);
 
     navigator.mediaDevices.getUserMedia({ video: { deviceId: idcamera } })
         .then(function (stream) {
 
-            //dotnetHelper.invokeMethodAsync("ReportJS", "StartRec2");
 
             //if ("srcObject" in video) {
                 video.srcObject = stream;
@@ -127,7 +126,7 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
 
 
             video.onloadedmetadata = function (e) {
-                dotnetHelper.invokeMethodAsync("ReportJS", "Play");
+                console.log("Play");
                 video.play();
             };
             //mirror image
@@ -149,7 +148,7 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
             // event : recording stopped & all blobs sent
             media_recorder.addEventListener('stop', function () {
 
-                dotnetHelper.invokeMethodAsync("ReportJS", "media stop");
+                console.log("media stop");
 
                 var optionblob = { type: `video/${tipo}` };
 
@@ -165,7 +164,7 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
             
             stopbutton.addEventListener('click', function onst() {
 
-                dotnetHelper.invokeMethodAsync("ReportJS", "click stop");
+                console.log( "click stop");
 
                 media_recorder.stop();
 
@@ -179,7 +178,7 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
             // start recording with each recorded blob having 1 second video
             media_recorder.start(1000);
         }).catch((err) => {
-            dotnetHelper.invokeMethodAsync("ReportJS", `The following error occurred: ${err}`);
+            console.error( `The following error occurred: ${err}`);
         });
 
 }

@@ -19,6 +19,8 @@ public class VideoFile
 
     public bool Pinned { get; set; } = false;
 
+    public TimeSpan Durata { get; set; }
+
     public string NomeFile => $"TOV_{OraRegistrazione:yyyyMMdd}_{OraRegistrazione:HH-mm-ss}_{Turno}_{Pettorale}.{Tipo}";
 
 

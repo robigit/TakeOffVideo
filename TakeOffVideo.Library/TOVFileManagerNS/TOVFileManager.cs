@@ -70,7 +70,7 @@ public partial class TOVFileManager : JSModule
         return _urls.OrderByDescending(v => v.OraRegistrazione);
     }
 
-    public async Task AggiungiNuovo(string url, string tipo, int turno, string? pettorale)
+    public async Task AggiungiNuovo(string url, string tipo, int turno, string? pettorale, TimeSpan durata)
     {
         if (!_urls.Any(v => v.Url == url))
         {
@@ -81,7 +81,8 @@ public partial class TOVFileManager : JSModule
                 Turno = turno,
                 Pettorale = pettorale,
                 OraRegistrazione = DateTime.Now,
-                Tipo = tipo
+                Tipo = tipo,
+                Durata = durata
             };
 
             _urls.Add(v);

@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace TakeOffVideo.Library.VideoMarker
 {
-    public record OnVideoRecordedArgs(string Url, string Tipo);
+    public record OnVideoRecordedArgs(string Url, string Tipo, TimeSpan Durata);
 }
