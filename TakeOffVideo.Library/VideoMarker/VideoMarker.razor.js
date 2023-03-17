@@ -88,8 +88,9 @@ export function InitKeyboard(stopbutton) {
 let dotnetHelper = null;
 let media_recorder = null;
 let blobs_recorded = [];
+let makerecord = true;
 
-export function StartRec(video, stopbutton, idcamera, dotHelper) {
+export function StartRec(video, stopbutton, idcamera, dotHelper, cancelbutton) {
 
     dotnetHelper = dotHelper
 
@@ -150,12 +151,20 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
 
                 console.log("media stop");
 
-                var optionblob = { type: `video/${tipo}` };
+                if (makerecord) {
 
-                // create local object URL from the recorded video blobs
-                let video_local = URL.createObjectURL(new Blob(blobs_recorded, optionblob));
+                    console.log("make record");
+                    var optionblob = { type: `video/${tipo}` };
 
-                dotnetHelper.invokeMethodAsync("SalvaUrlVideo", video_local, tipo);
+                    // create local object URL from the recorded video blobs
+                    let video_local = URL.createObjectURL(new Blob(blobs_recorded, optionblob));
+
+                    dotnetHelper.invokeMethodAsync("SalvaUrlVideo", video_local, tipo);
+                }
+                else {
+                    console.log("cancel record");
+                    dotnetHelper.invokeMethodAsync("CancelRec");
+                }
 
                 //??
                 //media_recorder.removeEventListener('stop', arguments.callee);
@@ -164,14 +173,26 @@ export function StartRec(video, stopbutton, idcamera, dotHelper) {
             
             stopbutton.addEventListener('click', function onst() {
 
-                console.log( "click stop");
+                console.log("click stop");
 
-                media_recorder.stop();
+                makerecord = true;
+                if (media_recorder.state != "inactive")
+                    media_recorder.stop();
 
                 this.removeEventListener('click', onst);
             });
 
+            cancelbutton.addEventListener('click', function onst2() {
 
+                console.log("click cancel");
+
+                makerecord = false;
+
+                if (media_recorder.state != "inactive")
+                    media_recorder.stop();
+
+                this.removeEventListener('click', onst2);
+            });
            
 
 

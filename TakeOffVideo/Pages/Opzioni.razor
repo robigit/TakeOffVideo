@@ -1,0 +1,64 @@
+﻿@page "/opzioni"
+@using WebStorageManagement.Models;
+
+@inject IWebStorageService webstorage
+
+<h3>Opzioni</h3>
+>
+
+
+<div class="card">
+    <header class="card-header">
+        <p class="card-header-title">
+            Tipo Registrazione
+        </p>
+        
+    </header>
+    <div class="card-content">
+        <div class="content">
+            Nella modalita' a registrazione singola bisogna premere il bottone sia per far partire che per salvare il file.
+            <br/>
+            Nella modalita' a registrazione continua invece il programma è sempre in registrazione e si preme il bottone per salvare
+            (in questa modalità i video sono molto più lunghi)
+        </div>
+
+
+
+        <div class="control">
+            <label class="radio">
+                <input type="radio" name="registrazione" checked="@(!RegistrazioneContinua)"
+                       @onchange="Cambia">
+                Registrazione singola
+            </label>
+            <label class="radio">
+                <input type="radio" name="registrazione" checked="@(RegistrazioneContinua)"
+                    @onchange="Cambia" >
+                Registrazione continua
+            </label>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    bool RegistrazioneContinua;
+
+
+    private async Task Cambia()
+    {
+        RegistrazioneContinua = !RegistrazioneContinua;
+        await webstorage.LocalStorage.Save("TipoRec", RegistrazioneContinua.ToString());
+
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        RegistrazioneContinua = await webstorage.LocalStorage.Read("TipoRec") == "True";
+    }
+
+
+
+
+}

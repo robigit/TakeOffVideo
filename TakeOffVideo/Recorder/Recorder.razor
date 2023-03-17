@@ -5,10 +5,13 @@
 @using TakeOffVideo.Library.TOVFileManagerNS
 @using TakeOffVideo.Library.VideoUploader;
 @using TakeOffVideo.Localization;
+@using WebStorageManagement.Models;
 
 @inject TOVFileManager videofilemanager
 
 @inject IStringLocalizer<LangResources> Loc
+
+@inject IWebStorageService webStorage
 
 
 <h1 class="title is-2">
@@ -18,7 +21,7 @@
 <CameraSelector OnCameraSelected="OnCameraSelected2" />
 
 <VideoMarker @ref="_videoMarker" WidthVideo="320" HeigthVideo="320"
-             ConRecorder="true" OnVideoRecorded="SalvaUrlVideo" />
+             ConRecorder="true" RegistrazioneContinua="@RegistrazioneContinua"   OnVideoRecorded="SalvaUrlVideo" />
 
 <div class="container">
 
@@ -98,7 +101,12 @@
 
     string? _cameraselected;
 
+    bool RegistrazioneContinua = false;
 
+    protected override async Task OnInitializedAsync()
+    {
+        RegistrazioneContinua = await webStorage.LocalStorage.Read("TipoRec") == "True";
+    }
 
     private void OnCameraSelected2(string camera)
     {
@@ -123,10 +131,7 @@
 
     }
 
-    private async Task OnListaUploaded(OnVideoUploadesArgs e)
-    {
-        
-    }
+ 
 
 
 

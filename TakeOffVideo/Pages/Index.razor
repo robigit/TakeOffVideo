@@ -1,8 +1,10 @@
 ﻿@page "/"
 @page "/{Modalita}"
+@using WebStorageManagement.Models;
 
 
 @inject IJSRuntime jsRuntime
+@inject IWebStorageService webStorage
 
 
 <PageTitle>Take Off Video</PageTitle>
@@ -33,6 +35,7 @@
         if (firstRender)
         {
             await jsRuntime.InvokeVoidAsync("loadburger");
+
         }
 
     }

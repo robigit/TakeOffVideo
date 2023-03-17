@@ -110,17 +110,25 @@
 
     @if (ConRecorder)
     {
-        <p class="buttons">
-            <button @ref="_stopbutton" class="button is-fullwidth   @(_inregistrazione ? "is-danger" : "is-primary")"
-        @onclick="OnRegistra">
-                <span>    
-                    @(
-                        _inregistrazione ? Loc["Salva"] : Loc["Registra"]
-                        )
-                </span>
+        <div class="columns is-1">
+            <div class="column is-10">
+                <button @ref="_startstopbutton" class="button is-fullwidth @(_inregistrazione ? "is-danger" : "is-primary")"
+                    @onclick="OnRegistra">
+                    <span>    
+                        @(
+                           ( _inregistrazione ? Loc["Salva"] : Loc["Registra"])+ " "+(RegistrazioneContinua ?"(continua)" :"" )
+                            )
+                    </span>
 
-            </button>
-        </p>
+                </button>
+            </div>
+            <div class="column">
+                <button @ref="_cancelbutton" class="button is-primary">
+                    <span>@Loc["Annulla"]</span>
+                </button>
+            </div>
+
+        </div>
         @if(_inregistrazione)
         {
             <div class="container">
@@ -159,7 +167,8 @@
     private ElementReference _container;
     private ElementReference _linea;
 
-    private ElementReference _stopbutton;
+    private ElementReference _startstopbutton;
+    private ElementReference _cancelbutton;
 
 
 
@@ -171,6 +180,8 @@
 
     [Parameter] public EventCallback<OnVideoRecordedArgs> OnVideoRecorded { get; set; }
 
+    [Parameter] public bool RegistrazioneContinua { get; set; } = false;
+
     private bool _inregistrazione = false;
 
     string? _notifica;
@@ -180,20 +191,23 @@
     {
         base.OnInitialized();
 
-        _timer = new System.Timers.Timer(10000)
-            {
-                AutoReset = false,
-                Enabled = false
-            };
-        _timer.Elapsed += async(source, e) => 
-        {
-            _timer.Enabled = false;
-            if (_inregistrazione && _JScript!=null)
-            {
-                await _JScript.InvokeVoidAsync("pressbutton", _stopbutton);
-            }
-        };
 
+        if (ConRecorder && !RegistrazioneContinua)
+        {
+            _timer = new System.Timers.Timer(10000)
+                {
+                    AutoReset = false,
+                    Enabled = false
+                };
+            _timer.Elapsed += async (source, e) =>
+            {
+                _timer.Enabled = false;
+                if (_inregistrazione && _JScript != null)
+                {
+                    await _JScript.InvokeVoidAsync("pressbutton", _startstopbutton);
+                }
+            };
+        }
 
     }
 
@@ -212,7 +226,7 @@
             await _JScript.InvokeVoidAsync("SettaAttributeVideo", _video, "autoplay", ConRecorder);
 
 
-            await _JScript.InvokeVoidAsync("InitKeyboard", _stopbutton);
+            await _JScript.InvokeVoidAsync("InitKeyboard", _startstopbutton);
         }
     }
 
@@ -316,14 +330,16 @@
 
             Console.WriteLine($"Inizio Registrazione");
 
-            await _JScript.InvokeVoidAsync("StartRec", _video, _stopbutton, _cameraselected, _reference);
+            await _JScript.InvokeVoidAsync("StartRec", _video, _startstopbutton, _cameraselected, _reference, _cancelbutton);
             if (_timer != null)
             {
                 _timer.Enabled = true;
             }
         }
         else
+        {
             _durata = DateTime.Now - _startTime;
+        }
 
     }
 
@@ -334,10 +350,19 @@
         Console.WriteLine($"SalvaUrlVideo {url}");
         await OnVideoRecorded.InvokeAsync(new OnVideoRecordedArgs(url, tipo, _durata));
 
+        if (RegistrazioneContinua && _JScript!=null)
+            await _JScript.InvokeVoidAsync("pressbutton", _startstopbutton);
         //await filemanager.SalvaFileSuCartella("nome.webm", url);
 
     }
 
+    [JSInvokable]
+    public async Task CancelRec()
+    {
+        Console.WriteLine($"CancelRec");
+        _inregistrazione = false;
+        StateHasChanged();
+    }
 
     
 
