@@ -11,9 +11,32 @@ export function caricavideo(video, href) {
 }
 
 
+
+export function getvideosize() {
+
+    try {
+        return {
+            width : window.innerWidth,
+            height : window.innerHeight
+        }
+
+    }
+    catch (err) {
+        console.error(`getvideosize eccezione: ${err}`);
+    }
+}
+
+  
+export function getlineposition(vLine) {
+    return parseInt(getComputedStyle(vLine)['margin-left']);
+}
+
+export function setlineposition(vLine, position) {
+    vLine.style['margin-left'] = position + "px";
+}
+
+
 export function move(direction, container, vLine, movement) {
-
-
 
     if (container == null || vLine == null) {
         console.error("move not found");
@@ -45,6 +68,10 @@ export function move(direction, container, vLine, movement) {
 }
 
 
+
+
+
+
 export function startVideo(video, id) {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
@@ -73,11 +100,11 @@ export function startVideo(video, id) {
 export function InitKeyboard(stopbutton) {
     window.addEventListener('keydown', function (e) {
         if (e.key == " " ||
-            e.code == "Space" ||
-            e.keyCode == 32) {
+            e.code == "Space"
+            //|| e.keyCode == 32
+            ) {
 
             stopbutton.click();
-
             e.preventDefault();
         }
         

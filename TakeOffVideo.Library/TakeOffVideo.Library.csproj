@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TakeOffVideo.Localization\TakeOffVideo.Localization.csproj" />
+    <ProjectReference Include="..\WebStorageManagement\WebStorageManagement.csproj" />
   </ItemGroup>
 
 </Project>

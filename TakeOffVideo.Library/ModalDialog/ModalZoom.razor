@@ -1,0 +1,92 @@
+
+
+@inject IStringLocalizer<LangResources> Loc
+
+@inject WebStorageManagement.Models.IWebStorageService webstorage
+
+
+<div class="modal @active">
+
+    <div class="modal-background"></div>
+  
+    @*<div class="modal-content">*@
+
+
+    <TakeOffVideo.Library.VideoMarker.VideoMarker @ref="_video"
+                ConControls = "true" 
+                ConZoom = "false"
+                FullScreen = "true" 
+                LinePosition = "@LinePosition"
+                Url="@Url" />
+                
+
+    @*</div>*@
+    <button class="button is-warning" @onclick="Chiudi">@Loc["Chiudi"]</button>
+
+
+
+    @*<div class="modal-background"></div>
+    
+
+    <div class="modal-card">
+        <header class="modal-card-head">
+            
+            <button class="delete" aria-label="close" @onclick="Chiudi"></button>
+        </header>
+        <section class="modal-card-body">
+            <TakeOffVideo.Library.VideoMarker.VideoMarker   Url="@Url"/>
+
+
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-warning" @onclick="Chiudi">@Loc["Chiudi"]</button>
+
+        </footer>
+    </div>*@
+</div>
+
+
+@code {
+
+    private TakeOffVideo.Library.VideoMarker.VideoMarker? _video;
+
+    string active = "is-active";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var l = await webstorage.SessionStorage.Read("ZoomLinePos");
+
+        Console.WriteLine($"ModalZoom In {l}");
+
+        if (int.TryParse(l, out int pos))
+            LinePosition = pos;
+
+    }
+
+
+    [Parameter]
+    public string? Url { get; set; }
+
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+
+    public int LinePosition { get; set; } = 0;
+
+    protected async Task Chiudi()
+    {
+        active = "";
+        if (_video != null)
+        {
+            var pos = await _video.GetLinePosition();
+            Console.WriteLine($"ModalZoom Out {pos}");
+
+            await webstorage.SessionStorage.Save("ZoomLinePos", pos.ToString() );
+        }
+       
+        await OnClose.InvokeAsync(true);
+    }
+
+   
+}

@@ -1,4 +1,5 @@
 ﻿@using Microsoft.JSInterop
+@using TakeOffVideo.Library.ModalDialog
 @using TakeOffVideo.Library.TOVFileManagerNS;
 
 @inject IJSRuntime JS
@@ -95,8 +96,15 @@
                                 <img src="image/dopchevronright24.png">
                             </span>
                         </button>
-
-                       @* <button class="button" @onclick="@(() => SettaCurrentTime(6.415))">
+                            @if (ConZoom)
+                            {
+                                <button class="button" @onclick="ZoomClick">
+                                    <span class="icon is-small">
+                                        <img src="image/zoom24.png">
+                                    </span>
+                                </button>
+                            }
+                            @* <button class="button" @onclick="@(() => SettaCurrentTime(6.415))">
                             <span class="icon is-small">
                                 <img src="image/dopchevronright24.png">
                             </span>
@@ -148,6 +156,14 @@
         </div>
         
     }
+
+    @if(FaiZoom)
+    {
+        <ModalZoom Url="@Url" OnClose="ChiudiDialog" />
+    }
+
+
+
 </div>
 
 
@@ -182,9 +198,19 @@
 
     [Parameter] public bool RegistrazioneContinua { get; set; } = false;
 
+    [Parameter] public bool FullScreen { get; set; } = false;
+
+    [Parameter] public bool ConZoom { get; set; } = true;
+
+    [Parameter] public int LinePosition { get; set; } = 0;
+
     private bool _inregistrazione = false;
 
     string? _notifica;
+
+    bool FaiZoom = false;
+
+
 
     System.Timers.Timer? _timer;
     protected override void OnInitialized()
@@ -211,13 +237,21 @@
 
     }
 
+    public class WindowDimension
+    {
+        public int Width { get; set; }
+        public int Height { get; set; }
+
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+
         if (firstRender)
         {
             _JScript = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/TakeOffVideo.Library/VideoMarker/VideoMarker.razor.js");
             _reference = DotNetObjectReference.Create(this);
+
 
             //await _JScript.InvokeVoidAsync("SettaControlsVideo", _video, ConControls);
 
@@ -227,17 +261,47 @@
 
 
             await _JScript.InvokeVoidAsync("InitKeyboard", _startstopbutton);
+
+
+            if(FullScreen)
+            {
+                //await _JScript.InvokeVoidAsync("setfullscreen", _reference);
+
+                var size = await _JScript.InvokeAsync<WindowDimension>("getvideosize");
+                var dim = Math.Min(size.Height, size.Width)+150;
+                HeigthVideo = dim;
+                WidthVideo = dim;
+                StateHasChanged();
+            }
+
+
+            if (Url != null && _JScript != null)
+            {
+                await _JScript.InvokeVoidAsync("caricavideo", _video, Url);
+            }
+
+
+            if (LinePosition != 0 && _JScript != null)
+            {
+                await _JScript.InvokeVoidAsync("setlineposition", _linea, LinePosition);
+            }
+
         }
     }
 
+
     protected override async Task OnParametersSetAsync()
     {
-        if(Url != null && _JScript!=null)
-        {
-            await _JScript.InvokeVoidAsync("caricavideo", _video, Url);
+        //Console.WriteLine($"carica video4 {Url} {(_JScript != null)} ");
 
-            Console.WriteLine($"carica video {Url}");
-        }
+        //if(Url != null && _JScript!=null)
+        //{
+        //    Console.WriteLine($"carica video3 {Url}");
+
+        //    await _JScript.InvokeVoidAsync("caricavideo", _video, Url);
+
+        //    Console.WriteLine($"carica video {Url}");
+        //}
     }
 
     public async Task SetVideo(string url, TimeSpan? position=null)
@@ -364,13 +428,30 @@
         StateHasChanged();
     }
 
-    
+    public async Task<int> GetLinePosition()
+    {
+        return await _JScript.InvokeAsync<int>("getlineposition", _linea);
+    }
+
+
+    async Task ZoomClick()
+    {
+
+        FaiZoom = true;
+        StateHasChanged();
+    }
+
+
 
     void DelNotification()
     {
         _notifica = null;
     }
 
+    private void ChiudiDialog()
+    {
+        FaiZoom = false;
+    }
 
     void IDisposable.Dispose() => _reference?.Dispose();
 
