@@ -1,7 +1,12 @@
 ﻿@page "/opzioni"
+@using System.Text;
+@using TakeOffVideo.Library.DBFReader;
+@using TakeOffVideo.Library.Global;
 @using WebStorageManagement.Models;
 
 @inject IWebStorageService webstorage
+
+@inject GlobalObjects go
 
 <h3>Opzioni</h3>
 >
@@ -40,6 +45,61 @@
 </div>
 
 
+<div class="card">
+    <header class="card-header">
+        <p class="card-header-title">
+            Tipo Registrazione
+        </p>
+    </header>
+    <div class="card-content">
+        Carica dbf
+    </div>
+
+
+    <div class="content">
+        <div class="file has-name">
+            <label class="file-label">
+
+                <InputFile class="file-input" OnChange="@OnInputFileChange" accept=".dbf" />
+
+                @*<input class="file-input" type="file" name="resume">*@
+
+                <span class="file-cta">
+                    
+                    <span class="file-label">
+                        Seleziona file Wise…
+                    </span>
+                </span>
+                <span class="file-name">
+                    @go.NomeFileDbf
+                </span>
+            </label>
+        </div>
+    </div>
+    
+
+    @if (go.Atleti != null)
+    {
+        <div class="content">
+            <div class="select">
+                    <select @onchange="SelezionaGara" >
+                        <option>Seleziona la gara</option>
+                    @foreach(var gara in go.Atleti.Select(a => $"{a.CODGARA} - {a.INTESTAZIO}").Distinct())
+                    {
+                        <option  >@gara</option>
+                    
+                    }
+                </select>
+            </div>
+
+            <button class="button" @onclick="PulisciAtleti"  >Pulisci</button>
+
+        </div>
+
+
+    }
+
+</div>
 
 @code {
     bool RegistrazioneContinua;
@@ -59,6 +119,44 @@
     }
 
 
+    private void SelezionaGara(ChangeEventArgs e)
+    {
+        if (e?.Value != null)
+        {
+            var pz = e.Value.ToString().Split('-', StringSplitOptions.TrimEntries);
+            go.GaraSel = pz[0];
+        }
+    }
+
+    private void PulisciAtleti()
+    {
+        go.Atleti = null;
+        go.GaraSel = null;
+        go.NomeFileDbf = null;
+        StateHasChanged();
+    }
+
+    private async void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles(1))
+        {
+            go.NomeFileDbf = file.Name;
+            using (var memstream = new MemoryStream())
+            {
+                await file.OpenReadStream().CopyToAsync(memstream);
+
+                using (var dbfTable = new DBFReader(memstream))
+                {
+                    go.Atleti = await (dbfTable.ReadToObject<AtletaWise>());
+                    StateHasChanged();
+                }
+            }
+
+            break;
+        }
+    }
+
+   
 
 
 }

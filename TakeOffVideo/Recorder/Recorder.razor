@@ -1,6 +1,8 @@
 ﻿@using Microsoft.Extensions.Localization;
 @using Microsoft.JSInterop
 @using TakeOffVideo.Library.CameraSelector
+@using TakeOffVideo.Library.DBFReader;
+@using TakeOffVideo.Library.Global;
 @using TakeOffVideo.Library.VideoMarker
 @using TakeOffVideo.Library.TOVFileManagerNS
 @using TakeOffVideo.Library.VideoUploader;
@@ -12,6 +14,8 @@
 @inject IStringLocalizer<LangResources> Loc
 
 @inject IWebStorageService webStorage
+
+@inject GlobalObjects go
 
 
 <h1 class="title is-2">
@@ -50,8 +54,24 @@
     @*</div>*@
     <div class="field">
       <p class="control is-expanded has-icons-left">
-                <input class="input is-success" placeholder=@Loc["Pettorale"] 
+
+          @if(go.Atleti != null)
+          {
+                <div class="select">
+                        <select @onchange="SelezionaAtleta">
+                        @foreach (var atl in go.Atleti.Where(a => a.CODGARA == go.GaraSel))
+                        {
+                            <option>@atl</option>
+
+                        }
+                    </select>
+                </div>
+          }
+          else
+          {
+                <input class="input is-success" placeholder=@Loc["Aleta"] 
                     @bind="_pettorale" @bind:event="oninput" />
+          }
         <span class="icon is-small is-left">
          
                 <img src="image/number24.png">
@@ -131,7 +151,12 @@
 
     }
 
- 
+    private void SelezionaAtleta(ChangeEventArgs e)
+    {
+        _pettorale = e?.Value.ToString();
+
+        
+    }
 
 
 

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 
 using WebStorageManagement;
+using TakeOffVideo.Library.Global;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -16,13 +17,13 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-//builder.Services.AddSingleton<IVideoFileManager, VideoFileManager>();
-
 builder.Services.AddScoped<TOVFileManager>();
 
 builder.Services.AddLocalization();
 
 builder.Services.AddWebStorageManagement();
+
+builder.Services.AddSingleton<GlobalObjects>();
 
 builder.Services.Configure<RequestLocalizationOptions>(options => {
     //List<CultureInfo> supportedCultures = new List<CultureInfo>
