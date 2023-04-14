@@ -57,14 +57,18 @@
 @code
 {
 
-    string? _version;
+    //string? _version;
 
-    Version _appVersion = typeof(Program).Assembly.GetName().Version;
+    string? _appVersion;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        _version = Environment.Version.ToString();
+        //_appVersion = typeof(Program).Assembly.GetName().Version;
+
+        _appVersion = GetType().Assembly.GetName().Version.ToString();
+
+        //var _version = Environment.Version.ToString();
     }
 }
