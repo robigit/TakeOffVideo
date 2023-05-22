@@ -12,7 +12,7 @@ public static class Program
     public static IServiceCollection AddWebStorageManagement(this IServiceCollection services)
     {
         services.AddSingleton<IWebStorageService, WebStorageService>();
-        return services; ;
+        return services; 
     }
 }
 

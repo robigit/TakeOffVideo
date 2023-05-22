@@ -1,5 +1,6 @@
 ﻿@page "/opzioni"
 @using System.Text;
+@using TakeOffVideo.Library.CameraSelector
 @using TakeOffVideo.Library.DBFReader;
 @using TakeOffVideo.Library.Global;
 @using WebStorageManagement.Models;
@@ -8,8 +9,8 @@
 
 @inject GlobalObjects go
 
-<h3>Opzioni</h3>
->
+<h3 class="title is-3">Opzioni</h3>
+
 
 
 <div class="card">
@@ -44,15 +45,16 @@
     </div>
 </div>
 
+<br/>
 
 <div class="card">
     <header class="card-header">
         <p class="card-header-title">
-            Tipo Registrazione
+            Importazione iscritti da WISE
         </p>
     </header>
     <div class="card-content">
-        Carica dbf
+        Caricare il file degli iscritti, tipo .dbf
     </div>
 
 
@@ -75,6 +77,8 @@
                 </span>
             </label>
         </div>
+
+        
     </div>
     
 
@@ -91,6 +95,19 @@
                     }
                 </select>
             </div>
+            @if (go.Atleti != null)
+            {
+                <div class="select">
+                    <select>
+                        @foreach (var atl in go.Atleti.Where(a => a.CODGARA == go.GaraSel && a.CONFERMA == "S")
+                       .OrderBy(a => a.PettNum))
+                        {
+                            <option>@atl</option>
+
+                        }
+                    </select>
+                </div>
+            }
 
             <button class="button" @onclick="PulisciAtleti"  >Pulisci</button>
 
@@ -100,6 +117,33 @@
     }
 
 </div>
+
+<br />
+
+<div class="card">
+    <header class="card-header">
+        <p class="card-header-title">
+            Selezione camera di Default
+        </p>
+    </header>
+    <div class="card-content">
+        Selezionare la camera che verrà caricata automaticamente all'avvio
+    </div>
+
+
+    <div class="content">
+        
+        <div class="columns">
+            
+            <div class="column is-6">
+        <CameraSelector OnCameraSelected="OnCameraSelected" ConCartella="false" />
+            </div>
+            
+        </div>
+        
+    </div>
+</div>
+
 
 @code {
     bool RegistrazioneContinua;
@@ -116,6 +160,15 @@
     protected override async Task OnInitializedAsync()
     {
         RegistrazioneContinua = await webstorage.LocalStorage.Read("TipoRec") == "True";
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var ID = await webstorage.LocalStorage.Read("IDCameraDefault");
+
+        }
     }
 
 
@@ -156,7 +209,13 @@
         }
     }
 
-   
+    private async void OnCameraSelected(string camera)
+    {
+        await webstorage.LocalStorage.Save("IDCameraDefault", camera);
+        //_cameraselected = camera;
+        //if (_cameraselected != null)
+        //    _videoMarker?.StartVideo(_cameraselected);
+    }
 
 
 }

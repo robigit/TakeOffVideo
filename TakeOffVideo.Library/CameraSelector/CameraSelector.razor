@@ -2,9 +2,11 @@
 @using Microsoft.JSInterop
 @using TakeOffVideo.Library.ModalDialog
 @using TakeOffVideo.Library.TOVFileManagerNS;
+@using WebStorageManagement.Models;
 
 
 @inject IJSRuntime JS
+@inject IWebStorageService webstorage
 
 @implements IAsyncDisposable
 @implements IDisposable
@@ -14,7 +16,10 @@
 @inject IStringLocalizer<LangResources> Loc
 
 <div class="columns">
-    <div class="column is-4 ">
+    @if (ConCartella)
+    {
+        
+        <div class="column is-4 ">
 
         <label class="label is-small">@Loc["DownloadFolder"]</label>
         <div class="field has-addons">
@@ -33,14 +38,15 @@
             </div>
         </div>
     </div>
-
+    }
     <div class="column">
         <label class="label is-small">@Loc["Selezionare la telecamera"]</label>
         <div class="field has-addons">
             <div class="control is-expanded  has-icons-left">
 
                 <div class="select is-fullwidth is-small">
-                    <select id="Dispositivo" @onchange="@OnLocalCameraSelected">
+                    <select id="Dispositivo" value="@_idselectedevice"  
+                        @onchange="@OnLocalCameraSelected">
 
                 
                         @if (_devices != null && _devices.Any())
@@ -101,7 +107,11 @@
     private IJSObjectReference? _JScript;
     private DotNetObjectReference<CameraSelector>? _reference;
 
+    private string? _idselectedevice;
+
     [Parameter] public EventCallback<string> OnCameraSelected { get; set; }
+
+    [Parameter] public bool ConCartella { get; set; } = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -109,6 +119,8 @@
         {
             _JScript = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/TakeOffVideo.Library/CameraSelector/CameraSelector.razor.js");
             _reference = DotNetObjectReference.Create(this);
+
+            await GetDevices();
         }
     }
 
@@ -133,10 +145,20 @@
 
 
     [JSInvokable]
-    public void ElencoDevice(List<CameraDevice> elenco)
+    public async void ElencoDevice(List<CameraDevice> elenco)
     {
         _devices = elenco.Where(d => !string.IsNullOrEmpty(d.ID) && d.Kind.StartsWith("video")).ToList();
+
         StateHasChanged();
+
+        var ID = await webstorage.LocalStorage.Read("IDCameraDefault");
+        if(!string.IsNullOrEmpty(ID))
+        {
+            _idselectedevice = _devices.FirstOrDefault(d => d.ID == ID)?.ID;
+            if(!string.IsNullOrEmpty(_idselectedevice))
+                await OnCameraSelected.InvokeAsync(_idselectedevice);
+        }
+        
     }
 
     void IDisposable.Dispose() => _reference?.Dispose();

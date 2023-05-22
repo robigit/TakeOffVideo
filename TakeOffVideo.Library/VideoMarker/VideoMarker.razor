@@ -34,30 +34,40 @@
         <div class="level-left">
             <div class="level-item">
                 <div class="buttons are-small">
-                <button class="button" @onclick="@(() => MostraLinea())">
-                    @_textlinea
-                </button>
+                        <button class="button is-light" @onclick="@(() => MostraLinea())">
+                            @*@_textlinea*@
+                            <span class="icon is-small">
+                            @if(_lineavisibile)
+                            {
+                                    <img src="image/hideline24.png">
+                            }
+                            else
+                            {
+                                    <img src="image/showline24.png">
+                            }
+                            </span>
+                        </button>
                 @if (_lineavisibile)
                 {
-                    <button class="button" @onclick="@(() => Move("sx", 10))">
+                    <button class="button is-light" @onclick="@(() => Move("sx", 10))">
                         <span class="icon is-small">
                             <img src="image/dopchevronleft24.png">
                         </span>
                     </button>
 
-                    <button class="button" @onclick="@(() => Move("sx", 1))">
+                    <button class="button is-light" @onclick="@(() => Move("sx", 1))">
                         <span class="icon is-small">
                             <img src="image/chevronleft24.png">
                         </span>
                     </button>
 
-                    <button class="button" @onclick="@(() => Move("dx", 1))">
+                            <button class="button is-light" @onclick="@(() => Move("dx", 1))">
                         <span class="icon is-small">
                             <img src="image/chevronright24.png">
                         </span>
                     </button>
 
-                    <button class="button" @onclick="@(() => Move("dx", 10))">
+                            <button class="button is-light" @onclick="@(() => Move("dx", 10))">
                         <span class="icon is-small">
                             <img src="image/dopchevronright24.png">
                         </span>
@@ -69,36 +79,46 @@
          @if (!ConRecorder)
             {
                 <div class="level-right">
-                    <p class="level-item"><strong>Frames</strong></p>
+                       @* <p class="level-item">
+                       
+                            <strong>Frames</strong>
+                        </p>*@
                     <div class="level-item">
                         <div class="buttons are-small">
-                        <button class="button" @onclick="@(() => AdvanceFrame(-10))">
+
+                            <button class="button is-light" >
+                                <span class="icon is-small">
+                                    <img src="image/slider24.png">
+                                </span>
+                            </button>
+
+                            <button class="button is-light" @onclick="@(() => AdvanceFrame(-10))">
                             <span class="icon is-small">
                                 <img src="image/dopchevronleft24.png">
                             </span>
                         </button>
 
-                            <button class="button" @onclick="@(() => AdvanceFrame(-2))">
+                            <button class="button is-light" @onclick="@(() => AdvanceFrame(-2))">
                             <span class="icon is-small">
                                 <img src="image/chevronleft24.png">
                             </span>
                         </button>
 
-                            <button class="button" @onclick="@(() => AdvanceFrame(2))">
+                            <button class="button is-light" @onclick="@(() => AdvanceFrame(2))">
                             <span class="icon is-small">
                                 <img src="image/chevronright24.png">
                             </span>
                         </button>
 
 
-                        <button class="button" @onclick="@(() => AdvanceFrame(10))">
+                            <button class="button is-light" @onclick="@(() => AdvanceFrame(10))">
                             <span class="icon is-small">
                                 <img src="image/dopchevronright24.png">
                             </span>
                         </button>
                             @if (ConZoom)
                             {
-                                <button class="button" @onclick="ZoomClick">
+                                <button class="button is-light" @onclick="ZoomClick">
                                     <span class="icon is-small">
                                         <img src="image/zoom24.png">
                                     </span>

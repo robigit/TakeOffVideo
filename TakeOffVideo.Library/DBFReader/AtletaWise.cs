@@ -39,5 +39,16 @@ namespace TakeOffVideo.Library.DBFReader
             return $"{PETTO} - {NOMINATIVO}";
         }
 
+        public int PettNum
+        {
+            get
+            {
+                if(int.TryParse(PETTO, out int p))
+                    return p;
+                return 0 ;
+            }
+        }
+
+
     }
 }

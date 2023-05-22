@@ -11,6 +11,19 @@ public class VideoFile
     //public int ID { get; set; }
     public DateTime OraRegistrazione { get; set; }
 
+    public string OraRegistrazioneString
+    {
+        get 
+        {
+            var r =OraRegistrazione.ToString("HH:mm:ss");
+            if (OraRegistrazione < DateTime.Today)
+                r += "\n" + OraRegistrazione.ToString("d");
+
+            return r ;
+        }
+    }
+
+
     public string? Url { get; set; }
 
     public string? Tipo { get; set; }

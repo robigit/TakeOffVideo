@@ -142,7 +142,7 @@ public partial class TOVFileManager : JSModule
                            , int.Parse(m.Groups["ora"].Value), int.Parse(m.Groups["min"].Value), int.Parse(m.Groups["sec"].Value)
                     );
 
-                if (date.Date == DateTime.Today.Date)
+                if (true || date.Date == DateTime.Today.Date)
                 {
 
                     ret = true;

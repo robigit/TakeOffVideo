@@ -59,7 +59,8 @@
           {
                 <div class="select">
                         <select @onchange="SelezionaAtleta">
-                        @foreach (var atl in go.Atleti.Where(a => a.CODGARA == go.GaraSel))
+                        @foreach (var atl in go.Atleti.Where(a => a.CODGARA == go.GaraSel && a.CONFERMA=="S")
+                                .OrderBy(a => a.PettNum))
                         {
                             <option>@atl</option>
 
