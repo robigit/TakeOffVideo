@@ -191,22 +191,19 @@
 
     private async void OnInputFileChange(InputFileChangeEventArgs e)
     {
-        foreach (var file in e.GetMultipleFiles(1))
+        go.NomeFileDbf = e.File.Name;
+        using (var memstream = new MemoryStream())
         {
-            go.NomeFileDbf = file.Name;
-            using (var memstream = new MemoryStream())
-            {
-                await file.OpenReadStream().CopyToAsync(memstream);
+            await e.File.OpenReadStream().CopyToAsync(memstream);
 
-                using (var dbfTable = new DBFReader(memstream))
-                {
-                    go.Atleti = await (dbfTable.ReadToObject<AtletaWise>());
-                    StateHasChanged();
-                }
-            }
+            //go.Atleti = (await DBFReader.GetFieldNames(memstream)).Select(n=> new AtletaWise { PETTO = "0", CODGARA = n, NOMINATIVO = n });
 
-            break;
+            go.Atleti = await DBFReader.ReadToObject<AtletaWise>(memstream);
+            StateHasChanged();
+            
         }
+            
+        
     }
 
     private async void OnCameraSelected(string camera)

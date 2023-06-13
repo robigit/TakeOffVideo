@@ -16,12 +16,16 @@ namespace TakeOffVideo.Library.DBFReader
     /// <summary>
     /// This class reads a dbf files
     /// </summary>
-    public class DBFReader : IDisposable
+    public static class DBFReader 
     {
         //private BinaryReader reader;
         //private Encoding encoding;
 
-        private MemoryStream memstream;
+       /*  private MemoryStream memstream;
+
+        private DBFHeader _header;
+        private List<DBFFieldDescriptor> _fields;
+        private List<Dictionary<DBFFieldDescriptor, object>> _records; */
 
         //private StreamReader readerStream;
 
@@ -33,7 +37,7 @@ namespace TakeOffVideo.Library.DBFReader
         //    ReadHeader();
         //}
 
-        public DBFReader(MemoryStream m)
+        /* public DBFReader(MemoryStream m)
         {
             //memstream = m;
             m.Position = 0;
@@ -42,21 +46,47 @@ namespace TakeOffVideo.Library.DBFReader
 
             //ReadHeader();
         }
+ */
 
-        //public DBFReader(string filename, Encoding encoding)
-        //{
-        //    if (File.Exists(filename) == false)
-        //        throw new FileNotFoundException();
+
+        /* public DBFReader(string filename)
+        {
+            if (File.Exists(filename) == false)
+                throw new FileNotFoundException();
+
+            memstream = new MemoryStream(File.ReadAllBytes(filename))
+            {
+                Position = 0
+            };
+
+        } */
+
+     /*    public async Task LoadFromFile(string filename)
+        {
+            if (File.Exists(filename) == false)
+                throw new FileNotFoundException();
+
+            
+                await file.OpenReadStream().CopyToAsync(memstream);
+
+                using (var dbfTable = new DBFReader(memstream))
+                {
+                    go.Atleti = await (dbfTable.ReadToObject<AtletaWise>());
+                    StateHasChanged();
+                }
+        
 
         //    this.encoding = encoding;
         //    var bs = new BufferedStream(File.OpenRead(filename));
         //    this.reader = new BinaryReader(bs, encoding);
 
         //    ReadHeader();
-        //}
-
-        private async Task ReadHeader()
+        }
+ */
+        private static async Task<(DBFHeader, IEnumerable<DBFFieldDescriptor>)> ReadHeader(MemoryStream memstream)
         {
+
+            memstream.Position = 0;
             var dim = Marshal.SizeOf(typeof(DBFHeader));
 
             var buffer = new byte[dim];
@@ -68,10 +98,10 @@ namespace TakeOffVideo.Library.DBFReader
 
             // Marshall the header into a DBFHeader structure
             GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-            this.header = (DBFHeader)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(DBFHeader));
+            var header = (DBFHeader)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(DBFHeader));
             handle.Free();
 
-            fields = new List<DBFFieldDescriptor>();
+            var fields = new List<DBFFieldDescriptor>();
 
             int dimdescr = Marshal.SizeOf(typeof(DBFFieldDescriptor));
             var bufferdescr = new byte[dimdescr];
@@ -91,7 +121,7 @@ namespace TakeOffVideo.Library.DBFReader
                 }
                 handle.Free();
             }
-
+            return (header, fields);
             //await memstream.ReadAsync(carattere, 0, 1);
 
             //buffer= new byte[263];
@@ -99,11 +129,11 @@ namespace TakeOffVideo.Library.DBFReader
             //byte[] backlink = reader.ReadBytes(263);
         }
 
-        private async Task ReadRecords()
+        private static async Task<IEnumerable<Dictionary<DBFFieldDescriptor, object>>> ReadRecords(MemoryStream memstream)
         {
-            await ReadHeader();
+            var (header, fields)= await ReadHeader(memstream);
 
-            records = new List<Dictionary<DBFFieldDescriptor, object>>();
+            var records = new List<Dictionary<DBFFieldDescriptor, object>>();
 
             // Skip back to the end of the header. 
             //reader.BaseStream.Seek(header.HeaderLenght, SeekOrigin.Begin);
@@ -275,9 +305,11 @@ namespace TakeOffVideo.Library.DBFReader
 
                 records.Add(record);
             }
+
+            return records;
         }
 
-        public async Task<DataTable> ReadToDataTable()
+        /* public async Task<DataTable> ReadToDataTable()
         {
             
             await ReadRecords();
@@ -285,7 +317,7 @@ namespace TakeOffVideo.Library.DBFReader
             var table = new DataTable();
 
             // Columns
-            foreach (var field in fields)
+            foreach (var field in _fields)
             {
                 var colType = ToDbType(field.FieldType);
                 var column = new DataColumn(field.FieldName, colType ?? typeof(String));
@@ -304,7 +336,7 @@ namespace TakeOffVideo.Library.DBFReader
             }
 
             return table;
-        }
+        } */
 
         //public IEnumerable<Dictionary<string, object>> ReadToDictionary()
         //{
@@ -313,10 +345,20 @@ namespace TakeOffVideo.Library.DBFReader
         //}
 
 
-        public async Task<IEnumerable<T>> ReadToObject<T>()
+        public static async Task<IEnumerable<T>> ReadToObject<T>(string filename)
             where T : new()
         {
-            await ReadRecords();
+            using var memstream = new MemoryStream(File.ReadAllBytes(filename));
+
+            return await ReadToObject<T>(memstream);
+        }
+
+    
+
+        public static async Task<IEnumerable<T>> ReadToObject<T>(MemoryStream memstream) where T : new()
+        {
+            memstream.Position =0;
+            var records = await ReadRecords(memstream);
 
             var type = typeof(T);
             var list = new List<T>();
@@ -348,12 +390,20 @@ namespace TakeOffVideo.Library.DBFReader
             return list;
         }
 
-        private DBFHeader header;
-        private List<DBFFieldDescriptor> fields = new List<DBFFieldDescriptor>();
 
-        private List<Dictionary<DBFFieldDescriptor, object>> records = new List<Dictionary<DBFFieldDescriptor, object>>();
+        public static async Task<IEnumerable<string>> GetFieldNames(MemoryStream memstream)
+        {
+            
+            var (_, fields) = await ReadHeader(memstream);
+            if(fields == null)
+                return Enumerable.Empty<string>();
 
-        #region IDisposable
+            return fields.Select(f => f.FieldName);
+        }
+
+        
+
+        /* #region IDisposable
 
         public void Dispose()
         {
@@ -378,7 +428,7 @@ namespace TakeOffVideo.Library.DBFReader
             Dispose(false);
         }
 
-        #endregion
+        #endregion */
 
         /// <summary>
         /// Convert a Julian Date as long to a .NET DateTime structure

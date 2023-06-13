@@ -9,5 +9,6 @@
         "tab.activeBorder": "#ff0000",
         "tab.unfocusedActiveBorder": "#000000",
         "tab.activeBackground": "#0000ff"
-    }
+    },
+    "dotnet.defaultSolution": "TakeOffVideo.sln"
 }
