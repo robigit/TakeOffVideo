@@ -72,19 +72,40 @@ export function move(direction, container, vLine, movement) {
 
 
 
-export function startVideo(video, id) {
+export async function startVideo(video, id) {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
         //console.info("id " + id);
 
-        navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact : id } } }).then(function (stream) {
+        let streammedia = await navigator.mediaDevices.getUserMedia(
+            { 
+                video: 
+                { 
+                    deviceId: { exact : id },
+                    width: { ideal: 1920 }, 
+                    height: { ideal: 1080 }  
+                } 
+            });
+        
+        video.srcObject = streammedia;
+
+        let stream_settings = streammedia.getVideoTracks()[0].getSettings();
+            // actual width & height of the camera video
+        let stream_width = stream_settings.width;
+        let stream_height = stream_settings.height;
+
+        console.log('Camera Width: ' + stream_width + 'px');
+        console.log('Camera Height: ' + stream_height + 'px');
+ 
+        
+        /* streammedia.then(function (stream) {
             
             //if ("srcObject" in video) {
                 video.srcObject = stream;
             //} else {
             //    video.src = window.URL.createObjectURL(stream);
             //}
-
+            
 
             //video.onloadedmetadata = function (e) {
             //    video.play();
@@ -92,7 +113,9 @@ export function startVideo(video, id) {
             //mirror image
             //video.style.webkitTransform = "scaleX(-1)";
             //video.style.transform = "scaleX(-1)";
-        });
+        }); */
+
+        
     }
 }
 
@@ -138,11 +161,15 @@ export function StartRec(video, stopbutton, idcamera, dotHelper, cancelbutton) {
         console.error("no suitable mimetype found for this device");
         return;
     }
+    console.log( "tipo video " + tipo);
 
-
-    console.log( "tipo3 " + tipo);
-
-    navigator.mediaDevices.getUserMedia({ video: { deviceId: idcamera } })
+    navigator.mediaDevices.getUserMedia(
+        { 
+            video: 
+                { 
+                    deviceId: idcamera
+                } 
+        })
         .then(function (stream) {
 
 
@@ -152,9 +179,8 @@ export function StartRec(video, stopbutton, idcamera, dotHelper, cancelbutton) {
             //    video.src = window.URL.createObjectURL(stream);
             //}
 
-
+           
             video.onloadedmetadata = function (e) {
-                console.log("Play");
                 video.play();
             };
             //mirror image
@@ -175,12 +201,7 @@ export function StartRec(video, stopbutton, idcamera, dotHelper, cancelbutton) {
 
             // event : recording stopped & all blobs sent
             media_recorder.addEventListener('stop', function () {
-
-                console.log("media stop");
-
                 if (makerecord) {
-
-                    console.log("make record");
                     var optionblob = { type: `video/${tipo}` };
 
                     // create local object URL from the recorded video blobs
@@ -189,18 +210,14 @@ export function StartRec(video, stopbutton, idcamera, dotHelper, cancelbutton) {
                     dotnetHelper.invokeMethodAsync("SalvaUrlVideo", video_local, tipo);
                 }
                 else {
-                    console.log("cancel record");
                     dotnetHelper.invokeMethodAsync("CancelRec");
                 }
-
                 //??
                 //media_recorder.removeEventListener('stop', arguments.callee);
             });
 
             
             stopbutton.addEventListener('click', function onst() {
-
-                console.log("click stop");
 
                 makerecord = true;
                 if (media_recorder.state != "inactive")
@@ -211,8 +228,6 @@ export function StartRec(video, stopbutton, idcamera, dotHelper, cancelbutton) {
 
             cancelbutton.addEventListener('click', function onst2() {
 
-                console.log("click cancel");
-
                 makerecord = false;
 
                 if (media_recorder.state != "inactive")
@@ -220,8 +235,6 @@ export function StartRec(video, stopbutton, idcamera, dotHelper, cancelbutton) {
 
                 this.removeEventListener('click', onst2);
             });
-           
-
 
             // start recording with each recorded blob having 1 second video
             media_recorder.start(1000);
@@ -266,6 +279,4 @@ export function AdvanceFrame(video, steps) {
 
     if (video.paused) video.currentTime += Math.sign(steps) * 1 / expectedFramerate
     //else video.currentTime += d
-
-
 }
