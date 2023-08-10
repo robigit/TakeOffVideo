@@ -77,7 +77,7 @@
             </div>
         </div>
          @if (!ConRecorder)
-            {
+        {
                 <div class="level-right">
                        @* <p class="level-item">
                        
@@ -124,6 +124,13 @@
                                     </span>
                                 </button>
                             }
+
+                            <button class="button is-light" @onclick="GetImageClick">
+                                <span class="icon is-small">
+                                    <img src="image/getimage24.png">
+                                </span>
+                            </button>
+
                             @* <button class="button" @onclick="@(() => SettaCurrentTime(6.415))">
                             <span class="icon is-small">
                                 <img src="image/dopchevronright24.png">
@@ -214,6 +221,8 @@
     [Parameter] public bool ConRecorder { get; set; } = false;
     [Parameter] public bool ConControls { get; set; } = false;
 
+    [Parameter] public EventCallback<string> OnImageRecorded { get; set; }
+
     [Parameter] public EventCallback<OnVideoRecordedArgs> OnVideoRecorded { get; set; }
 
     [Parameter] public bool RegistrazioneContinua { get; set; } = false;
@@ -223,6 +232,9 @@
     [Parameter] public bool ConZoom { get; set; } = true;
 
     [Parameter] public int LinePosition { get; set; } = 0;
+
+
+    
 
     private bool _inregistrazione = false;
 
@@ -461,6 +473,22 @@
         StateHasChanged();
     }
 
+
+    async Task GetImageClick()
+    {
+        if (_JScript == null)
+            return;
+
+        await _JScript.InvokeVoidAsync("getCurrentCanvasFrame", _video, _reference, "ProcessImage");
+    }
+
+
+    [JSInvokable]
+    public async Task ProcessImage(string imageString)
+    {
+        if(OnImageRecorded.HasDelegate)
+            await OnImageRecorded.InvokeAsync(imageString);
+    }
 
 
     void DelNotification()

@@ -16,16 +16,16 @@
     @Loc["Analisi"]
 </h1>
 
-@if(false && string.IsNullOrEmpty(_urlattuale))
+@*@if (false && string.IsNullOrEmpty(_videoattuale.Url))
 {
     <p class="has-text-centered">
         <figure class="image is-16by9">
             <img src="image/tovlogo.png">
         </figure>
     </p>
-}
+}*@
 
-<VideoMarker  WidthVideo="640" HeigthVideo="640" ConControls=true @ref="_videoMarker" />
+<VideoMarker OnImageRecorded="SalvaImmagine" WidthVideo="640" HeigthVideo="640" ConControls=true @ref="_videoMarker" />
 
 <div class="columns">
     <div class="column">
@@ -55,43 +55,55 @@
 
     public void Dispose()
     {
-         videofilemanager.OnNuovo -= OnNuovo;
+        videofilemanager.OnNuovo -= OnNuovo;
     }
 
-    string? _urlattuale;
+    //string? _urlattuale;
+
+    VideoFile? _videoattuale = null;
+
 
     private async Task OnVideoSelected(VideoFile video)
     {
-
-        if(video != null)
+        _videoattuale = video;
+        if (_videoattuale != null)
         {
-            _urlattuale =  video.Url;
 
-            Console.WriteLine($"OnVideoSelected {_urlattuale}");
+            Console.WriteLine($"OnVideoSelected {_videoattuale.Url}");
             if(_videoMarker!=null)
-                await _videoMarker.SetVideo(_urlattuale);
+                await _videoMarker.SetVideo(_videoattuale.Url);
         }
 
     }
 
+
+
     private async Task OnNuovo(VideoFile video)
     {
-        if(video!=null)
-            _urlattuale = video.Url;
+        _videoattuale = video;
 
-        Console.WriteLine($"Caricato un video nuovo {_urlattuale}");
+        Console.WriteLine($"Caricato un video nuovo {_videoattuale.Url}");
 
-        await _videoMarker.SetVideo(_urlattuale, video.Durata);
+        await _videoMarker.SetVideo(_videoattuale.Url, video.Durata);
         //StateHasChanged();
-        await Task.CompletedTask;
+        //await Task.CompletedTask;
     }
 
     private async Task OnVideoUploaded(OnVideoUploadesArgs e)
     {
-        var ret = await videofilemanager.AggiungiDaFile(e.Url, e.Nomefile);
 
+
+        var ret = await videofilemanager.AggiungiDaFile(e.Url, e.Nomefile);
 
     }
 
+    private async Task SalvaImmagine(string url)
+    {
+        string nome = "Image.jpg";
+        if(_videoattuale!=null)
+            nome = _videoattuale.SoloNome + ".jpg";
+
+        await videofilemanager.SalvaFileSuCartella(nome, url);
+    }
     
 }

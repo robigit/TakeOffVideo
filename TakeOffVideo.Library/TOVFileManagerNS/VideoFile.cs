@@ -34,7 +34,9 @@ public class VideoFile
 
     public TimeSpan Durata { get; set; }
 
-    public string NomeFile => $"TOV_{OraRegistrazione:yyyyMMdd}_{OraRegistrazione:HH-mm-ss}_{Turno}_{Pettorale}.{Tipo}";
+    public string SoloNome => $"TOV_{OraRegistrazione:yyyyMMdd}_{OraRegistrazione:HH-mm-ss}_{Turno}_{Pettorale}";
+
+    public string NomeFile => $"{SoloNome}.{Tipo}";
 
 
     public override string ToString()

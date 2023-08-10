@@ -280,3 +280,35 @@ export function AdvanceFrame(video, steps) {
     if (video.paused) video.currentTime += Math.sign(steps) * 1 / expectedFramerate
     //else video.currentTime += d
 }
+
+
+export function getCurrentCanvasFrame(video, dotHelper, nome) {
+    let canvas = document.createElement("canvas");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+
+    let ctx = canvas.getContext("2d");
+
+    console.info(`getCurrentCanvasFrame ctxcanvas: ${ctx.canvas.width}x${ctx.canvas.height}`);
+
+    var videowidth = video.videoWidth;
+    var videoheight = video.videoHeight;
+
+    console.info(`getCurrentCanvasFrame video: ${videowidth}x${videoheight}`);
+
+    // centre img on canvas ctx to fill canvas
+    var scale = Math.min(ctx.canvas.width / videowidth, ctx.canvas.height / videoheight); // get the max scale to fit
+    var x = (ctx.canvas.width - (videowidth * scale)) / 2;
+    var y = (ctx.canvas.height - (videoheight * scale)) / 2;
+    ctx.drawImage(video, x, y, videowidth * scale, videoheight * scale);
+
+
+    // Draw the current image of the stream on the canvas
+    //ctx.drawImage(video, 0, 0);
+
+    dotHelper.invokeMethodAsync(nome, canvas.toDataURL("image/png"));
+
+
+}
