@@ -158,7 +158,7 @@
             if(!string.IsNullOrEmpty(_idselectedevice))
                 await OnCameraSelected.InvokeAsync(_idselectedevice);
         }
-        
+
     }
 
     void IDisposable.Dispose() => _reference?.Dispose();
@@ -177,20 +177,18 @@
 
         try
         {
-            var dir = await filemanager.ShowDirectoryPicker();
-            if (dir != null)
-            {
-                if (dir.Tipo == TOVFileManager.TipoScelta.Ok)
-                    NomeCartella = dir.Nome;
-                else
-                {
-                    if (dir.Tipo == TOVFileManager.TipoScelta.NotSupported)
-                        MostraDialog(Loc["FolderNotSupported"]);
+            var tipo = await filemanager.ShowDirectoryPicker(true);
 
-                }
+            if (tipo == TOVFileManager.TipoScelta.Ok)
+                NomeCartella = filemanager.GetNomeDir(true);
+            else
+            {
+                if (tipo == TOVFileManager.TipoScelta.NotSupported)
+                    MostraDialog(Loc["FolderNotSupported"]);
             }
+
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             MostraDialog($"{e} {e.Message}");
         }

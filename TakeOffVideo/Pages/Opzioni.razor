@@ -1,51 +1,23 @@
 ﻿@page "/opzioni"
 @using System.Text;
+@using Microsoft.Extensions.Localization;
 @using TakeOffVideo.Library.CameraSelector
 @using TakeOffVideo.Library.DBFReader;
 @using TakeOffVideo.Library.Global;
+@using TakeOffVideo.Library.TOVFileManagerNS;
+@using TakeOffVideo.Localization;
 @using WebStorageManagement.Models;
 
 @inject IWebStorageService webstorage
 
 @inject GlobalObjects go
+@inject IStringLocalizer<LangResources> Loc
+@inject TOVFileManager filemanager
 
 <h3 class="title is-3">Opzioni</h3>
 
 
 
-<div class="card">
-    <header class="card-header">
-        <p class="card-header-title">
-            Tipo Registrazione
-        </p>
-        
-    </header>
-    <div class="card-content">
-        <div class="content">
-            Nella modalita' a registrazione singola bisogna premere il bottone sia per far partire che per salvare il file.
-            <br/>
-            Nella modalita' a registrazione continua invece il programma è sempre in registrazione e si preme il bottone per salvare
-            (in questa modalità i video sono molto più lunghi). Sperimentale.
-        </div>
-
-
-
-        <div class="control">
-            <label class="radio">
-                <input type="radio" name="registrazione" checked="@(!RegistrazioneContinua)"
-                       @onchange="Cambia">
-                Registrazione singola
-            </label>
-            <label class="radio">
-                <input type="radio" name="registrazione" checked="@(RegistrazioneContinua)"
-                    @onchange="Cambia" >
-                Registrazione continua
-            </label>
-        </div>
-    </div>
-</div>
-
-<br/>
 
 <div class="card">
     <header class="card-header">
@@ -112,10 +84,49 @@
             <button class="button" @onclick="PulisciAtleti"  >Pulisci</button>
 
         </div>
-
-
     }
 
+</div>
+
+<br />
+
+<div class="card">
+    <header class="card-header">
+        <p class="card-header-title">
+            Selezione cartella per salvataggio Immagini
+        </p>
+    </header>
+    <div class="card-content">
+        Selezionare la cartella dove salvare le immagini da pubblicare 
+    </div>
+
+
+    <div class="content">
+
+        <div class="columns">
+
+            <div class="column is-6">
+                <label class="label is-small">@Loc["DownloadFolder"]</label>
+                <div class="field has-addons">
+                    @*    <p class="control">
+                    <label class="label">Cartella download</label>
+                    </p>*@
+                    <p class="control">
+                        <input class="input is-small" readonly value="@NomeCartella">
+                    </p>
+                    <div class="control">
+                        <a class="button is-primary is-small" @onclick="GetDir">
+                            <span class="icon is-small">
+                                <img src="image/folder24.png">
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
 </div>
 
 <br />
@@ -143,6 +154,43 @@
         
     </div>
 </div>
+
+
+<br />
+
+<div class="card">
+    <header class="card-header">
+        <p class="card-header-title">
+            Tipo Registrazione
+        </p>
+
+    </header>
+    <div class="card-content">
+        <div class="content">
+            Nella modalita' a registrazione singola bisogna premere il bottone sia per far partire che per salvare il file.
+            <br />
+            Nella modalita' a registrazione continua invece il programma è sempre in registrazione e si preme il bottone per salvare
+            (in questa modalità i video sono molto più lunghi). Sperimentale.
+        </div>
+
+
+
+        <div class="control">
+            <label class="radio">
+                <input type="radio" name="registrazione" checked="@(!RegistrazioneContinua)"
+                @onchange="Cambia">
+                Registrazione singola
+            </label>
+            <label class="radio">
+                <input type="radio" name="registrazione" checked="@(RegistrazioneContinua)"
+                @onchange="Cambia">
+                Registrazione continua
+            </label>
+        </div>
+    </div>
+</div>
+
+
 
 
 @code {
@@ -200,10 +248,10 @@
 
             go.Atleti = await DBFReader.ReadToObject<AtletaWise>(memstream);
             StateHasChanged();
-            
+
         }
-            
-        
+
+
     }
 
     private async void OnCameraSelected(string camera)
@@ -212,6 +260,23 @@
         //_cameraselected = camera;
         //if (_cameraselected != null)
         //    _videoMarker?.StartVideo(_cameraselected);
+    }
+
+    string NomeCartella;
+
+    private async Task GetDir()
+    {
+        try
+        {
+            var tipo = await filemanager.ShowDirectoryPicker(false);
+
+            if (tipo == TOVFileManager.TipoScelta.Ok)
+                NomeCartella = filemanager.GetNomeDir(false);
+
+        }
+        catch (Exception e)
+        {
+        }
     }
 
 

@@ -25,7 +25,7 @@
     </p>
 }*@
 
-<VideoMarker OnImageRecorded="SalvaImmagine" WidthVideo="640" HeigthVideo="640" ConControls=true @ref="_videoMarker" />
+<VideoMarker OnImageRecorded="SalvaImmagine" ConImageRec="ConImageRec"  WidthVideo="640" HeigthVideo="640" ConControls=true @ref="_videoMarker" />
 
 <div class="columns">
     <div class="column">
@@ -44,12 +44,19 @@
 @code {
     VideoMarker? _videoMarker;
 
+    bool ConImageRec = false;
+
+    protected override void OnInitialized()
+    {
+        ConImageRec = videofilemanager.GetNomeDir(false) != null;
+    }
+
+
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
             videofilemanager.OnNuovo += OnNuovo;
-
         }
     }
 
@@ -103,7 +110,7 @@
         if(_videoattuale!=null)
             nome = _videoattuale.SoloNome + ".jpg";
 
-        await videofilemanager.SalvaFileSuCartella(nome, url);
+        await videofilemanager.SalvaFileSuCartellaImg(nome, url);
     }
     
 }

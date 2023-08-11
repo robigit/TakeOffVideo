@@ -16,7 +16,6 @@ public partial class TOVFileManager : JSModule
     public event Func<VideoFile, Task>? OnNuovo;
 
     public enum TipoScelta{ Ok, Cancel, NotSupported }
-    public record DirScelta(string? Nome, TipoScelta Tipo );
 
     private async Task NotifyOnNuovo(VideoFile v)
     {
@@ -36,33 +35,53 @@ public partial class TOVFileManager : JSModule
         public ValueTask DisposeAsync() => Instance.DisposeAsync();
     }
 
-    JSDirectory? _directory;
+    JSDirectory? _directoryvideo;
 
-    public async ValueTask<DirScelta> ShowDirectoryPicker()
+    JSDirectory? _directoryimg;
+
+    public async ValueTask<TipoScelta> ShowDirectoryPicker(bool video)
     {
         
         var dir = await InvokeAsync<JSDirectory>("showDirectoryPicker");
         
         if(dir.Supported)
         {
-            _directory= dir;
-            return new DirScelta(dir.Name, TipoScelta.Ok);
+            if(video)
+                _directoryvideo = dir;
+            else
+                _directoryimg = dir;
+            return TipoScelta.Ok;
         }
         
-        return new DirScelta(null, dir.Name.Contains("Abort") ? TipoScelta.Cancel : TipoScelta.NotSupported);
-
+        return dir.Name.Contains("Abort") ? TipoScelta.Cancel : TipoScelta.NotSupported;
 
     }
 
+    public string? GetNomeDir(bool video)
+    {
+        return  video? _directoryvideo?.Name : _directoryimg?.Name ;
+    }
+
+
     public async ValueTask<bool> SalvaFileSuCartella(string nome, string url )
     {
-        if (_directory== null) 
+        if (_directoryvideo== null) 
         { 
             await InvokeVoidAsync("downloadBlob", url, nome);
         }
         else
-            await InvokeVoidAsync("salvaFile", _directory.Instance, nome, url);
+            await InvokeVoidAsync("salvaFile", _directoryvideo.Instance, nome, url);
         return true;
+    }
+
+    public async ValueTask<bool> SalvaFileSuCartellaImg(string nome, string url)
+    {
+        if (_directoryimg != null)
+        {
+            await InvokeVoidAsync("salvaFile", _directoryimg.Instance, nome, url);
+            return true;
+        }
+        return false;
     }
 
     public IEnumerable<VideoFile?> GetElenco()
@@ -92,9 +111,6 @@ public partial class TOVFileManager : JSModule
             // salva su file
 
             await SalvaFileSuCartella(v.NomeFile, url);
-           
-
-
 
             await NotifyOnNuovo(v);
 

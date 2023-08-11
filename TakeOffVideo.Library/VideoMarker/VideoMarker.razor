@@ -124,13 +124,14 @@
                                     </span>
                                 </button>
                             }
-
-                            <button class="button is-light" @onclick="GetImageClick">
-                                <span class="icon is-small">
-                                    <img src="image/getimage24.png">
-                                </span>
-                            </button>
-
+                            @if (ConImageRec)
+                            {
+                                <button class="button is-light" @onclick="GetImageClick">
+                                    <span class="icon is-small">
+                                        <img src="image/getimage24.png">
+                                    </span>
+                                </button>
+                            }
                             @* <button class="button" @onclick="@(() => SettaCurrentTime(6.415))">
                             <span class="icon is-small">
                                 <img src="image/dopchevronright24.png">
@@ -220,6 +221,8 @@
     [Parameter] public int HeigthVideo { get; set; } = 320;
     [Parameter] public bool ConRecorder { get; set; } = false;
     [Parameter] public bool ConControls { get; set; } = false;
+
+    [Parameter] public bool ConImageRec { get; set; } = false;
 
     [Parameter] public EventCallback<string> OnImageRecorded { get; set; }
 
