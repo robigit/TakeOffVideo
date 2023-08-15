@@ -1,0 +1,89 @@
+﻿@page "/immagine"
+@using Microsoft.Extensions.Localization;
+@using TakeOffVideo.Library.Global;
+@using TakeOffVideo.Library.TOVFileManagerNS;
+@using TakeOffVideo.Localization;
+
+@inject GlobalObjects go
+@inject IStringLocalizer<LangResources> Loc
+@inject TOVFileManager filemanager
+
+<h3>Immagine</h3>
+
+
+@* <button class="button" @onclick="LoadLastImage">Test</button> *@
+
+<div class="columns">
+    <div class="column is-3">
+        Turno
+    </div>
+    <div class="column is-3">
+        @_turno
+    </div>
+    <div class="column is-3">
+        Pettorale
+    </div>
+    <div class="column is-3">
+        @_pettorale
+    </div>
+
+</div>
+
+@if (imageSource is not null)
+{
+    <p>
+        <img src="@imageSource" />
+    </p>
+}
+
+
+@code {
+    int _turno;
+    string? _pettorale;
+
+    System.Timers.Timer? _timer;
+    protected override void OnInitialized()
+    {
+        _timer = new System.Timers.Timer(TimeSpan.FromSeconds(5))
+            {
+                AutoReset = true,
+                Enabled = true
+            };
+        _timer.Elapsed += async (source, e) =>
+        {
+            await LoadLastImage();
+        };
+    }
+
+    string _currentimage;
+
+    private string? imageSource;
+
+    private async Task LoadLastImage()
+    {
+        var elenco = await filemanager.GetElencoImg();
+
+        if(elenco.Any())
+        {
+            var nome = elenco.Where(f => f.StartsWith("TOV") && Path.GetExtension(f) == ".jpg")
+                            .OrderByDescending(f => f).FirstOrDefault();
+
+            if (nome != null && nome != _currentimage )
+            {
+
+                var video = filemanager.GetVideoDaNome(nome);
+
+                if (video != null)
+                {
+                    _turno = video.Turno;
+                    _pettorale = video.Pettorale;
+
+                    _currentimage = nome;
+                    imageSource = await filemanager.GetUrlImage(nome);
+                    StateHasChanged();
+                }
+            }
+        }
+    }
+
+}

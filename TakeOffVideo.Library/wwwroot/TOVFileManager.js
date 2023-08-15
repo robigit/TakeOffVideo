@@ -16,6 +16,10 @@ export async function showDirectoryPicker() {
 
         await writable.close();
 
+        await dir.getDirectoryHandle('img', { create: true });
+
+
+
 
     }
     catch(err) {
@@ -51,6 +55,7 @@ export async function showDirectoryPicker() {
 
 export async function salvaFile(dir, nome, bloburl) {
 
+
     const newFileHandle = await dir.getFileHandle(nome, { create: true });
 
     const writable = await newFileHandle.createWritable();
@@ -60,6 +65,57 @@ export async function salvaFile(dir, nome, bloburl) {
     await response.body.pipeTo(writable);
   // pipeTo() closes the destination pipe by default, no need to close it.
 }
+
+
+export async function salvaFileImg(dir, nome, bloburl) {
+
+    let subdir = await dir.getDirectoryHandle('img', { create: true });
+
+    const newFileHandle = await subdir.getFileHandle(nome, { create: true });
+
+    const writable = await newFileHandle.createWritable();
+    // Make an HTTP request for the contents.
+    const response = await fetch(bloburl);
+    // Stream the response into the file.
+    await response.body.pipeTo(writable);
+    // pipeTo() closes the destination pipe by default, no need to close it.
+}
+
+export async function getUrlImage(dir, nome) {
+    let subdir = await dir.getDirectoryHandle('img', { create: true });
+
+    if (subdir != null) {
+        const imagehandle = await subdir.getFileHandle(nome);
+        if (imagehandle != null) {
+            
+            const file = await imagehandle.getFile();
+            if (file != null) {
+                return URL.createObjectURL(file);
+            }
+        }
+    }
+
+    return null;
+} 
+
+
+
+export async function getelencofiles(directory) {
+
+    var elenco = [];
+    let subdir = await directory.getDirectoryHandle('img');
+
+    if (subdir != null) {
+
+        for await (const entry of subdir.values()) {
+            
+            elenco.push(entry.name);
+            //elenco.push(`${entry.name} - ${entry.kind}`);
+        }
+    }
+    return elenco;
+}
+
 
 export function rimuoviblob(link) {
     console.log("rimuoviblob " + link)

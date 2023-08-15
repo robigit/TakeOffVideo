@@ -171,21 +171,22 @@
         }
     }
 
-    string NomeCartella = "<Download>";
+    string? NomeCartella = "<Download>";
     private async Task GetDir()
     {
-
         try
         {
-            var tipo = await filemanager.ShowDirectoryPicker(true);
+            var tipo = await filemanager.ShowDirectoryPicker();
 
             if (tipo == TOVFileManager.TipoScelta.Ok)
-                NomeCartella = filemanager.GetNomeDir(true);
+                NomeCartella = filemanager.GetNomeDir();
             else
             {
                 if (tipo == TOVFileManager.TipoScelta.NotSupported)
                     MostraDialog(Loc["FolderNotSupported"]);
             }
+
+            StateHasChanged();
 
         }
         catch (Exception e)

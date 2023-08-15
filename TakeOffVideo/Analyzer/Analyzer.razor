@@ -48,7 +48,7 @@
 
     protected override void OnInitialized()
     {
-        ConImageRec = videofilemanager.GetNomeDir(false) != null;
+        ConImageRec = videofilemanager.GetNomeDir() != null;
     }
 
 
@@ -98,10 +98,7 @@
 
     private async Task OnVideoUploaded(OnVideoUploadesArgs e)
     {
-
-
         var ret = await videofilemanager.AggiungiDaFile(e.Url, e.Nomefile);
-
     }
 
     private async Task SalvaImmagine(string url)

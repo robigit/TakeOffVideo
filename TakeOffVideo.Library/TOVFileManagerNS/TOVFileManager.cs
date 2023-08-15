@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using TakeOffVideo.Library.Util;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TakeOffVideo.Library.TOVFileManagerNS;
 
@@ -35,21 +36,17 @@ public partial class TOVFileManager : JSModule
         public ValueTask DisposeAsync() => Instance.DisposeAsync();
     }
 
-    JSDirectory? _directoryvideo;
+    JSDirectory? _directory;
 
-    JSDirectory? _directoryimg;
-
-    public async ValueTask<TipoScelta> ShowDirectoryPicker(bool video)
+    public async ValueTask<TipoScelta> ShowDirectoryPicker()
     {
         
         var dir = await InvokeAsync<JSDirectory>("showDirectoryPicker");
         
         if(dir.Supported)
         {
-            if(video)
-                _directoryvideo = dir;
-            else
-                _directoryimg = dir;
+            _directory = dir;
+            
             return TipoScelta.Ok;
         }
         
@@ -57,37 +54,63 @@ public partial class TOVFileManager : JSModule
 
     }
 
-    public string? GetNomeDir(bool video)
+    // va nella sottocartella img
+    public async ValueTask<IEnumerable<string>> GetElencoImg()
     {
-        return  video? _directoryvideo?.Name : _directoryimg?.Name ;
+        if(_directory == null)
+            return Enumerable.Empty<string>();
+
+        var elenco = await InvokeAsync<IEnumerable<string>>("getelencofiles", _directory.Instance);
+
+        return elenco;
+    }
+
+
+
+
+
+    public string? GetNomeDir()
+    {
+        return  _directory?.Name;
     }
 
 
     public async ValueTask<bool> SalvaFileSuCartella(string nome, string url )
     {
-        if (_directoryvideo== null) 
+        if (_directory== null) 
         { 
             await InvokeVoidAsync("downloadBlob", url, nome);
         }
         else
-            await InvokeVoidAsync("salvaFile", _directoryvideo.Instance, nome, url);
+            await InvokeVoidAsync("salvaFile", _directory.Instance, nome, url);
         return true;
     }
 
     public async ValueTask<bool> SalvaFileSuCartellaImg(string nome, string url)
     {
-        if (_directoryimg != null)
+        if (_directory != null)
         {
-            await InvokeVoidAsync("salvaFile", _directoryimg.Instance, nome, url);
+            await InvokeVoidAsync("salvaFileImg", _directory.Instance, nome, url);
             return true;
         }
         return false;
+    }
+
+    public async Task<string?> GetUrlImage(string nome)
+    {
+        if (_directory == null)
+            return null;
+        return await InvokeAsync<string>("getUrlImage", _directory.Instance, nome);
+
     }
 
     public IEnumerable<VideoFile?> GetElenco()
     {
         return _urls.OrderByDescending(v => v.OraRegistrazione);
     }
+
+    
+
 
     public async Task AggiungiNuovo(string url, string tipo, int turno, string? pettorale, TimeSpan durata)
     {
@@ -142,57 +165,99 @@ public partial class TOVFileManager : JSModule
 
     }
 
-    public async Task<bool> AggiungiDaFile(string url, string nomefile)
+    public VideoFile? GetVideoDaNome(string nomefile)
     {
-        bool ret = false;
-
         var m = RegexNomeFile().Match(nomefile);
-
-        try
+        if (m.Success)
         {
-            if (m.Success)
-            {
-
-                var date = new DateTime(int.Parse(m.Groups["anno"].Value), int.Parse(m.Groups["mese"].Value), int.Parse(m.Groups["giorno"].Value)
+            var date = new DateTime(int.Parse(m.Groups["anno"].Value), int.Parse(m.Groups["mese"].Value), int.Parse(m.Groups["giorno"].Value)
 
                            , int.Parse(m.Groups["ora"].Value), int.Parse(m.Groups["min"].Value), int.Parse(m.Groups["sec"].Value)
                     );
 
-                if (true || date.Date == DateTime.Today.Date)
-                {
+            int.TryParse(m.Groups["turno"].Value, out int turno);
+            var pett = m.Groups["pett"].Value;
 
-                    ret = true;
+            var tipo = m.Groups["tipo"].Value;
 
-                    int.TryParse(m.Groups["turno"].Value, out int turno);
-                    var pett = m.Groups["pett"].Value;
+            var v = new VideoFile
+            {
+                //ID = _maxid++,
+                Turno = turno,
+                Pettorale = pett,
+                OraRegistrazione = date,
+                Tipo = tipo
+            };
 
-                    var tipo = m.Groups["tipo"].Value;
-
-                    var v = new VideoFile
-                    {
-                        //ID = _maxid++,
-                        Url = url,
-                        Turno = turno,
-                        Pettorale = pett,
-                        OraRegistrazione = date,
-                        Pinned = true,
-                        Tipo = tipo
-                    };
-
-                    _urls.Add(v);
-
-                    await RimuoviVideoVecchi();
-
-
-                    await NotifyOnNuovo(v);
-
-                }
-            }
+            return v;
         }
-        catch
+        return null;
+    }
+
+    public async Task<bool> AggiungiDaFile(string url, string nomefile)
+    {
+        bool ret = false;
+
+        var video = GetVideoDaNome(nomefile);
+
+        if(video!=null)
         {
+            video.Url = url;
+            video.Pinned = true;
+            _urls.Add(video);
 
+            await RimuoviVideoVecchi();
+            await NotifyOnNuovo(video);
         }
+
+
+        //var m = RegexNomeFile().Match(nomefile);
+
+        //try
+        //{
+        //    if (m.Success)
+        //    {
+
+        //        var date = new DateTime(int.Parse(m.Groups["anno"].Value), int.Parse(m.Groups["mese"].Value), int.Parse(m.Groups["giorno"].Value)
+
+        //                   , int.Parse(m.Groups["ora"].Value), int.Parse(m.Groups["min"].Value), int.Parse(m.Groups["sec"].Value)
+        //            );
+
+        //        if (true || date.Date == DateTime.Today.Date)
+        //        {
+
+        //            ret = true;
+
+        //            int.TryParse(m.Groups["turno"].Value, out int turno);
+        //            var pett = m.Groups["pett"].Value;
+
+        //            var tipo = m.Groups["tipo"].Value;
+
+        //            var v = new VideoFile
+        //            {
+        //                //ID = _maxid++,
+        //                Url = url,
+        //                Turno = turno,
+        //                Pettorale = pett,
+        //                OraRegistrazione = date,
+        //                Pinned = true,
+        //                Tipo = tipo
+        //            };
+
+        //            _urls.Add(v);
+
+        //            await RimuoviVideoVecchi();
+
+
+        //            await NotifyOnNuovo(v);
+
+        //        }
+        //    }
+        //}
+        //catch
+        //{
+
+        //}
 
         if (!ret)
         {
