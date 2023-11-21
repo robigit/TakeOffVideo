@@ -1,14 +1,15 @@
 ﻿@page "/immagine"
-@using Microsoft.Extensions.Localization;
-@using TakeOffVideo.Library.Global;
-@using TakeOffVideo.Library.TOVFileManagerNS;
-@using TakeOffVideo.Localization;
+@layout CompactLayout
+@using Microsoft.Extensions.Localization
+@using TakeOffVideo.Library.Global
+@using TakeOffVideo.Library.TOVFileManagerNS
+@using TakeOffVideo.Localization
 
 @inject GlobalObjects go
 @inject IStringLocalizer<LangResources> Loc
 @inject TOVFileManager filemanager
 
-<h3>Immagine</h3>
+@* <h3>Immagine</h3> *@
 
 
 @* <button class="button" @onclick="LoadLastImage">Test</button> *@
@@ -55,7 +56,7 @@
         };
     }
 
-    string _currentimage;
+    string? _currentimage;
 
     private string? imageSource;
 
