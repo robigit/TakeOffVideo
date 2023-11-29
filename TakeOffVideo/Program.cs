@@ -4,8 +4,8 @@ using TakeOffVideo;
 using TakeOffVideo.Library.TOVFileManagerNS;
 //using TakeOffVideo.Library.VideoFileManager;
 using System.Globalization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Localization;
+//using Microsoft.AspNetCore.Builder;
+//using Microsoft.AspNetCore.Localization;
 
 using WebStorageManagement;
 using TakeOffVideo.Library.Global;
@@ -25,16 +25,16 @@ builder.Services.AddWebStorageManagement();
 
 builder.Services.AddSingleton<GlobalObjects>();
 
-builder.Services.Configure<RequestLocalizationOptions>(options => {
-    //List<CultureInfo> supportedCultures = new List<CultureInfo>
-    //{
-    //    new CultureInfo("en-US"),
-    //    new CultureInfo("it-IT"),
-    //};
-    options.DefaultRequestCulture = new RequestCulture("en-US");
-    //options.SupportedCultures = supportedCultures;
-    //options.SupportedUICultures = supportedCultures;
-});
+//builder.Services.Configure<RequestLocalizationOptions>(options => {
+//    //List<CultureInfo> supportedCultures = new List<CultureInfo>
+//    //{
+//    //    new CultureInfo("en-US"),
+//    //    new CultureInfo("it-IT"),
+//    //};
+//    options.DefaultRequestCulture = new RequestCulture("en-US");
+//    //options.SupportedCultures = supportedCultures;
+//    //options.SupportedUICultures = supportedCultures;
+//});
 
 
 
