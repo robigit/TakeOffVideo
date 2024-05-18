@@ -175,12 +175,12 @@
        
     }
 
-    @if (!string.IsNullOrEmpty(_notifica))
+    @if (!string.IsNullOrEmpty(_notificamsg))
     {
         
         <div class="notification is-danger">
             <button class="delete" @onclick="DelNotification"></button>
-            @_notifica
+            @_notificamsg
         </div>
         
     }
@@ -241,7 +241,7 @@
 
     private bool _inregistrazione = false;
 
-    string? _notifica;
+    
 
     bool FaiZoom = false;
 
@@ -413,11 +413,10 @@
 
         if (_JScript == null || string.IsNullOrEmpty(_cameraselected))
         {
-            _notifica = "Selezionare una Videocamera";
+            SettaNotifica( "Selezionare una Videocamera");
             return;
         }
-        _notifica = null;
-
+        
 
 
         _inregistrazione = !_inregistrazione;
@@ -483,6 +482,10 @@
             return;
 
         await _JScript.InvokeVoidAsync("getCurrentCanvasFrame", _video, _reference, "ProcessImage");
+
+        SettaNotifica("Immagine salvata");
+
+
     }
 
 
@@ -496,13 +499,38 @@
 
     void DelNotification()
     {
-        _notifica = null;
+        _notificamsg = null;
     }
 
     private void ChiudiDialog()
     {
         FaiZoom = false;
     }
+
+
+    string? _notificamsg;
+    System.Timers.Timer? _timernotifica = null;
+
+    void SettaNotifica(string notifica)
+    {
+        if(_timernotifica == null)
+        {
+            _timernotifica = new System.Timers.Timer(5000)
+                {
+                    AutoReset = false,
+                    Enabled = false
+                };
+            _timernotifica.Elapsed +=  (source, e) =>
+            {
+                _timernotifica.Enabled = false;
+                _notificamsg = null;
+                StateHasChanged();
+            };
+        }
+        _notificamsg = notifica;
+        _timernotifica.Enabled = true;
+    }
+
 
     void IDisposable.Dispose() => _reference?.Dispose();
 
