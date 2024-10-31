@@ -39,48 +39,50 @@
         </div>
     </div>
     }
-    <div class="column">
-        <label class="label is-small">@Loc["Selezionare la telecamera"]</label>
-        <div class="field has-addons">
-            <div class="control is-expanded  has-icons-left">
+    @if(ConCamera)
+    {
+        <div class="column">
+            <label class="label is-small">@Loc["Selezionare la telecamera"]</label>
+            <div class="field has-addons">
+                <div class="control is-expanded  has-icons-left">
 
-                <div class="select is-fullwidth is-small">
-                    <select id="Dispositivo" value="@_idselectedevice"  
-                        @onchange="@OnLocalCameraSelected">
+                    <div class="select is-fullwidth is-small">
+                        <select id="Dispositivo" value="@_idselectedevice"  
+                            @onchange="@OnLocalCameraSelected">
 
-                
-                        @if (_devices != null && _devices.Any())
-                        {
-                            <option value="">@Loc["Seleziona"]</option>
-                            @foreach (var disp in _devices)
+                    
+                            @if (_devices != null && _devices.Any())
                             {
-                                <option value="@disp.ID">@disp.Label</option>
+                                <option value="">@Loc["Seleziona"]</option>
+                                @foreach (var disp in _devices)
+                                {
+                                    <option value="@disp.ID">@disp.Label</option>
+                                }
                             }
-                        }
-                        else
-                        {
-                            <option value="">@Loc["Premere aggiorna per cercare"]</option>
-                        }
+                            else
+                            {
+                                <option value="">@Loc["Premere aggiorna per cercare"]</option>
+                            }
 
-                    </select>
-             </div>
-            <div class="icon is-small is-left">
-            
-                    <img src="image/video24.png">
-            </div>
-            </div>
-            <div class="control">
-                <a class="button is-primary is-small" @onclick="GetDevices">
-                    <span class="icon is-small">
-                        <img src="image/refresh24.png">
-                    </span>
-                </a>
-            </div>
-    
+                        </select>
+                </div>
+                <div class="icon is-small is-left">
+                
+                        <img src="image/video24.png">
+                </div>
+                </div>
+                <div class="control">
+                    <a class="button is-primary is-small" @onclick="GetDevices">
+                        <span class="icon is-small">
+                            <img src="image/refresh24.png">
+                        </span>
+                    </a>
+                </div>
+        
 
-</div>
-
-</div>
+            </div>  
+        </div>
+    }
 </div>
 
 
@@ -113,9 +115,12 @@
 
     [Parameter] public bool ConCartella { get; set; } = true;
 
+    [Parameter] public bool ConCamera { get; set; } = true;
+    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender && ConCamera)
         {
             _JScript = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/TakeOffVideo.Library/CameraSelector/CameraSelector.razor.js");
             _reference = DotNetObjectReference.Create(this);
