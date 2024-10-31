@@ -3,7 +3,7 @@
     "TakeOffVideo": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "debug",
+      "launchUrl": "immagine",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
