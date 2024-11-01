@@ -1,0 +1,67 @@
+@using TakeOffVideo.Library.TOVFileManagerNS;
+@using TakeOffVideo.Library.ModalDialog
+
+@inject IStringLocalizer<LangResources> Loc
+@inject TOVFileManager filemanager
+
+<div class ="column">
+
+    <label class="label is-small">@Loc["DownloadFolder"]</label>
+    <div class="field has-addons">
+        <p class="control">
+            <input class="input is-small" readonly value="@NomeCartella">
+        </p>
+        <div class="control">
+            <a class="button is-primary is-small" @onclick="GetDir">
+                <span class="icon is-small">
+                    <img src="image/folder24.png" alt="folder">
+                </span>
+            </a>
+        </div>
+    </div>
+</div>
+
+@if(!string.IsNullOrWhiteSpace(TestoDialog))
+{
+<ModalDialog Text="@TestoDialog" Title=@Loc["Attenzione"] OnClose="ChiudiDialog"  />
+}
+
+
+
+@code {
+    private string? TestoDialog;
+    private void MostraDialog(string testo)
+    {
+        TestoDialog = testo;
+        StateHasChanged();
+    }
+
+    private void ChiudiDialog(bool _)
+    {
+        TestoDialog = null;
+    }
+    
+    string? NomeCartella = "<Download>";
+    private async Task GetDir()
+    {
+        try
+        {
+            var tipo = await filemanager.ShowDirectoryPicker();
+
+            if (tipo == TOVFileManager.TipoScelta.Ok)
+                NomeCartella = filemanager.GetNomeDir();
+            else
+            {
+                if (tipo == TOVFileManager.TipoScelta.NotSupported)
+                    MostraDialog(Loc["FolderNotSupported"]);
+            }
+
+            StateHasChanged();
+
+        }
+        catch (Exception e)
+        {
+            MostraDialog($"{e} {e.Message}");
+        }
+    }
+}

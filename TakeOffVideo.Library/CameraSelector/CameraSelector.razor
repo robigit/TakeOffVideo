@@ -15,32 +15,7 @@
 
 @inject IStringLocalizer<LangResources> Loc
 
-<div class="columns">
-    @if (ConCartella)
-    {
-        
-        <div class="column @(ConCamera ? "is-4" : "") ">
 
-        <label class="label is-small">@Loc["DownloadFolder"]</label>
-        <div class="field has-addons">
-            @*    <p class="control">
-            <label class="label">Cartella download</label>
-            </p>*@
-            <p class="control">
-                <input class="input is-small" readonly value="@NomeCartella">
-            </p>
-            <div class="control">
-                <a class="button is-primary is-small" @onclick="GetDir">
-                    <span class="icon is-small">
-                        <img src="image/folder24.png">
-                    </span>
-                </a>
-            </div>
-        </div>
-    </div>
-    }
-    @if(ConCamera)
-    {
         <div class="column">
             <label class="label is-small">@Loc["Selezionare la telecamera"]</label>
             <div class="field has-addons">
@@ -82,29 +57,13 @@
 
             </div>  
         </div>
-    }
-</div>
+    
 
 
 
-@if(!string.IsNullOrWhiteSpace(TestoDialog))
-{
-    <ModalDialog Text="@TestoDialog" Title=@Loc["Attenzione"] OnClose="ChiudiDialog"  />
-}
 
 @code {
-    private string? TestoDialog;
-
-    private void MostraDialog(string testo)
-    {
-        TestoDialog = testo;
-        StateHasChanged();
-    }
-
-    private void ChiudiDialog(bool _)
-    {
-        TestoDialog = null;
-    }
+    
 
     private IJSObjectReference? _JScript;
     private DotNetObjectReference<CameraSelector>? _reference;
@@ -113,14 +72,11 @@
 
     [Parameter] public EventCallback<string> OnCameraSelected { get; set; }
 
-    [Parameter] public bool ConCartella { get; set; } = true;
-
-    [Parameter] public bool ConCamera { get; set; } = true;
-    
+   
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender && ConCamera)
+        if (firstRender )
         {
             _JScript = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/TakeOffVideo.Library/CameraSelector/CameraSelector.razor.js");
             _reference = DotNetObjectReference.Create(this);
@@ -176,29 +132,7 @@
         }
     }
 
-    string? NomeCartella = "<Download>";
-    private async Task GetDir()
-    {
-        try
-        {
-            var tipo = await filemanager.ShowDirectoryPicker();
-
-            if (tipo == TOVFileManager.TipoScelta.Ok)
-                NomeCartella = filemanager.GetNomeDir();
-            else
-            {
-                if (tipo == TOVFileManager.TipoScelta.NotSupported)
-                    MostraDialog(Loc["FolderNotSupported"]);
-            }
-
-            StateHasChanged();
-
-        }
-        catch (Exception e)
-        {
-            MostraDialog($"{e} {e.Message}");
-        }
-    }
+    
 
 
 }

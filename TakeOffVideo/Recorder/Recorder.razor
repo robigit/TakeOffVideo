@@ -22,7 +22,14 @@
     @Loc["Registrazione"]
 </h1>
 
-<CameraSelector OnCameraSelected="OnCameraSelected2" />
+<div class="columns">
+    @*<div class="column is-6">*@
+        <CartellaSelector/>
+    @*</div>
+    <div class="column is-6">*@
+        <CameraSelector OnCameraSelected="OnCameraSelected2"/>
+    @*</div>*@
+</div>
 
 <VideoMarker @ref="_videoMarker" WidthVideo="320" HeigthVideo="320"
              ConRecorder="true" RegistrazioneContinua="@RegistrazioneContinua"   OnVideoRecorded="SalvaUrlVideo" />
