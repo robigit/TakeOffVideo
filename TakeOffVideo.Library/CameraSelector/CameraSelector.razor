@@ -19,7 +19,7 @@
     @if (ConCartella)
     {
         
-        <div class="column is-4 ">
+        <div class="column @(ConCamera ? "is-4" : "") ">
 
         <label class="label is-small">@Loc["DownloadFolder"]</label>
         <div class="field has-addons">

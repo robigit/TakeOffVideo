@@ -43,22 +43,22 @@
                 <div class="field">
                     <input id="switchRoundedDefault" type="checkbox" name="switchRoundedDefault" 
                             class="switch is-rounded"
-                             @bind-value="_autoCarica" 
-                             @bind-value:after="() => _timer.Enabled = _autoCarica"
+                             @bind="_autoCarica" 
+                             @bind:after="() => _timer.Enabled = _autoCarica"
                             >
                     <label for="switchRoundedDefault">Auto Carica</label>
                 </div>
                 
-                @if(!_timer.Enabled) 
+                @if(!_autoCarica) 
                 {       
                     <a class="button is-primary "  >
                         <svg fill="#000000" viewBox="0 0 24 24" id="refresh-round" data-name="Flat Color" xmlns="http://www.w3.org/2000/svg" class="icon flat-color"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path id="secondary" d="M14.71,17.29l-2-2a1,1,0,0,0-1.42,1.42l.3.29H9A5,5,0,0,1,6.11,7.93,1,1,0,1,0,5,6.29,7,7,0,0,0,2,12a7,7,0,0,0,7,7h2.59l-.3.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0l2-2A1,1,0,0,0,14.71,17.29Z" style="fill: #2ca9bc;"></path><path id="primary" d="M20,7.06A6.89,6.89,0,0,0,15,5H12.41l.3-.29a1,1,0,1,0-1.42-1.42l-2,2a1,1,0,0,0,0,1.42l2,2a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42L12.41,7H15a5,5,0,0,1,2.89,9.07A1,1,0,1,0,19,17.71,7,7,0,0,0,22,12,6.89,6.89,0,0,0,20,7.06Z" style="fill: #000000;"></path></g></svg>                </a>
                     
 
-                    <a class="button is-primary" @onclick="() => LoadImage(-1)">
+                    <a class="button is-primary" @onclick="() => LoadImage(TImg.Previous)">
                         <svg fill="#000000" viewBox="0 0 24 24" id="left-arrow-circle" data-name="Flat Color" xmlns="http://www.w3.org/2000/svg" class="icon flat-color"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><circle id="primary" cx="12" cy="12" r="10" style="fill: #000000;"></circle><path id="secondary" d="M17,11H11V9.86a1,1,0,0,0-1.5-.69L6.38,11.31a.82.82,0,0,0,0,1.38L9.5,14.83a1,1,0,0,0,1.5-.69V13h6a1,1,0,0,0,0-2Z" style="fill: #2ca9bc;"></path></g></svg>
                     </a>
-                    <a class="button is-primary" @onclick="() => LoadImage(1)">
+                    <a class="button is-primary" @onclick="() => LoadImage(TImg.Next)">
                         <svg fill="#000000" viewBox="0 0 24 24" id="right-arrow-circle" data-name="Flat Color" xmlns="http://www.w3.org/2000/svg" class="icon flat-color"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><circle id="primary" cx="12" cy="12" r="10" style="fill: #000000;"></circle><path id="secondary" d="M17.62,11.31,14.5,9.17a1,1,0,0,0-1.5.69V11H7a1,1,0,0,0,0,2h6v1.14a1,1,0,0,0,1.5.69l3.12-2.14A.82.82,0,0,0,17.62,11.31Z" style="fill: #2ca9bc;"></path></g></svg>
                     </a>
                 }
@@ -102,10 +102,11 @@
 
 
 
-
+    enum TImg { Last, Previous, Next }
+    
     // position = 0 : ultima
     // position = 1 -1 : successiva precedente
-    private async Task LoadImage(int position)
+    private async Task LoadImage(TImg position)
     {
         var elenco = (await filemanager.GetElencoImg()).Where(f => f.StartsWith("TOV") && Path.GetExtension(f) == ".jpg")
                             .OrderByDescending(f => f).ToArray();
@@ -113,20 +114,19 @@
         if(elenco.Any())
         {
             string? nome = null;
-            if(position == 0 || string.IsNullOrEmpty(_currentimage))
+            if(position == TImg.Last || string.IsNullOrEmpty(_currentimage))
                 nome = elenco.FirstOrDefault();
             else
             {
-                for(int i=0; i<elenco.Count(); ++i)
+                for(var i=0; i<elenco.Count(); ++i)
                 {
                     if(elenco[i] == _currentimage)
                     {
-                        if(position > 0 && position < elenco.Length-1)
-                            nome = elenco[i+1];
-                        else if(position < 0 && position > 0)
-                            nome = elenco[i-1];
-                        else
-                            nome = elenco[i];
+                        if(position == TImg.Next )
+                            nome = elenco[i < elenco.Length-1 ? i+1  : elenco.Length-1 ];
+                        else 
+                            nome = elenco[i>0 ? i-1 : 0];
+                        break;
                     }
                 }
             }
