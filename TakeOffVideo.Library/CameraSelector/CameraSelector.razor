@@ -63,7 +63,7 @@
 
 
 @code {
-    
+
 
     private IJSObjectReference? _JScript;
     private DotNetObjectReference<CameraSelector>? _reference;
@@ -72,7 +72,9 @@
 
     [Parameter] public EventCallback<string> OnCameraSelected { get; set; }
 
-   
+    [Parameter]
+    public string? Nome { get; set; }
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -89,8 +91,12 @@
     private async Task OnLocalCameraSelected(ChangeEventArgs e)
     {
         if(e?.Value != null)
-            await OnCameraSelected.InvokeAsync(e?.Value.ToString());
+        {
+            _idselectedevice = e?.Value.ToString();
+            await webstorage.SessionStorage.Save($"CameraSelector{Nome}", _idselectedevice);
 
+            await OnCameraSelected.InvokeAsync(_idselectedevice);
+        }
     }
 
     private async Task GetDevices()
@@ -112,7 +118,12 @@
 
         StateHasChanged();
 
-        var ID = await webstorage.LocalStorage.Read("IDCameraDefault");
+        string? ID=null;
+        if(Nome != null)
+            ID = await webstorage.SessionStorage.Read($"CameraSelector{Nome}");
+
+        if (string.IsNullOrEmpty(ID))
+            ID = await webstorage.LocalStorage.Read("IDCameraDefault");
         if(!string.IsNullOrEmpty(ID))
         {
             _idselectedevice = _devices.FirstOrDefault(d => d.ID == ID)?.ID;

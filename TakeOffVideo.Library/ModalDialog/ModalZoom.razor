@@ -16,7 +16,7 @@
                 ConControls = "true" 
                 ConZoom = "false"
                 FullScreen = "true" 
-                LinePosition = "@LinePosition"
+                Ruolo = "VideoMarker.VideoMarker.TVideo.Zoom"
                 Url="@Url" />
                 
 
@@ -77,13 +77,13 @@
     protected async Task Chiudi()
     {
         active = "";
-        if (_video != null)
-        {
-            var pos = await _video.GetLinePosition();
-            Console.WriteLine($"ModalZoom Out {pos}");
+        // if (_video != null)
+        // {
+        //     var pos = await _video.GetLinePosition();
+        //     Console.WriteLine($"ModalZoom Out {pos}");
 
-            await webstorage.SessionStorage.Save("ZoomLinePos", pos.ToString() );
-        }
+        //     await webstorage.SessionStorage.Save("ZoomLinePos", pos.ToString() );
+        // }
        
         await OnClose.InvokeAsync(true);
     }

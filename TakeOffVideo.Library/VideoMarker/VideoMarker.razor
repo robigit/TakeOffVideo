@@ -10,6 +10,7 @@
 @implements IDisposable
 
 @inject IStringLocalizer<LangResources> Loc
+@inject WebStorageManagement.Models.IWebStorageService webstorage
 
 
 
@@ -126,7 +127,7 @@
                             }
                             @if (true)
                             {
-                                <button class="button is-light" @onclick="GetImageClick">
+                                <button class="button is-light @(savingimage?"is-loading":"") " @onclick="GetImageClick">
                                     <span class="icon is-small">
                                         <img src="image/getimage24.png">
                                     </span>
@@ -214,6 +215,7 @@
     private ElementReference _startstopbutton;
     private ElementReference _cancelbutton;
 
+    public enum TVideo { Analyzer, Recorder, Zoom }
 
 
     [Parameter] public string? Url { get; set; }
@@ -234,14 +236,14 @@
 
     [Parameter] public bool ConZoom { get; set; } = true;
 
-    [Parameter] public int LinePosition { get; set; } = 0;
+    [Parameter] public TVideo Ruolo { get; set; } = 0;
 
 
-    
+
 
     private bool _inregistrazione = false;
 
-    
+
 
     bool FaiZoom = false;
 
@@ -278,6 +280,8 @@
         public int Height { get; set; }
 
     }
+
+    private string IDSession => $"{nameof(VideoMarker)}-{Ruolo}";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -316,9 +320,11 @@
             }
 
 
-            if (LinePosition != 0 && _JScript != null)
+            var locpos = await webstorage.SessionStorage.Read(IDSession);
+
+            if (_JScript != null && locpos!=null && int.TryParse(locpos, out int lp))
             {
-                await _JScript.InvokeVoidAsync("setlineposition", _linea, LinePosition);
+                await _JScript.InvokeVoidAsync("setlineposition", _linea, lp);
             }
 
         }
@@ -369,6 +375,10 @@
 
 
         await _JScript.InvokeVoidAsync("move", direction, _container, _linea, pixels);
+
+        var lp = await _JScript.InvokeAsync<int>("getlineposition", _linea);
+        await webstorage.SessionStorage.Save(IDSession, lp.ToString());
+
     }
 
     private async Task AdvanceFrame(int steps)
@@ -416,7 +426,7 @@
             SettaNotifica( "Selezionare una Videocamera");
             return;
         }
-        
+
 
 
         _inregistrazione = !_inregistrazione;
@@ -462,12 +472,6 @@
         StateHasChanged();
     }
 
-    public async Task<int> GetLinePosition()
-    {
-        return await _JScript.InvokeAsync<int>("getlineposition", _linea);
-    }
-
-
     async Task ZoomClick()
     {
 
@@ -475,17 +479,26 @@
         StateHasChanged();
     }
 
+    bool savingimage = false;
 
     async Task GetImageClick()
     {
         if (_JScript == null)
             return;
-
-        await _JScript.InvokeVoidAsync("getCurrentCanvasFrame", _video, _reference, "ProcessImage");
-
+        savingimage = true;
+        try
+        {
+            await _JScript.InvokeVoidAsync("document.body.style.cursor = 'wait'");
+            
+            await _JScript.InvokeVoidAsync("getCurrentCanvasFrame", _video, _reference, "ProcessImage");
+           
+        }
+        finally
+        {
+            savingimage = false;
+        }
+        await _JScript.InvokeVoidAsync("document.body.style.cursor = 'wait'");
         SettaNotifica("Immagine salvata");
-
-
     }
 
 

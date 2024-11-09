@@ -24,14 +24,14 @@
 
 <div class="columns">
     @*<div class="column is-6">*@
-        <CartellaSelector/>
+        @* <CartellaSelector/> *@
     @*</div>
     <div class="column is-6">*@
-        <CameraSelector OnCameraSelected="OnCameraSelected2"/>
+        <CameraSelector OnCameraSelected="OnCameraSelected2" Nome="Main" />
     @*</div>*@
 </div>
 
-<VideoMarker @ref="_videoMarker" WidthVideo="320" HeigthVideo="320"
+<VideoMarker @ref="_videoMarker" WidthVideo="320" HeigthVideo="320" Ruolo="VideoMarker.TVideo.Recorder"
              ConRecorder="true" RegistrazioneContinua="@RegistrazioneContinua"   OnVideoRecorded="SalvaUrlVideo" />
 
 <div class="container">
@@ -43,7 +43,7 @@
         <p class="control  has-icons-left">
           <div class="select">
 
-             <select @onchange="SelectedTurnoChanged">
+             <select @bind:after="SelectedTurnoChanged" @bind="_turno">
                 <option value="0">@Loc["Prove"]</option>
                 @for(int i=1; i<7; ++i)
                 {
@@ -65,7 +65,7 @@
           @if(go.Atleti != null)
           {
                 <div class="select">
-                        <select @onchange="SelezionaAtleta">
+                        <select @onchange="SelezionaAtleta"  >
                         @foreach (var atl in go.Atleti.Where(a => a.CODGARA == go.GaraSel && a.CONFERMA=="S")
                                 .OrderBy(a => a.PettNum))
                         {
@@ -134,6 +134,9 @@
     protected override async Task OnInitializedAsync()
     {
         RegistrazioneContinua = await webStorage.LocalStorage.Read("TipoRec") == "True";
+
+        var t = await webStorage.SessionStorage.Read("Turno");
+        int.TryParse(t, out _turno);
     }
 
     private void OnCameraSelected2(string camera)
@@ -143,9 +146,10 @@
             _videoMarker?.StartVideo(_cameraselected);
     }
 
-    private void SelectedTurnoChanged(ChangeEventArgs e)
+    private async Task SelectedTurnoChanged()
     {
-        int.TryParse(e?.Value?.ToString(), out _turno);
+        await webStorage.SessionStorage.Save("Turno", _turno.ToString());
+        //int.TryParse(e?.Value?.ToString(), out _turno);
     }
 
 
