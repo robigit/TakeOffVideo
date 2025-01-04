@@ -32,6 +32,12 @@
                   </section>
 
                     <section class="navbar-item">
+                        <NavLink class="nav-link" href="immagine" Match="NavLinkMatch.All" @onclick="()=>SetPage(3)">
+                            @Loc["Immagine"]
+                        </NavLink>
+                    </section>
+
+                    <section class="navbar-item">
                         <NavLink class="nav-link" href="opzioni" Match="NavLinkMatch.All" @onclick="()=>SetPage(2)">
                             @Loc["Opzioni"]
                         </NavLink>
@@ -43,11 +49,7 @@
                          </NavLink>
                   </section>
 
-                    <section class="navbar-item">
-                        <NavLink class="nav-link" href="immagine" Match="NavLinkMatch.All" @onclick="()=>SetPage(3)">
-                            @Loc["Immagine"]
-                        </NavLink>
-                    </section>
+                   
 
                    
                     

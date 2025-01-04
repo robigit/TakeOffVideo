@@ -120,8 +120,14 @@
   <data name="Analisi" xml:space="preserve">
     <value>Analysis</value>
   </data>
+  <data name="Annulla" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
   <data name="Attenzione" xml:space="preserve">
     <value>Warning</value>
+  </data>
+  <data name="Auto Carica" xml:space="preserve">
+    <value>Auto Reload</value>
   </data>
   <data name="Carica…" xml:space="preserve">
     <value>Upload...</value>
@@ -138,11 +144,17 @@
   <data name="FolderNotSupported" xml:space="preserve">
     <value>Function not supported. The videos will be saved on the download folder</value>
   </data>
+  <data name="Immagine" xml:space="preserve">
+    <value>Image</value>
+  </data>
   <data name="Mostra Linea" xml:space="preserve">
     <value>Show line</value>
   </data>
   <data name="Nascondi Linea" xml:space="preserve">
     <value>Hide line</value>
+  </data>
+  <data name="Opzioni" xml:space="preserve">
+    <value>Options</value>
   </data>
   <data name="Ora" xml:space="preserve">
     <value>Time</value>

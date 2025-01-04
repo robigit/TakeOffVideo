@@ -127,7 +127,7 @@
                             }
                             @if (true)
                             {
-                                <button class="button is-light @(savingimage?"is-loading":"") " @onclick="GetImageClick">
+                                <button class="button is-danger @(savingimage?"is-loading":"") " @onclick="GetImageClick">
                                     <span class="icon is-small">
                                         <img src="image/getimage24.png">
                                     </span>
@@ -488,7 +488,7 @@
         savingimage = true;
         try
         {
-            await _JScript.InvokeVoidAsync("document.body.style.cursor = 'wait'");
+            //await _JScript.InvokeVoidAsync("document.body.style.cursor = 'wait'");
             
             await _JScript.InvokeVoidAsync("getCurrentCanvasFrame", _video, _reference, "ProcessImage");
            
@@ -497,7 +497,7 @@
         {
             savingimage = false;
         }
-        await _JScript.InvokeVoidAsync("document.body.style.cursor = 'wait'");
+        //await _JScript.InvokeVoidAsync("document.body.style.cursor = 'wait'");
         SettaNotifica("Immagine salvata");
     }
 

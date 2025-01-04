@@ -120,8 +120,14 @@
   <data name="Analisi" xml:space="preserve">
     <value>Analisi</value>
   </data>
+  <data name="Annulla" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
   <data name="Attenzione" xml:space="preserve">
     <value>Attenzione</value>
+  </data>
+  <data name="Auto Carica" xml:space="preserve">
+    <value>Auto Carica</value>
   </data>
   <data name="Carica…" xml:space="preserve">
     <value>Carica…</value>
@@ -138,11 +144,17 @@
   <data name="FolderNotSupported" xml:space="preserve">
     <value>Funzione non supportata. I video verranno salvati nella cartella di Download standard.</value>
   </data>
+  <data name="Immagine" xml:space="preserve">
+    <value>Immagine</value>
+  </data>
   <data name="Mostra Linea" xml:space="preserve">
     <value>Mostra Linea</value>
   </data>
   <data name="Nascondi Linea" xml:space="preserve">
     <value>Nascondi Linea</value>
+  </data>
+  <data name="Opzioni" xml:space="preserve">
+    <value>Opzioni</value>
   </data>
   <data name="Ora" xml:space="preserve">
     <value>Ora</value>
