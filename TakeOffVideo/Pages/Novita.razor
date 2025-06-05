@@ -1,0 +1,81 @@
+﻿@page "/novita"
+
+@using TakeOffVideo.Library.AnchorLink
+
+<article id="content" class="columns">
+
+    <div id="left" class="column is-8">
+
+        <section id="200" class="hero bd-hero bd-is-basic">
+            <div class="hero-body">
+
+                <div class="container has-text-left">
+
+                    <div class="bd-hero-body">
+                        <div class="bd-hero-heading">
+                            <h1 class="title algolia-lvl0">
+
+                                Versione 2.0.0
+
+                            </h1>
+                            
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <div class="content has-text-left">
+            <p>
+                In questa versione è stato aggiunta la possibilità di salvare delle immagini dal video
+                e visualizzarle su una pagina specifica. <br />
+                Per salvare l'immagine basta posizionare il video sul momento desiderato nella parte
+                di analisi e premere il bottone rosso in basso a destra. 
+                <br /><br />
+                Le immagini possono essere visualizzate nella pagina Immagine. Verranno anche mostrati 
+                turno, pettorale e orario di generazione. 
+                <br />
+                La pagina dell'immagine può essere anche aperta in contemporanea al programma
+                in un altra pagina del browser (per esempio su un secondo monitor) 
+                lanciando una nuova sessione del programma, a condizione di far puntare la stessa
+                cartella di salvataggio.<br /><br />
+                Se attivata la modalità "Auto reload", l'ultima immagine salvata verrà automaticamente
+                visualizzata. Se si disabilita l'auto reload appariranno delle frecce che permettono
+                di scorrere le immagini in ordice cronologico<br />
+                Questa modalità funziona solo se è abilitato il salvataggio sulla cartella.
+                
+                
+            </p>
+            <p>
+                <b>    Altre modifiche</b> <br />
+                <br />
+                Casella per settare la cartella spostata sulla barra in alto a destra <br />    
+                Gestito il salvataggio della posizione dei cursori al cambiare della pagina <br />
+
+
+                
+            </p>
+        </div>
+
+    </div>
+
+    <div id="right" class="column is-2">
+
+        <aside id="menu" class="menu">
+            <p class="menu-label">
+                Indice
+            </p>
+            <ul class="menu-list">
+                <li><AnchorLink href="#200">Versione 2.0.0</AnchorLink></li>
+            </ul>
+
+        </aside>
+    </div>
+</article>
+
+@code {
+
+}

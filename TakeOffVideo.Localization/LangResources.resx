@@ -153,6 +153,9 @@
   <data name="Nascondi Linea" xml:space="preserve">
     <value>Hide line</value>
   </data>
+  <data name="Novita" xml:space="preserve">
+    <value>News</value>
+  </data>
   <data name="Opzioni" xml:space="preserve">
     <value>Options</value>
   </data>
