@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,9 +35,23 @@ public class VideoFile
 
     public TimeSpan Durata { get; set; }
 
-    public string SoloNome => $"TOV_{OraRegistrazione:yyyyMMdd}_{OraRegistrazione:HH-mm-ss}_{Turno}_{Pettorale}";
+    private static string SanitizeFilename(string? input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+            return "Unknown";
+        
+        // Remove invalid filename characters
+        var invalidChars = Path.GetInvalidFileNameChars();
+        var sanitized = string.Concat(input.Split(invalidChars, StringSplitOptions.RemoveEmptyEntries));
+        
+        // Ensure we have something after sanitization
+        return string.IsNullOrWhiteSpace(sanitized) ? "Unknown" : sanitized;
+    }
 
-    public string NomeFile => $"{SoloNome}.{Tipo}";
+    public string SoloNome => 
+        $"TOV_{OraRegistrazione:yyyyMMdd}_{OraRegistrazione:HH-mm-ss}_{Turno}_{SanitizeFilename(Pettorale)}";
+
+    public string NomeFile => $"{SoloNome}.{SanitizeFilename(Tipo)}";
 
 
     public override string ToString()

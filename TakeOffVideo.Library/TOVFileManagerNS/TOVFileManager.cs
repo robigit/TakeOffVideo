@@ -40,18 +40,29 @@ public partial class TOVFileManager : JSModule
 
     public async ValueTask<TipoScelta> ShowDirectoryPicker()
     {
-        
-        var dir = await InvokeAsync<JSDirectory>("showDirectoryPicker");
-        
-        if(dir.Supported)
+        try
         {
-            _directory = dir;
+            var dir = await InvokeAsync<JSDirectory>("showDirectoryPicker");
             
-            return TipoScelta.Ok;
+            if(dir.Supported)
+            {
+                _directory = dir;
+                
+                return TipoScelta.Ok;
+            }
+            
+            return dir.Name.Contains("Abort") ? TipoScelta.Cancel : TipoScelta.NotSupported;
         }
-        
-        return dir.Name.Contains("Abort") ? TipoScelta.Cancel : TipoScelta.NotSupported;
-
+        catch (JSException)
+        {
+            // Browser doesn't support File System Access API
+            return TipoScelta.NotSupported;
+        }
+        catch (InvalidOperationException)
+        {
+            // JS module failed to load
+            return TipoScelta.NotSupported;
+        }
     }
 
     // va nella sottocartella img
@@ -60,9 +71,16 @@ public partial class TOVFileManager : JSModule
         if(_directory == null)
             return Enumerable.Empty<string>();
 
-        var elenco = await InvokeAsync<IEnumerable<string>>("getelencofiles", _directory.Instance);
-
-        return elenco;
+        try
+        {
+            var elenco = await InvokeAsync<IEnumerable<string>>("getelencofiles", _directory.Instance);
+            return elenco;
+        }
+        catch (JSException)
+        {
+            // JS call failed - return empty list
+            return Enumerable.Empty<string>();
+        }
     }
 
 
@@ -170,26 +188,42 @@ public partial class TOVFileManager : JSModule
         var m = RegexNomeFile().Match(nomefile);
         if (m.Success)
         {
-            var date = new DateTime(int.Parse(m.Groups["anno"].Value), int.Parse(m.Groups["mese"].Value), int.Parse(m.Groups["giorno"].Value)
-
-                           , int.Parse(m.Groups["ora"].Value), int.Parse(m.Groups["min"].Value), int.Parse(m.Groups["sec"].Value)
-                    );
-
-            int.TryParse(m.Groups["turno"].Value, out int turno);
-            var pett = m.Groups["pett"].Value;
-
-            var tipo = m.Groups["tipo"].Value;
-
-            var v = new VideoFile
+            // Validate all date/time components before parsing
+            if (!int.TryParse(m.Groups["anno"].Value, out int anno) ||
+                !int.TryParse(m.Groups["mese"].Value, out int mese) ||
+                !int.TryParse(m.Groups["giorno"].Value, out int giorno) ||
+                !int.TryParse(m.Groups["ora"].Value, out int ora) ||
+                !int.TryParse(m.Groups["min"].Value, out int min) ||
+                !int.TryParse(m.Groups["sec"].Value, out int sec))
             {
-                //ID = _maxid++,
-                Turno = turno,
-                Pettorale = pett,
-                OraRegistrazione = date,
-                Tipo = tipo
-            };
+                // Invalid date components in filename
+                return null;
+            }
 
-            return v;
+            try
+            {
+                var date = new DateTime(anno, mese, giorno, ora, min, sec);
+                
+                int.TryParse(m.Groups["turno"].Value, out int turno);
+                var pett = m.Groups["pett"].Value;
+                var tipo = m.Groups["tipo"].Value;
+
+                var v = new VideoFile
+                {
+                    //ID = _maxid++,
+                    Turno = turno,
+                    Pettorale = pett,
+                    OraRegistrazione = date,
+                    Tipo = tipo
+                };
+
+                return v;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // Invalid date/time values (e.g., month 13)
+                return null;
+            }
         }
         return null;
     }
