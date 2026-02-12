@@ -15,170 +15,174 @@
 
 
 <div class="container">
-
     
-
-    <div class="vmcontainer" @ref="_container" >
-        <div class="vmvideo">
-            <video width="@WidthVideo" height="@HeigthVideo" @ref="_video" preload="auto" playsInline />
+    <!-- Video Preview Section -->
+    <div class="row justify-content-center mb-3">
+        <div class="col-auto">
+            <div class="vmcontainer position-relative" @ref="_container">
+                <div class="vmvideo border rounded shadow-sm" style="background: #000;">
+                    <video width="@WidthVideo" height="@HeigthVideo" @ref="_video" preload="auto" playsInline />
+                </div>
+                @if (_lineavisibile)
+                {
+                    <div class="vmlinea" @ref="_linea"></div>
+                }
+            </div>
         </div>
-
-        @if (_lineavisibile)
-        {
-            <div class="vmlinea" @ref="_linea"></div>
-        }
     </div>
 
-    <section class="content">
-    <div class="row g-2 align-items-center">
-
+    <!-- Line Controls Section -->
+    <div class="row justify-content-center mb-3">
         <div class="col-auto">
-            <div class="btn-group btn-group-sm" role="group" style="font-size: 0.8rem;">
-                <button class="btn btn-light" @onclick="@(() => MostraLinea())" style="padding: 0.25rem 0.5rem;">
-                    @*@_textlinea*@
-                    <span class="icon-sm">
-                    @if(_lineavisibile)
-                    {
-                            <img src="image/hideline24.png" style="width: 20px; height: 20px;">
-                    }
-                    else
-                    {
-                            <img src="image/showline24.png" style="width: 20px; height: 20px;">
-                    }
-                    </span>
+            <div class="btn-group" role="group" aria-label="@Loc["ControlliLinea"]">
+                <button class="btn btn-outline-secondary" @onclick="@(() => MostraLinea())" title="@_textlinea">
+                    <i class="bi @(_lineavisibile ? "bi-eye-slash" : "bi-eye")"></i>
                 </button>
                 @if (_lineavisibile)
                 {
-                    <button class="btn btn-light" @onclick="@(() => Move("sx", 10))" style="padding: 0.25rem 0.5rem;">
-                        <span class="icon-sm">
-                            <img src="image/dopchevronleft24.png" style="width: 20px; height: 20px;">
-                        </span>
+                    <button class="btn btn-outline-secondary" @onclick="@(() => Move("sx", 10))" title="@Loc["SpostaSinistra"] 10px">
+                        <i class="bi bi-chevron-double-left"></i>
                     </button>
-
-                    <button class="btn btn-light" @onclick="@(() => Move("sx", 1))" style="padding: 0.25rem 0.5rem;">
-                        <span class="icon-sm">
-                            <img src="image/chevronleft24.png" style="width: 20px; height: 20px;">
-                        </span>
+                    <button class="btn btn-outline-secondary" @onclick="@(() => Move("sx", 1))" title="@Loc["SpostaSinistra"] 1px">
+                        <i class="bi bi-chevron-left"></i>
                     </button>
-
-                    <button class="btn btn-light" @onclick="@(() => Move("dx", 1))" style="padding: 0.25rem 0.5rem;">
-                        <span class="icon-sm">
-                            <img src="image/chevronright24.png" style="width: 20px; height: 20px;">
-                        </span>
+                    <button class="btn btn-outline-secondary" @onclick="@(() => Move("dx", 1))" title="@Loc["SpostaDestra"] 1px">
+                        <i class="bi bi-chevron-right"></i>
                     </button>
-
-                    <button class="btn btn-light" @onclick="@(() => Move("dx", 10))" style="padding: 0.25rem 0.5rem;">
-                        <span class="icon-sm">
-                            <img src="image/dopchevronright24.png" style="width: 20px; height: 20px;">
-                        </span>
+                    <button class="btn btn-outline-secondary" @onclick="@(() => Move("dx", 10))" title="@Loc["SpostaDestra"] 10px">
+                        <i class="bi bi-chevron-double-right"></i>
                     </button>
                 }
-                @if (!ConRecorder)
-                {
-                        <button class="btn btn-light" style="padding: 0.25rem 0.5rem; margin-left: 0.5rem;">
-                            <span class="icon-sm">
-                                <img src="image/slider24.png" style="width: 20px; height: 20px;">
-                            </span>
-                        </button>
-
-                        <button class="btn btn-light" @onclick="@(() => AdvanceFrame(-10))" style="padding: 0.25rem 0.5rem;">
-                            <span class="icon-sm">
-                                <img src="image/dopchevronleft24.png" style="width: 20px; height: 20px;">
-                            </span>
-                        </button>
-
-                        <button class="btn btn-light" @onclick="@(() => AdvanceFrame(-2))" style="padding: 0.25rem 0.5rem;">
-                            <span class="icon-sm">
-                                <img src="image/chevronleft24.png" style="width: 20px; height: 20px;">
-                            </span>
-                        </button>
-
-                        <button class="btn btn-light" @onclick="@(() => AdvanceFrame(2))" style="padding: 0.25rem 0.5rem;">
-                            <span class="icon-sm">
-                                <img src="image/chevronright24.png" style="width: 20px; height: 20px;">
-                            </span>
-                        </button>
-
-                        <button class="btn btn-light" @onclick="@(() => AdvanceFrame(10))" style="padding: 0.25rem 0.5rem;">
-                            <span class="icon-sm">
-                                <img src="image/dopchevronright24.png" style="width: 20px; height: 20px;">
-                            </span>
-                        </button>
-                        @if (ConZoom)
-                        {
-                            <button class="btn btn-light" @onclick="ZoomClick" style="padding: 0.25rem 0.5rem;">
-                                <span class="icon-sm">
-                                    <img src="image/zoom24.png" style="width: 20px; height: 20px;">
-                                </span>
-                            </button>
-                        }
-                        @if (true)
-                        {
-                            <button class="btn btn-danger @(savingimage ? "disabled" : "")" @onclick="GetImageClick" disabled="@savingimage" style="padding: 0.25rem 0.5rem;">
-                                <span class="icon-sm">
-                                    <img src="image/getimage24.png" style="width: 20px; height: 20px;">
-                                </span>
-                            </button>
-                        }
-                }
-
             </div>
         </div>
-         @* @if (!ConRecorder)
-        {
-            <div class="col-auto ms-auto">
-                <div class="btn-group btn-group-sm" role="group">
+    </div>
 
+    @if (!ConRecorder)
+    {
+        <!-- Frame Controls Section (Analyzer Mode) -->
+        <div class="row justify-content-center mb-3">
+            <div class="col-auto">
+                <div class="d-flex gap-2 flex-wrap justify-content-center">
+                    <div class="btn-group" role="group" aria-label="@Loc["ControlliFrame"]">
+                        <button class="btn btn-outline-primary" disabled>
+                            <i class="bi bi-sliders"></i>
+                        </button>
+                        <button class="btn btn-outline-primary" @onclick="@(() => AdvanceFrame(-10))" title="@Loc["IndietroFrame"] 10">
+                            <i class="bi bi-chevron-double-left"></i>
+                        </button>
+                        <button class="btn btn-outline-primary" @onclick="@(() => AdvanceFrame(-2))" title="@Loc["IndietroFrame"] 2">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <button class="btn btn-outline-primary" @onclick="@(() => AdvanceFrame(2))" title="@Loc["AvantiFrame"] 2">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                        <button class="btn btn-outline-primary" @onclick="@(() => AdvanceFrame(10))" title="@Loc["AvantiFrame"] 10">
+                            <i class="bi bi-chevron-double-right"></i>
+                        </button>
+                    </div>
                     
-                   
+                    @if (ConZoom)
+                    {
+                        <button class="btn btn-outline-info" @onclick="ZoomClick" title="@Loc["Zoom"]">
+                            <i class="bi bi-zoom-in"></i>
+                        </button>
+                    }
+                    
+                    @if (ConImageRec)
+                    {
+                        <button class="btn @(savingimage ? "btn-secondary" : "btn-danger")" 
+                                @onclick="GetImageClick" 
+                                disabled="@savingimage" 
+                                title="@Loc["SalvaImmagine"]">
+                            <i class="bi bi-camera-fill me-1"></i>
+                            @if (savingimage)
+                            {
+                                <span class="spinner-border spinner-border-sm" role="status"></span>
+                            }
+                            else
+                            {
+                                <span>@Loc["Cattura"]</span>
+                            }
+                        </button>
+                    }
                 </div>
             </div>
-        } *@
-    </div>
-    </section>
+        </div>
+    }
 
     @if (ConRecorder)
     {
-        <div class="container text-center">
-            <div class="row">
-                <div class="col-8">
-                    <button @ref="_startstopbutton" class="btn w-100 @(_inregistrazione ? "btn-danger" : "btn-primary")"
-                        @onclick="OnRegistra">
-                        <span>    
-                            @(
-                               ( _inregistrazione ? Loc["Salva"] : Loc["Registra"])+ " "+(RegistrazioneContinua ?"(continua)" :"" )
-                                )
-                        </span>
-
-                    </button>
+        <!-- Recording Controls Section -->
+        <div class="row justify-content-center mb-3">
+            <div class="col-md-8 col-lg-6">
+                <div class="row g-3">
+                    <div class="col-8">
+                        <button @ref="_startstopbutton" 
+                                class="btn btn-lg w-100 shadow-sm @(_inregistrazione ? "btn-danger" : "btn-success")"
+                                @onclick="OnRegistra">
+                            <i class="bi @(_inregistrazione ? "bi-stop-circle-fill" : "bi-record-circle-fill") me-2"></i>
+                            <strong>@(_inregistrazione ? Loc["Salva"] : Loc["Registra"])</strong>
+                            @if (RegistrazioneContinua)
+                            {
+                                <small class="d-block mt-1" style="font-size: 0.75rem;">(@Loc["ModoContinua"])</small>
+                            }
+                        </button>
+                    </div>
+                    <div class="col-4">
+                        <button @ref="_cancelbutton" 
+                                class="btn btn-lg btn-outline-warning w-100 shadow-sm" 
+                                disabled="@(!_inregistrazione)">
+                            <i class="bi bi-x-circle-fill"></i>
+                            <span class="d-none d-md-inline ms-1">@Loc["Annulla"]</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="col">
-                    
-                    <button @ref="_cancelbutton" class="btn btn-warning  @(!_inregistrazione ? "disabled" : "")">
-                        <span>@Loc["Annulla"]</span>
-                    </button>
-                    
+
+                <!-- Progress Bar -->
+                @if(_inregistrazione)
+                {
+                    <div class="mt-3">
+                        <div class="progress shadow-sm" style="height: 30px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" 
+                                 role="progressbar" 
+                                 style="width: 100%"
+                                 aria-valuenow="100" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                <strong><i class="bi bi-record-fill me-2"></i>@Loc["Registrazione"]...</strong>
+                            </div>
+                        </div>
+                        <div class="text-center mt-2">
+                            <small class="text-muted">
+                                <i class="bi bi-clock me-1"></i>
+                                @if (RegistrazioneContinua)
+                                {
+                                    <text>@Loc["ModoContinua"]</text>
+                                }
+                                else
+                                {
+                                    <text>@Loc["AutoStop"] 10s</text>
+                                }
+                            </small>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Alert/Notification Section -->
+    @if (!string.IsNullOrEmpty(_notificamsg))
+    {
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    @_notificamsg
+                    <button type="button" class="btn-close" @onclick="DelNotification" aria-label="Close"></button>
                 </div>
             </div>
         </div>
-        @if(_inregistrazione)
-        {
-            <div class="container">
-                    <progress class="progress is-danger" max="100">30%</progress>
-                </div>
-                <br />
-        }
-       
-    }
-
-    @if (!string.IsNullOrEmpty(_notificamsg))
-    {
-        
-        <div class="notification is-danger">
-            <button class="delete" @onclick="DelNotification"></button>
-            @_notificamsg
-        </div>
-        
     }
 
     @if(FaiZoom)

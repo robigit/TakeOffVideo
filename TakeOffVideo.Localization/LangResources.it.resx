@@ -189,4 +189,40 @@
   <data name="Turno" xml:space="preserve">
     <value>Turno</value>
   </data>
+  <data name="ModoContinua" xml:space="preserve">
+    <value>Modalità Continua</value>
+  </data>
+  <data name="AutoStop" xml:space="preserve">
+    <value>Stop Automatico</value>
+  </data>
+  <data name="Cattura" xml:space="preserve">
+    <value>Cattura</value>
+  </data>
+  <data name="SalvaImmagine" xml:space="preserve">
+    <value>Salva Immagine</value>
+  </data>
+  <data name="ControlliLinea" xml:space="preserve">
+    <value>Controlli Linea</value>
+  </data>
+  <data name="ControlliFrame" xml:space="preserve">
+    <value>Controlli Frame</value>
+  </data>
+  <data name="SpostaSinistra" xml:space="preserve">
+    <value>Sposta Sinistra</value>
+  </data>
+  <data name="SpostaDestra" xml:space="preserve">
+    <value>Sposta Destra</value>
+  </data>
+  <data name="IndietroFrame" xml:space="preserve">
+    <value>Frame Precedente</value>
+  </data>
+  <data name="AvantiFrame" xml:space="preserve">
+    <value>Frame Successivo</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="Atleta" xml:space="preserve">
+    <value>Atleta</value>
+  </data>
 </root>
