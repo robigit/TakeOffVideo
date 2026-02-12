@@ -1,72 +1,53 @@
 ﻿
-
 @using TakeOffVideo.Library.TOVFileManagerNS;
-
 
 @inject TOVFileManager videofilemanager
 @implements IDisposable
 
 @inject IStringLocalizer<LangResources> Loc
 
-<div class="has-text-left ml-4 mr-4">
-<table class="table is-fullwidth is-narrow is-scrollable" >
-    <thead>
-    <tr>
-            <th>Play</th>
-            <th>@Loc["Ora"]</th>
-            <th>@Loc["Turno"]</th>
-            <th>@Loc["Pettorale"]</th>
-            <th>@Loc["Durata"] sec</th>
-            <th> <span class="icon is-small">
-                        <img src="image/lockclose24.png">
-                  </span>
-            </th>
-    </tr>
-    </thead>
-    <tbody>
-         
-        @foreach(var v in videofilemanager.GetElenco())
-        {
-            <tr class="@(_videoplaying == v ?"is-selected" :"")" >
-                <td>
-                    @if (true || v != _videoplaying)
-                    {
-                        <button class="button" @onclick="() => Play(v)" >
-                            <span class="icon is-small">
-                                <img src="image/play24.png">
-                            </span>
-                        </button>
-                    }
-
-                </td>
-                <td>@v.OraRegistrazioneString</td>
-                <td>@v.Turno</td>
-                <td>@v.Pettorale</td>
-                <td>@v.Durata.Seconds</td>
-
-                <td>
-                        <button class="button" @onclick="() => OnPin(v)">
-                        <span class="icon is-small">
+<div class="table-responsive">
+    <table class="table table-hover table-sm">
+        <thead>
+            <tr>
+                <th>Play</th>
+                <th>@Loc["Ora"]</th>
+                <th>@Loc["Turno"]</th>
+                <th>@Loc["Pettorale"]</th>
+                <th>@Loc["Durata"] sec</th>
+                <th>
+                    <img src="image/lockclose24.png" alt="Pin" height="20">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var v in videofilemanager.GetElenco())
+            {
+                <tr class="@(_videoplaying == v ? "table-active" : "")">
+                    <td>
+                        @if (true || v != _videoplaying)
+                        {
+                            <button class="btn btn-sm btn-primary" @onclick="() => Play(v)">
+                                <img src="image/play24.png" alt="Play" height="16">
+                            </button>
+                        }
+                    </td>
+                    <td>@v.OraRegistrazioneString</td>
+                    <td>@v.Turno</td>
+                    <td>@v.Pettorale</td>
+                    <td>@v.Durata.Seconds</td>
+                    <td>
+                        <button class="btn btn-sm @(v.Pinned ? "btn-success" : "btn-outline-secondary")" @onclick="() => OnPin(v)">
                             @if (v.Pinned)
                             {
-
-                                <img src="image/check24.png">
+                                <img src="image/check24.png" alt="Pinned" height="16">
                             }
-                            @*else
-                            {
-                                <img src="image/quadro24.png">
-                            }*@
-
-
-                        </span>
-                    </button>
-
-                </td>
-            </tr>
-        }
-        
-    </tbody>
-</table>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 
 @code {

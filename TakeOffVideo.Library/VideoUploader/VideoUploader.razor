@@ -8,21 +8,13 @@
 
 @inject IStringLocalizer<LangResources> Loc
 
-<section class="container">
-<div class="file is-small is-primary">
-    <label class="file-label">
-            <input class="file-input" type="file" name="resume" accept=@Accept @ref="_input">
-        <span class="file-cta">
-            <span class="file-icon">
-                <img src="image/upload24.png">
-            </span>
-            <span class="file-label">
-                @Testo
-            </span>
-        </span>
+<div class="mb-3">
+    <label class="btn btn-primary btn-sm">
+        <img src="image/upload24.png" alt="Upload" height="16" class="me-1">
+        @Testo
+        <input class="form-control d-none" type="file" name="resume" accept=@Accept @ref="_input">
     </label>
 </div>
-</section>
 @code {
 
     private IJSObjectReference? _JScript;

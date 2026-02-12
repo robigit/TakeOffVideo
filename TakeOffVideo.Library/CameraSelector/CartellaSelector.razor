@@ -4,20 +4,13 @@
 @inject IStringLocalizer<LangResources> Loc
 @inject TOVFileManager filemanager
 
-<div class ="column">
-
-    <label class="label is-small">@Loc["DownloadFolder"]</label>
-    <div class="field has-addons">
-        <p class="control">
-            <input class="input is-small" readonly value="@NomeCartella">
-        </p>
-        <div class="control">
-            <a class="button is-primary is-small" @onclick="GetDir">
-                <span class="icon is-small">
-                    <img src="image/folder24.png" alt="folder">
-                </span>
-            </a>
-        </div>
+<div class="mb-3">
+    <label class="form-label small">@Loc["DownloadFolder"]</label>
+    <div class="input-group input-group-sm">
+        <input class="form-control" readonly value="@NomeCartella">
+        <button class="btn btn-primary" @onclick="GetDir">
+            <img src="image/folder24.png" alt="folder" height="16">
+        </button>
     </div>
 </div>
 

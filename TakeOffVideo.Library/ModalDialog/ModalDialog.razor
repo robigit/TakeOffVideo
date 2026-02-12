@@ -1,40 +1,32 @@
 ﻿
 @inject IStringLocalizer<LangResources> Loc
 
-@*<div id="modal-js-example" class="modal @active">
-  <div class="modal-background"></div>
-
-  <div class="modal-content">
-    <div class="box">
-      <p>@Title</p>
-      @Text
+<div class="modal fade @showClass" style="display: @displayStyle;" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">@Title</h5>
+        <button type="button" class="btn-close" @onclick="Chiudi" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        @Text
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning" @onclick="Chiudi">@Loc["Chiudi"]</button>
+      </div>
     </div>
   </div>
-
-  <button class="modal-close is-large" aria-label="close" @onclick="Chiudi"></button>
-</div>*@
-
-
-<div class="modal @active">
-  <div class="modal-background"></div>
-  <div class="modal-card">
-    <header class="modal-card-head">
-      <p class="modal-card-title">@Title</p>
-            <button class="delete" aria-label="close" @onclick="Chiudi"></button>
-    </header>
-    <section class="modal-card-body">
-            @Text
-    </section>
-    <footer class="modal-card-foot">
-            <button class="button is-warning" @onclick="Chiudi">@Loc["Chiudi"]</button>
-      
-    </footer>
-  </div>
 </div>
+@if (showBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
 
 
 @code {
-    string active = "is-active";
+    string showClass = "show";
+    string displayStyle = "block";
+    bool showBackdrop = true;
 
     [Parameter]
     public string? Title { get; set; }
@@ -46,7 +38,9 @@
 
     protected void Chiudi()
     {
-        active = "";
+        showClass = "";
+        displayStyle = "none";
+        showBackdrop = false;
         OnClose.InvokeAsync(true);
     }
 }

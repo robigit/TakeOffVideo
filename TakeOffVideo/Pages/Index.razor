@@ -2,22 +2,26 @@
 @page "/{Modalita}"
 @using WebStorageManagement.Models;
 
-
 @inject IJSRuntime jsRuntime
 @inject IWebStorageService webStorage
 
-
 <PageTitle>Take Off Video</PageTitle>
 
-<div class="columns">
-    <div class="column is-6">
-        <TakeOffVideo.Recorder.Recorder />
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card fade-in">
+            <div class="card-body">
+                <TakeOffVideo.Recorder.Recorder />
+            </div>
+        </div>
     </div>
-    <div class="column is-6 ">
-        <TakeOffVideo.Analyzer.Analyzer/>
+    <div class="col-lg-6">
+        <div class="card fade-in">
+            <div class="card-body">
+                <TakeOffVideo.Analyzer.Analyzer/>
+            </div>
+        </div>
     </div>
-
-                   
 </div>
 
 @code {

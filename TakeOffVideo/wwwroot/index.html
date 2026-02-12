@@ -6,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TakeOffVideo</title>
     <base href="/" />
-    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">-->
-
     
-    <link rel="stylesheet" href="css/bulmadark.css">
-    <link rel="stylesheet" href="css/bulma-switch.min.css">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Custom Modern Dark Theme -->
+    <link rel="stylesheet" href="css/modern-dark-theme.css">
 
     <link href="manifest.json" rel="manifest" />
     <link rel="apple-touch-icon" sizes="512x512" href="logos/tovlogo512.png" />
@@ -19,43 +21,32 @@
     <link href="TakeOffVideo.styles.css" rel="stylesheet" />
 </head>
 
-<body>
-    <div class="container">
-        <div id="app">
-            
-            <section id="splash" class="hero is-fullheight-with-navbar">
-                <div class="hero-body">
-                    <div class="container has-text-centered">
-                        <img src="image/tovlogo.png"
-                             class="blazor-logo mb-5" />
-                        <div class="fa-3x is-family-code">
-                            <span class="has-text-weight-bold">
-                                Take Off Video Application:
-                            </span> Attendere il caricamento dell'applicazione ...
-                            <div class="notification  is-primary" style=" transform: scaleX(var(--blazor-load-percentage,0))"> </div>
-                        </div>
-                    </div>
+<body data-bs-theme="dark">
+    <div id="app">
+        <!-- Modern Loading Screen -->
+        <div id="splash" class="d-flex align-items-center justify-content-center min-vh-100">
+            <div class="text-center">
+                <img src="image/tovlogo.png" class="blazor-logo mb-5" style="max-width: 200px;" />
+                <h2 class="fw-bold mb-3">Take Off Video Application</h2>
+                <p class="lead mb-4">Attendere il caricamento dell'applicazione...</p>
+                <div class="progress" style="height: 4px; width: 300px; margin: 0 auto;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
+                         style="width: var(--blazor-load-percentage, 0%)"></div>
                 </div>
-            </section>
-
+            </div>
         </div>
     </div>
 
 
 
 
-        <!--<div id="blazor-error-ui">
-            An unhandled error has occurred.
-            <a href="" class="reload">Reload</a>
-            <a class="dismiss">🗙</a>
-        </div>-->
-        <script src="_framework/blazor.webassembly.js"></script>
-        
-        <script>navigator.serviceWorker.register('service-worker.js');</script>
-
-        <script src="./script/app.js"></script>
-
-        <!--<script src="https://kit.fontawesome.com/0467031d69.js" crossorigin="anonymous"></script>-->
+    <script src="_framework/blazor.webassembly.js"></script>
+    
+    <!-- Bootstrap 5 JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>navigator.serviceWorker.register('service-worker.js');</script>
+    <script src="./script/app.js"></script>
 
 </body>
 

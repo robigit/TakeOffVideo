@@ -1,55 +1,24 @@
 ﻿@inherits LayoutComponentBase
 
 <NavMenu />
-@*
-<section class="hero is-small">
-   
-    
-    <div class="hero-body">
-        <div class="container has-text-centered">
-            
-           
 
-        </div>
+<main class="container-fluid py-4">
+    <div class="container">
+        @Body
+    </div>
+</main>
 
-    </div>*@
- <div class="container">
-    <section class="section">
-    @Body
-    </section>
-</div>
-
-    @*<div class="hero-foot">
-        <div class="container">
-            <div class="tabs is-centered">
-                <ul>
-                    <li><a>RG Progr</a></li>
-                </ul>
+<footer class="footer mt-auto">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <p class="mb-0">
+                    <strong class="text-white">Take Off Video Application @_appVersion</strong>
+                    <span class="mx-2">|</span>
+                    <span>by <a href="#" class="text-decoration-none text-primary">RG Progr</a></span>
+                </p>
             </div>
         </div>
-    </div>*@
-
-@*</section>*@
-
-<footer class="footer is-small" style="padding : 1rem">
-    <div class="content has-text-centered">
-        <p>
-            <strong>Take Off Video Application @_appVersion</strong> by <a href="">RG Progr  </a>
-                        
-            @*Net version @_version - *@
-
-           @* The source code is licensed
-            <a href="http://opensource.org/licenses/mit-license.php">MIT</a>*@
-
-           @*  <a href="https://bulma.io" target="_blank">
-                <img src="image/made-with-bulma--white.png"
-                     alt="Made with Bulma"
-                     width="128"
-                     height="24">
-            </a> *@
-
-            
-        </p>
     </div>
 </footer>
 

@@ -1,0 +1,338 @@
+/* Modern Dark Theme for TakeOffVideo */
+/* Enhanced Bootstrap 5 Dark Theme with Modern Design Patterns */
+
+:root {
+    /* Modern Dark Color Palette */
+    --bs-primary: #00b4d8;
+    --bs-primary-rgb: 0, 180, 216;
+    --bs-secondary: #6c757d;
+    --bs-success: #00e676;
+    --bs-info: #03dac6;
+    --bs-warning: #ffc107;
+    --bs-danger: #ff5252;
+    
+    /* Dark Background Gradients */
+    --bg-dark-primary: #0a0e27;
+    --bg-dark-secondary: #16213e;
+    --bg-dark-tertiary: #1a1d35;
+    
+    /* Glass Morphism */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 20px rgba(0, 180, 216, 0.3);
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Body & Background */
+body {
+    background: linear-gradient(135deg, var(--bg-dark-primary) 0%, var(--bg-dark-secondary) 50%, var(--bg-dark-tertiary) 100%);
+    background-attachment: fixed;
+    color: #e0e0e0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Modern Card Styling */
+.card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-smooth);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+}
+
+/* Modern Navbar */
+.navbar {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-sm);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, var(--bs-primary), #03dac6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.nav-link {
+    position: relative;
+    transition: var(--transition-smooth);
+    color: rgba(255, 255, 255, 0.8) !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.nav-link:hover {
+    color: var(--bs-primary) !important;
+    transform: translateY(-2px);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--bs-primary), #03dac6);
+    transition: var(--transition-smooth);
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 80%;
+}
+
+/* Modern Buttons */
+.btn {
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 0.625rem 1.5rem;
+    transition: var(--transition-smooth);
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--bs-primary), #0096c7);
+    box-shadow: 0 4px 12px rgba(0, 180, 216, 0.4);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 180, 216, 0.6);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--bs-success), #00c853);
+    box-shadow: 0 4px 12px rgba(0, 230, 118, 0.4);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--bs-danger), #d32f2f);
+    box-shadow: 0 4px 12px rgba(255, 82, 82, 0.4);
+}
+
+/* Modern Form Controls */
+.form-control,
+.form-select {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: #e0e0e0;
+    padding: 0.75rem 1rem;
+    transition: var(--transition-smooth);
+}
+
+.form-control:focus,
+.form-select:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(0, 180, 216, 0.25);
+    color: #fff;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* Modern Section Styling */
+.section {
+    padding: 2rem 0;
+}
+
+/* Title Styling */
+.title,
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    background: linear-gradient(135deg, #fff, rgba(255, 255, 255, 0.8));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.5rem;
+}
+
+/* Footer */
+.footer {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--glass-border);
+    padding: 2rem 0;
+    margin-top: 3rem;
+}
+
+/* Loading Screen */
+#splash {
+    background: linear-gradient(135deg, var(--bg-dark-primary), var(--bg-dark-secondary));
+}
+
+.blazor-logo {
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 8px 16px rgba(0, 180, 216, 0.4));
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* Progress Bar */
+.progress {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, var(--bs-primary), #03dac6);
+    transition: width 0.3s ease;
+}
+
+/* Container Enhancements */
+.container {
+    max-width: 1400px;
+}
+
+/* Responsive Video Container */
+.video-container {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-md);
+}
+
+/* Modal Enhancements */
+.modal-content {
+    background: var(--bg-dark-secondary);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: var(--glass-border);
+}
+
+/* Table Styling */
+.table {
+    color: #e0e0e0;
+}
+
+.table-dark {
+    --bs-table-bg: var(--glass-bg);
+    --bs-table-border-color: var(--glass-border);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark-tertiary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bs-primary);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #03dac6;
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Icon Enhancements */
+.icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    transition: var(--transition-smooth);
+}
+
+.icon-wrapper:hover {
+    background: var(--bs-primary);
+    transform: scale(1.1);
+}
+
+/* Badge Styling */
+.badge {
+    border-radius: 8px;
+    padding: 0.5em 0.75em;
+    font-weight: 600;
+}
+
+/* Alert Styling */
+.alert {
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+}
+
+select.form-select option {
+    color: #212529 !important;
+    background-color: #fff !important;
+}

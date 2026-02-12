@@ -14,40 +14,37 @@
 @inject IStringLocalizer<LangResources> Loc
 @inject TOVFileManager filemanager
 
-<h3 class="title is-3">Opzioni</h3>
+<h3 class="h3 mb-4">Opzioni</h3>
 
 
 
 
 <div class="card">
-    <header class="card-header">
-        <p class="card-header-title">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
             Importazione iscritti da WISE
-        </p>
-    </header>
-    <div class="card-content">
+        </h5>
+    </div>
+    <div class="card-body">
         Caricare il file degli iscritti, tipo .dbf
     </div>
 
 
-    <div class="content">
-        <div class="file has-name">
-            <label class="file-label">
+    <div class="card-body">
+        <div class="mb-3">
+            <label class="form-label">
 
-                <InputFile class="file-input" OnChange="@OnInputFileChange" accept=".dbf" />
+                <InputFile class="form-control" OnChange="@OnInputFileChange" accept=".dbf" />
 
                 @*<input class="file-input" type="file" name="resume">*@
 
-                <span class="file-cta">
-                    
-                    <span class="file-label">
-                        Seleziona file Wise…
-                    </span>
-                </span>
-                <span class="file-name">
-                    @go.NomeFileDbf
-                </span>
             </label>
+            <div class="form-text">
+                Seleziona file Wise…
+            </div>
+            <div>
+                @go.NomeFileDbf
+            </div>
         </div>
 
         
@@ -56,9 +53,9 @@
 
     @if (go.Atleti != null)
     {
-        <div class="content">
-            <div class="select">
-                    <select @onchange="SelezionaGara" >
+        <div class="card-body">
+            <div class="mb-3">
+                    <select class="form-select" @onchange="SelezionaGara" >
                         <option>Seleziona la gara</option>
                     @foreach(var gara in go.Atleti.Select(a => $"{a.CODGARA} - {a.INTESTAZIO}").Distinct())
                     {
@@ -69,8 +66,8 @@
             </div>
             @if (go.Atleti != null)
             {
-                <div class="select">
-                    <select>
+                <div class="mb-3">
+                    <select class="form-select">
                         @foreach (var atl in go.Atleti.Where(a => a.CODGARA == go.GaraSel && a.CONFERMA == "S")
                        .OrderBy(a => a.PettNum))
                         {
@@ -81,7 +78,7 @@
                 </div>
             }
 
-            <button class="button" @onclick="PulisciAtleti"  >Pulisci</button>
+            <button class="btn btn-primary" @onclick="PulisciAtleti"  >Pulisci</button>
 
         </div>
     }
@@ -92,21 +89,21 @@
 <br />
 
 <div class="card">
-    <header class="card-header">
-        <p class="card-header-title">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
             Selezione camera di Default
-        </p>
-    </header>
-    <div class="card-content">
+        </h5>
+    </div>
+    <div class="card-body">
         Selezionare la camera che verrà caricata automaticamente all'avvio
     </div>
 
 
-    <div class="content">
+    <div class="card-body">
         
-        <div class="columns">
+        <div class="row">
             
-            <div class="column is-6">
+            <div class="col-md-6">
         <CameraSelector OnCameraSelected="OnCameraSelected"  />
             </div>
             
@@ -119,13 +116,13 @@
 <br />
 
 <div class="card">
-    <header class="card-header">
-        <p class="card-header-title">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
             Tipo Registrazione
-        </p>
+        </h5>
 
-    </header>
-    <div class="card-content">
+    </div>
+    <div class="card-body">
         <div class="content">
             Nella modalita' a registrazione singola bisogna premere il bottone sia per far partire che per salvare il file.
             <br />
@@ -135,17 +132,21 @@
 
 
 
-        <div class="control">
-            <label class="radio">
-                <input type="radio" name="registrazione" checked="@(!RegistrazioneContinua)"
+        <div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="registrazione" id="reg1" checked="@(!RegistrazioneContinua)"
                 @onchange="Cambia">
-                Registrazione singola
-            </label>
-            <label class="radio">
-                <input type="radio" name="registrazione" checked="@(RegistrazioneContinua)"
+                <label class="form-check-label" for="reg1">
+                    Registrazione singola
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="registrazione" id="reg2" checked="@(RegistrazioneContinua)"
                 @onchange="Cambia">
-                Registrazione continua
-            </label>
+                <label class="form-check-label" for="reg2">
+                    Registrazione continua
+                </label>
+            </div>
         </div>
     </div>
 </div>

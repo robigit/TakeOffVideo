@@ -30,141 +30,136 @@
     </div>
 
     <section class="content">
-    <nav class="level">
+    <div class="row g-2 align-items-center">
 
-        <div class="level-left">
-            <div class="level-item">
-                <div class="buttons are-small">
-                        <button class="button is-light" @onclick="@(() => MostraLinea())">
-                            @*@_textlinea*@
-                            <span class="icon is-small">
-                            @if(_lineavisibile)
-                            {
-                                    <img src="image/hideline24.png">
-                            }
-                            else
-                            {
-                                    <img src="image/showline24.png">
-                            }
-                            </span>
-                        </button>
+        <div class="col-auto">
+            <div class="btn-group btn-group-sm" role="group" style="font-size: 0.8rem;">
+                <button class="btn btn-light" @onclick="@(() => MostraLinea())" style="padding: 0.25rem 0.5rem;">
+                    @*@_textlinea*@
+                    <span class="icon-sm">
+                    @if(_lineavisibile)
+                    {
+                            <img src="image/hideline24.png" style="width: 20px; height: 20px;">
+                    }
+                    else
+                    {
+                            <img src="image/showline24.png" style="width: 20px; height: 20px;">
+                    }
+                    </span>
+                </button>
                 @if (_lineavisibile)
                 {
-                    <button class="button is-light" @onclick="@(() => Move("sx", 10))">
-                        <span class="icon is-small">
-                            <img src="image/dopchevronleft24.png">
+                    <button class="btn btn-light" @onclick="@(() => Move("sx", 10))" style="padding: 0.25rem 0.5rem;">
+                        <span class="icon-sm">
+                            <img src="image/dopchevronleft24.png" style="width: 20px; height: 20px;">
                         </span>
                     </button>
 
-                    <button class="button is-light" @onclick="@(() => Move("sx", 1))">
-                        <span class="icon is-small">
-                            <img src="image/chevronleft24.png">
+                    <button class="btn btn-light" @onclick="@(() => Move("sx", 1))" style="padding: 0.25rem 0.5rem;">
+                        <span class="icon-sm">
+                            <img src="image/chevronleft24.png" style="width: 20px; height: 20px;">
                         </span>
                     </button>
 
-                            <button class="button is-light" @onclick="@(() => Move("dx", 1))">
-                        <span class="icon is-small">
-                            <img src="image/chevronright24.png">
+                    <button class="btn btn-light" @onclick="@(() => Move("dx", 1))" style="padding: 0.25rem 0.5rem;">
+                        <span class="icon-sm">
+                            <img src="image/chevronright24.png" style="width: 20px; height: 20px;">
                         </span>
                     </button>
 
-                            <button class="button is-light" @onclick="@(() => Move("dx", 10))">
-                        <span class="icon is-small">
-                            <img src="image/dopchevronright24.png">
+                    <button class="btn btn-light" @onclick="@(() => Move("dx", 10))" style="padding: 0.25rem 0.5rem;">
+                        <span class="icon-sm">
+                            <img src="image/dopchevronright24.png" style="width: 20px; height: 20px;">
                         </span>
                     </button>
                 }
-            </div>
-            </div>
-        </div>
-         @if (!ConRecorder)
-        {
-                <div class="level-right">
-                       @* <p class="level-item">
-                       
-                            <strong>Frames</strong>
-                        </p>*@
-                    <div class="level-item">
-                        <div class="buttons are-small">
+                @if (!ConRecorder)
+                {
+                        <button class="btn btn-light" style="padding: 0.25rem 0.5rem; margin-left: 0.5rem;">
+                            <span class="icon-sm">
+                                <img src="image/slider24.png" style="width: 20px; height: 20px;">
+                            </span>
+                        </button>
 
-                            <button class="button is-light" >
-                                <span class="icon is-small">
-                                    <img src="image/slider24.png">
+                        <button class="btn btn-light" @onclick="@(() => AdvanceFrame(-10))" style="padding: 0.25rem 0.5rem;">
+                            <span class="icon-sm">
+                                <img src="image/dopchevronleft24.png" style="width: 20px; height: 20px;">
+                            </span>
+                        </button>
+
+                        <button class="btn btn-light" @onclick="@(() => AdvanceFrame(-2))" style="padding: 0.25rem 0.5rem;">
+                            <span class="icon-sm">
+                                <img src="image/chevronleft24.png" style="width: 20px; height: 20px;">
+                            </span>
+                        </button>
+
+                        <button class="btn btn-light" @onclick="@(() => AdvanceFrame(2))" style="padding: 0.25rem 0.5rem;">
+                            <span class="icon-sm">
+                                <img src="image/chevronright24.png" style="width: 20px; height: 20px;">
+                            </span>
+                        </button>
+
+                        <button class="btn btn-light" @onclick="@(() => AdvanceFrame(10))" style="padding: 0.25rem 0.5rem;">
+                            <span class="icon-sm">
+                                <img src="image/dopchevronright24.png" style="width: 20px; height: 20px;">
+                            </span>
+                        </button>
+                        @if (ConZoom)
+                        {
+                            <button class="btn btn-light" @onclick="ZoomClick" style="padding: 0.25rem 0.5rem;">
+                                <span class="icon-sm">
+                                    <img src="image/zoom24.png" style="width: 20px; height: 20px;">
                                 </span>
                             </button>
+                        }
+                        @if (true)
+                        {
+                            <button class="btn btn-danger @(savingimage ? "disabled" : "")" @onclick="GetImageClick" disabled="@savingimage" style="padding: 0.25rem 0.5rem;">
+                                <span class="icon-sm">
+                                    <img src="image/getimage24.png" style="width: 20px; height: 20px;">
+                                </span>
+                            </button>
+                        }
+                }
 
-                            <button class="button is-light" @onclick="@(() => AdvanceFrame(-10))">
-                            <span class="icon is-small">
-                                <img src="image/dopchevronleft24.png">
-                            </span>
-                        </button>
+            </div>
+        </div>
+         @* @if (!ConRecorder)
+        {
+            <div class="col-auto ms-auto">
+                <div class="btn-group btn-group-sm" role="group">
 
-                            <button class="button is-light" @onclick="@(() => AdvanceFrame(-2))">
-                            <span class="icon is-small">
-                                <img src="image/chevronleft24.png">
-                            </span>
-                        </button>
-
-                            <button class="button is-light" @onclick="@(() => AdvanceFrame(2))">
-                            <span class="icon is-small">
-                                <img src="image/chevronright24.png">
-                            </span>
-                        </button>
-
-
-                            <button class="button is-light" @onclick="@(() => AdvanceFrame(10))">
-                            <span class="icon is-small">
-                                <img src="image/dopchevronright24.png">
-                            </span>
-                        </button>
-                            @if (ConZoom)
-                            {
-                                <button class="button is-light" @onclick="ZoomClick">
-                                    <span class="icon is-small">
-                                        <img src="image/zoom24.png">
-                                    </span>
-                                </button>
-                            }
-                            @if (true)
-                            {
-                                <button class="button is-danger @(savingimage?"is-loading":"") " @onclick="GetImageClick">
-                                    <span class="icon is-small">
-                                        <img src="image/getimage24.png">
-                                    </span>
-                                </button>
-                            }
-                            @* <button class="button" @onclick="@(() => SettaCurrentTime(6.415))">
-                            <span class="icon is-small">
-                                <img src="image/dopchevronright24.png">
-                            </span>
-                        </button>*@
-                    </div>
+                    
+                   
                 </div>
             </div>
-        }
-    </nav>
+        } *@
+    </div>
     </section>
 
     @if (ConRecorder)
     {
-        <div class="columns is-1">
-            <div class="column is-10">
-                <button @ref="_startstopbutton" class="button is-fullwidth @(_inregistrazione ? "is-danger" : "is-primary")"
-                    @onclick="OnRegistra">
-                    <span>    
-                        @(
-                           ( _inregistrazione ? Loc["Salva"] : Loc["Registra"])+ " "+(RegistrazioneContinua ?"(continua)" :"" )
-                            )
-                    </span>
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-8">
+                    <button @ref="_startstopbutton" class="btn w-100 @(_inregistrazione ? "btn-danger" : "btn-primary")"
+                        @onclick="OnRegistra">
+                        <span>    
+                            @(
+                               ( _inregistrazione ? Loc["Salva"] : Loc["Registra"])+ " "+(RegistrazioneContinua ?"(continua)" :"" )
+                                )
+                        </span>
 
-                </button>
+                    </button>
+                </div>
+                <div class="col">
+                    
+                    <button @ref="_cancelbutton" class="btn btn-warning  @(!_inregistrazione ? "disabled" : "")">
+                        <span>@Loc["Annulla"]</span>
+                    </button>
+                    
+                </div>
             </div>
-            <div class="column">
-                <button @ref="_cancelbutton" class="button is-primary">
-                    <span>@Loc["Annulla"]</span>
-                </button>
-            </div>
-
         </div>
         @if(_inregistrazione)
         {

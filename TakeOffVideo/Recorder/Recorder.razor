@@ -18,93 +18,59 @@
 @inject GlobalObjects go
 
 
-<h1 class="title is-2">
-    @Loc["Registrazione"]
-</h1>
+<h2 class="mb-4">
+    <i class="bi bi-record-circle me-2"></i>@Loc["Registrazione"]
+</h2>
 
-<div class="columns">
-    @*<div class="column is-6">*@
-        @* <CartellaSelector/> *@
-    @*</div>
-    <div class="column is-6">*@
-        <CameraSelector OnCameraSelected="OnCameraSelected2" Nome="Main" />
-    @*</div>*@
+<div class="mb-4">
+    <CameraSelector OnCameraSelected="OnCameraSelected2" Nome="Main" />
 </div>
 
 <VideoMarker @ref="_videoMarker" WidthVideo="320" HeigthVideo="320" Ruolo="VideoMarker.TVideo.Recorder"
              ConRecorder="true" RegistrazioneContinua="@RegistrazioneContinua"   OnVideoRecorded="SalvaUrlVideo" />
 
-<div class="container">
-
-<div class="field is-horizontal">
-  
-  <div class="field-body">
-    @*<div class="field">*@
-        <p class="control  has-icons-left">
-          <div class="select">
-
-             <select @bind:after="SelectedTurnoChanged" @bind="_turno">
+<div class="row g-3 mt-3">
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text">
+                <img src="image/turno24.png" alt="Turno" height="20">
+            </span>
+            <select class="form-select" @bind:after="SelectedTurnoChanged" @bind="_turno">
                 <option value="0">@Loc["Prove"]</option>
                 @for(int i=1; i<7; ++i)
                 {
                     <option value="@i">@Loc["Turno"] @i</option>
-               
                 }
             </select>
-              
-         </div>
-                <div class="icon is-small is-left">
-                   <img src="image/turno24.png">
-                </div>
-
-      </p>
-    @*</div>*@
-    <div class="field">
-      <p class="control is-expanded has-icons-left">
-
-          @if(go.Atleti != null)
-          {
-                <div class="select">
-                        <select @onchange="SelezionaAtleta"  >
-                        @foreach (var atl in go.Atleti.Where(a => a.CODGARA == go.GaraSel && a.CONFERMA=="S")
-                                .OrderBy(a => a.PettNum))
-                        {
-                            <option>@atl</option>
-
-                        }
-                    </select>
-                </div>
-          }
-          else
-          {
-                <input class="input is-success" placeholder=@Loc["Atleta"] 
-                    @bind="_pettorale" @bind:event="oninput" />
-          }
-        <span class="icon is-small is-left">
-         
-                <img src="image/number24.png">
-        </span>
-
-        @*<figure class="image is-48x48">
-            <img src="image/number.png">
-        </figure>*@
-       
-      </p>
+        </div>
     </div>
-  </div>
+    
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text">
+                <img src="image/number24.png" alt="Atleta" height="20">
+            </span>
+            @if(go.Atleti != null)
+            {
+                <select class="form-select" @onchange="SelezionaAtleta">
+                    @foreach (var atl in go.Atleti.Where(a => a.CODGARA == go.GaraSel && a.CONFERMA=="S")
+                            .OrderBy(a => a.PettNum))
+                    {
+                        <option>@atl</option>
+                    }
+                </select>
+            }
+            else
+            {
+                <input class="form-control" placeholder="@Loc["Atleta"]" 
+                    @bind="_pettorale" @bind:event="oninput" />
+            }
+        </div>
+    </div>
 </div>
 
-
-
-</div>
-
-@*<VideoUploader Testo=@Loc["Iscritti…"] OnVideoUploaded="OnListaUploaded" Accept=".txt" />*@
-
-
-
-
-<div class="block">
-    <p class="is-size-7">@_messaggio</p>
+<div class="mt-3">
+    <small class="text-muted">@_messaggio</small>
 </div>
 
 
