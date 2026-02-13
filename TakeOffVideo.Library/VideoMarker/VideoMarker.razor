@@ -31,66 +31,64 @@
         </div>
     </div>
 
-    <!-- Line Controls Section -->
+    <!-- Combined Line and Frame Controls Section -->
     <div class="row justify-content-center mb-3">
         <div class="col-auto">
-            <div class="btn-group" role="group" aria-label="@Loc["ControlliLinea"]">
-                <button class="btn btn-outline-secondary" @onclick="@(() => MostraLinea())" title="@_textlinea">
-                    <i class="bi @(_lineavisibile ? "bi-eye-slash" : "bi-eye")"></i>
-                </button>
-                @if (_lineavisibile)
-                {
-                    <button class="btn btn-outline-secondary" @onclick="@(() => Move("sx", 10))" title="@Loc["SpostaSinistra"] 10px">
-                        <i class="bi bi-chevron-double-left"></i>
+            <div class="d-flex gap-2 flex-nowrap justify-content-center align-items-center">
+                <!-- Line Controls -->
+                <div class="btn-group" role="group" aria-label="@Loc["ControlliLinea"]">
+                    <button class="btn btn-sm btn-outline-secondary" style="padding: 0.25rem 0.5rem;" @onclick="@(() => MostraLinea())" title="@_textlinea">
+                        <i class="bi @(_lineavisibile ? "bi-eye-slash" : "bi-eye")"></i>
                     </button>
-                    <button class="btn btn-outline-secondary" @onclick="@(() => Move("sx", 1))" title="@Loc["SpostaSinistra"] 1px">
-                        <i class="bi bi-chevron-left"></i>
-                    </button>
-                    <button class="btn btn-outline-secondary" @onclick="@(() => Move("dx", 1))" title="@Loc["SpostaDestra"] 1px">
-                        <i class="bi bi-chevron-right"></i>
-                    </button>
-                    <button class="btn btn-outline-secondary" @onclick="@(() => Move("dx", 10))" title="@Loc["SpostaDestra"] 10px">
-                        <i class="bi bi-chevron-double-right"></i>
-                    </button>
-                }
-            </div>
-        </div>
-    </div>
-
-    @if (!ConRecorder)
-    {
-        <!-- Frame Controls Section (Analyzer Mode) -->
-        <div class="row justify-content-center mb-3">
-            <div class="col-auto">
-                <div class="d-flex gap-2 flex-wrap justify-content-center">
-                    <div class="btn-group" role="group" aria-label="@Loc["ControlliFrame"]">
-                        <button class="btn btn-outline-primary" disabled>
-                            <i class="bi bi-sliders"></i>
-                        </button>
-                        <button class="btn btn-outline-primary" @onclick="@(() => AdvanceFrame(-10))" title="@Loc["IndietroFrame"] 10">
+                    @if (_lineavisibile)
+                    {
+                        <button class="btn btn-sm btn-outline-secondary" style="padding: 0.25rem 0.5rem;" @onclick="@(() => Move("sx", 10))" title="@Loc["SpostaSinistra"] 10px">
                             <i class="bi bi-chevron-double-left"></i>
                         </button>
-                        <button class="btn btn-outline-primary" @onclick="@(() => AdvanceFrame(-2))" title="@Loc["IndietroFrame"] 2">
+                        <button class="btn btn-sm btn-outline-secondary" style="padding: 0.25rem 0.5rem;" @onclick="@(() => Move("sx", 1))" title="@Loc["SpostaSinistra"] 1px">
                             <i class="bi bi-chevron-left"></i>
                         </button>
-                        <button class="btn btn-outline-primary" @onclick="@(() => AdvanceFrame(2))" title="@Loc["AvantiFrame"] 2">
+                        <button class="btn btn-sm btn-outline-secondary" style="padding: 0.25rem 0.5rem;" @onclick="@(() => Move("dx", 1))" title="@Loc["SpostaDestra"] 1px">
                             <i class="bi bi-chevron-right"></i>
                         </button>
-                        <button class="btn btn-outline-primary" @onclick="@(() => AdvanceFrame(10))" title="@Loc["AvantiFrame"] 10">
+                        <button class="btn btn-sm btn-outline-secondary" style="padding: 0.25rem 0.5rem;" @onclick="@(() => Move("dx", 10))" title="@Loc["SpostaDestra"] 10px">
+                            <i class="bi bi-chevron-double-right"></i>
+                        </button>
+                    }
+                </div>
+
+                @if (!ConRecorder)
+                {
+                    <!-- Frame Controls (Analyzer Mode) -->
+                    <div class="btn-group" role="group" aria-label="@Loc["ControlliFrame"]">
+                        <button class="btn btn-sm btn-outline-primary" style="padding: 0.25rem 0.5rem;" disabled>
+                            <i class="bi bi-sliders"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary" style="padding: 0.25rem 0.5rem;" @onclick="@(() => AdvanceFrame(-10))" title="@Loc["IndietroFrame"] 10">
+                            <i class="bi bi-chevron-double-left"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary" style="padding: 0.25rem 0.5rem;" @onclick="@(() => AdvanceFrame(-2))" title="@Loc["IndietroFrame"] 2">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary" style="padding: 0.25rem 0.5rem;" @onclick="@(() => AdvanceFrame(2))" title="@Loc["AvantiFrame"] 2">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary" style="padding: 0.25rem 0.5rem;" @onclick="@(() => AdvanceFrame(10))" title="@Loc["AvantiFrame"] 10">
                             <i class="bi bi-chevron-double-right"></i>
                         </button>
                     </div>
                     
                     @if (ConZoom)
                     {
-                        <button class="btn btn-outline-info" @onclick="ZoomClick" title="@Loc["Zoom"]">
+                        <button class="btn btn-sm btn-outline-info" style="padding: 0.25rem 0.5rem;" @onclick="ZoomClick" title="@Loc["Zoom"]">
                             <i class="bi bi-zoom-in"></i>
                         </button>
                     }
                     
                     @if (ConImageRec)
                     {
-                        <button class="btn @(savingimage ? "btn-secondary" : "btn-danger")" 
+                        <button class="btn btn-sm @(savingimage ? "btn-outline-secondary" : "btn-outline-danger")" 
+                                style="padding: 0.25rem 0.5rem;"
                                 @onclick="GetImageClick" 
                                 disabled="@savingimage" 
                                 title="@Loc["SalvaImmagine"]">
@@ -99,25 +97,22 @@
                             {
                                 <span class="spinner-border spinner-border-sm" role="status"></span>
                             }
-                            else
-                            {
-                                <span>@Loc["Cattura"]</span>
-                            }
+                            
                         </button>
                     }
-                </div>
+                }
             </div>
         </div>
-    }
+    </div>
 
     @if (ConRecorder)
     {
         <!-- Recording Controls Section -->
         <div class="row justify-content-center mb-3">
-            <div class="col-md-8 col-lg-6">
+            <div class="col-12">
                 <div class="row g-3">
                     <div class="col-8">
-                        <button @ref="_startstopbutton" 
+                        <button @ref="_startstopbutton"
                                 class="btn btn-lg w-100 shadow-sm @(_inregistrazione ? "btn-danger" : "btn-success")"
                                 @onclick="OnRegistra">
                             <i class="bi @(_inregistrazione ? "bi-stop-circle-fill" : "bi-record-circle-fill") me-2"></i>
@@ -130,10 +125,10 @@
                     </div>
                     <div class="col-4">
                         <button @ref="_cancelbutton" 
-                                class="btn btn-lg btn-outline-warning w-100 shadow-sm" 
+                                class="btn btn-lg btn-warning w-100 shadow-sm text-nowrap" 
                                 disabled="@(!_inregistrazione)">
-                            <i class="bi bi-x-circle-fill"></i>
-                            <span class="d-none d-md-inline ms-1">@Loc["Annulla"]</span>
+                            <i class="bi bi-x-circle-fill me-1"></i>
+                            @Loc["Annulla"]
                         </button>
                     </div>
                 </div>
@@ -145,11 +140,11 @@
                         <div class="progress shadow-sm" style="height: 30px;">
                             <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" 
                                  role="progressbar" 
-                                 style="width: 100%"
-                                 aria-valuenow="100" 
+                                 style="width: @(_progressoregistrazione)%"
+                                 aria-valuenow="@_progressoregistrazione" 
                                  aria-valuemin="0" 
                                  aria-valuemax="100">
-                                <strong><i class="bi bi-record-fill me-2"></i>@Loc["Registrazione"]...</strong>
+                                <strong><i class="bi bi-record-fill me-2"></i>@Loc["Registrazione"]... @(_progressoregistrazione)%</strong>
                             </div>
                         </div>
                         <div class="text-center mt-2">
@@ -184,13 +179,6 @@
             </div>
         </div>
     }
-
-    @if(FaiZoom)
-    {
-        <ModalZoom Url="@Url" OnClose="ChiudiDialog" />
-    }
-
-
 
 </div>
 
@@ -229,6 +217,8 @@
 
     [Parameter] public EventCallback<OnVideoRecordedArgs> OnVideoRecorded { get; set; }
 
+    [Parameter] public EventCallback OnZoomRequested { get; set; }
+
     [Parameter] public bool RegistrazioneContinua { get; set; } = false;
 
     [Parameter] public bool FullScreen { get; set; } = false;
@@ -241,34 +231,64 @@
 
 
     private bool _inregistrazione = false;
+    private int _progressoregistrazione = 0;
 
 
 
-    bool FaiZoom = false;
-
+    bool savingimage = false;
 
 
     System.Timers.Timer? _timer;
+    System.Timers.Timer? _progressTimer;
+    
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
 
-        if (ConRecorder && !RegistrazioneContinua)
+        if (ConRecorder)
         {
-            _timer = new System.Timers.Timer(10000)
+            // Progress bar update timer (for both modes)
+            _progressTimer = new System.Timers.Timer(100)
                 {
-                    AutoReset = false,
+                    AutoReset = true,
                     Enabled = false
                 };
-            _timer.Elapsed += async (source, e) =>
+            _progressTimer.Elapsed += async (source, e) =>
             {
-                _timer.Enabled = false;
-                if (_inregistrazione && _JScript != null)
+                if (_inregistrazione)
                 {
-                    await _JScript.InvokeVoidAsync("pressbutton", _startstopbutton);
+                    var elapsed = (DateTime.Now - _startTime).TotalSeconds;
+                    if (!RegistrazioneContinua)
+                    {
+                        // Auto-stop mode: progress from 0% to 100% in 10 seconds
+                        _progressoregistrazione = (int)Math.Min(elapsed * 10, 100);
+                    }
+                    else
+                    {
+                        // Continuous mode: show elapsed time as indeterminate progress (pulse between 10-100%)
+                        _progressoregistrazione = (int)(50 + 40 * Math.Sin(elapsed * 2));
+                    }
+                    await InvokeAsync(StateHasChanged);
                 }
             };
+            
+            if (!RegistrazioneContinua)
+            {
+                _timer = new System.Timers.Timer(10000)
+                    {
+                        AutoReset = false,
+                        Enabled = false
+                    };
+                _timer.Elapsed += async (source, e) =>
+                {
+                    _timer.Enabled = false;
+                    if (_inregistrazione && _JScript != null)
+                    {
+                        await _JScript.InvokeVoidAsync("pressbutton", _startstopbutton);
+                    }
+                };
+            }
         }
 
     }
@@ -419,6 +439,8 @@
     {
         if (_timer != null)
             _timer.Enabled = false;
+        if (_progressTimer != null)
+            _progressTimer.Enabled = false;
 
         if (_JScript == null || string.IsNullOrEmpty(_cameraselected))
         {
@@ -434,6 +456,7 @@
         if (_inregistrazione)
         {
             _startTime = DateTime.Now;
+            _progressoregistrazione = 0;
 
             Console.WriteLine($"Inizio Registrazione");
 
@@ -442,10 +465,19 @@
             {
                 _timer.Enabled = true;
             }
+            if (_progressTimer != null)
+            {
+                _progressTimer.Enabled = true;
+            }
         }
         else
         {
             _durata = DateTime.Now - _startTime;
+            if (_progressTimer != null)
+            {
+                _progressTimer.Enabled = false;
+            }
+            _progressoregistrazione = 0;
         }
 
     }
@@ -468,17 +500,18 @@
     {
         Console.WriteLine($"CancelRec");
         _inregistrazione = false;
+        if (_progressTimer != null)
+        {
+            _progressTimer.Enabled = false;
+        }
+        _progressoregistrazione = 0;
         StateHasChanged();
     }
 
     async Task ZoomClick()
     {
-
-        FaiZoom = true;
-        StateHasChanged();
+        await OnZoomRequested.InvokeAsync();
     }
-
-    bool savingimage = false;
 
     async Task GetImageClick()
     {
@@ -512,11 +545,6 @@
     void DelNotification()
     {
         _notificamsg = null;
-    }
-
-    private void ChiudiDialog()
-    {
-        FaiZoom = false;
     }
 
 

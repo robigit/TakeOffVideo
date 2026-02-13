@@ -1,48 +1,29 @@
 
-
 @inject IStringLocalizer<LangResources> Loc
 
 @inject WebStorageManagement.Models.IWebStorageService webstorage
 
 
-<div class="modal @active">
-
-    <div class="modal-background"></div>
-  
-    @*<div class="modal-content">*@
-
-
-    <TakeOffVideo.Library.VideoMarker.VideoMarker @ref="_video"
-                ConControls = "true" 
-                ConZoom = "false"
-                FullScreen = "true" 
-                Ruolo = "VideoMarker.VideoMarker.TVideo.Zoom"
-                Url="@Url" />
-                
-
-    @*</div>*@
-    <button class="button is-warning" @onclick="Chiudi">@Loc["Chiudi"]</button>
-
-
-
-    @*<div class="modal-background"></div>
-    
-
-    <div class="modal-card">
-        <header class="modal-card-head">
-            
-            <button class="delete" aria-label="close" @onclick="Chiudi"></button>
-        </header>
-        <section class="modal-card-body">
-            <TakeOffVideo.Library.VideoMarker.VideoMarker   Url="@Url"/>
-
-
-        </section>
-        <footer class="modal-card-foot">
-            <button class="button is-warning" @onclick="Chiudi">@Loc["Chiudi"]</button>
-
-        </footer>
-    </div>*@
+<div class="modal fade @(active ? "show d-block" : "")" tabindex="-1" style="@(active ? "position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.8); z-index: 9999;" : "")">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-dark">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">@Loc["Zoom"]</h5>
+                <button type="button" class="btn-close btn-close-white" @onclick="Chiudi" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex justify-content-center align-items-center">
+                <TakeOffVideo.Library.VideoMarker.VideoMarker @ref="_video"
+                    ConControls="true" 
+                    ConZoom="false"
+                    FullScreen="true" 
+                    Ruolo="VideoMarker.VideoMarker.TVideo.Zoom"
+                    Url="@Url" />
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-warning" @onclick="Chiudi">@Loc["Chiudi"]</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -50,7 +31,7 @@
 
     private TakeOffVideo.Library.VideoMarker.VideoMarker? _video;
 
-    string active = "is-active";
+    bool active = true;
 
 
     protected override async Task OnInitializedAsync()
@@ -76,14 +57,9 @@
 
     protected async Task Chiudi()
     {
-        active = "";
-        // if (_video != null)
-        // {
-        //     var pos = await _video.GetLinePosition();
-        //     Console.WriteLine($"ModalZoom Out {pos}");
-
-        //     await webstorage.SessionStorage.Save("ZoomLinePos", pos.ToString() );
-        // }
+        active = false;
+        StateHasChanged();
+        await Task.Delay(300); // Allow fade animation to complete
        
         await OnClose.InvokeAsync(true);
     }

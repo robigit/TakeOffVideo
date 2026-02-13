@@ -1,6 +1,7 @@
 ﻿@page "/"
 @page "/{Modalita}"
 @using WebStorageManagement.Models;
+@using TakeOffVideo.Library.ModalDialog
 
 @inject IJSRuntime jsRuntime
 @inject IWebStorageService webStorage
@@ -18,13 +19,22 @@
     <div class="col-lg-6">
         <div class="card fade-in">
             <div class="card-body">
-                <TakeOffVideo.Analyzer.Analyzer/>
+                <TakeOffVideo.Analyzer.Analyzer @ref="_analyzer" OnZoomRequested="OpenZoom"/>
             </div>
         </div>
     </div>
 </div>
 
+@if(_showZoom && !string.IsNullOrEmpty(_zoomVideoUrl))
+{
+    <ModalZoom Url="@_zoomVideoUrl" OnClose="CloseZoom" />
+}
+
 @code {
+
+    TakeOffVideo.Analyzer.Analyzer? _analyzer;
+    bool _showZoom = false;
+    string? _zoomVideoUrl;
 
     [Parameter]
     public string? Modalita { get; set; }
@@ -42,6 +52,19 @@
 
         }
 
+    }
+
+    private void OpenZoom(string videoUrl)
+    {
+        _zoomVideoUrl = videoUrl;
+        _showZoom = true;
+        StateHasChanged();
+    }
+
+    private void CloseZoom(bool close)
+    {
+        _showZoom = false;
+        StateHasChanged();
     }
 
 }

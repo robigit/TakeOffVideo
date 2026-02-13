@@ -1,7 +1,7 @@
 ﻿.vmcontainer {
-    width: 100%;
-    height: 100%;
+    display: inline-block;
     position: relative;
+    max-width: 100%;
 }
 
 
@@ -18,6 +18,11 @@
 
 
 .vmvideo {
-    width: 100%;
-    height: 100%;
+    display: block;
+}
+
+.vmvideo video {
+    max-width: 100%;
+    height: auto;
+    display: block;
 }
