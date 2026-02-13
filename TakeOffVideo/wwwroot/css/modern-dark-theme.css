@@ -53,6 +53,12 @@ body {
     box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
 
+/* Force remove white backgrounds */
+.card.bg-light,
+section.bg-light {
+    background: var(--glass-bg) !important;
+}
+
 /* Modern Navbar */
 .navbar {
     background: var(--glass-bg) !important;
@@ -180,11 +186,21 @@ body {
 .title,
 h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
-    background: linear-gradient(135deg, #fff, rgba(255, 255, 255, 0.8));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #fff;
     margin-bottom: 1.5rem;
+}
+
+/* Dark headers on light backgrounds */
+.bg-light h1,
+.bg-light h2,
+.bg-light h3,
+.bg-light h4,
+.bg-light h5,
+.bg-light h6 {
+    color: var(--bs-primary);
+    border-bottom: 3px solid var(--bs-primary);
+    padding-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 180, 216, 0.2);
 }
 
 /* Footer */
