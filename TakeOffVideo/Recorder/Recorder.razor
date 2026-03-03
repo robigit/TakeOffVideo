@@ -55,17 +55,28 @@
     <div class="field">
       <p class="control is-expanded has-icons-left">
 
-          @if(go.Atleti != null)
+          @if(HasAtletiToSelect)
           {
                 <div class="select">
-                        <select @onchange="SelezionaAtleta">
-                        @foreach (var atl in go.Atleti.Where(a => a.CODGARA == go.GaraSel && a.CONFERMA=="S")
-                                .OrderBy(a => a.PettNum))
-                        {
-                            <option>@atl</option>
+                     <select @onchange="SelezionaAtleta">
+                         <option value="">Seleziona atleta</option>
+                         @if(go.Atleti != null)
+                         {
+                             @foreach (var atl in go.Atleti.Where(a => a.CODGARA == go.GaraSel && a.CONFERMA=="S")
+                                     .OrderBy(a => a.PettNum))
+                             {
+                                 <option value="@atl.PETTO">@atl</option>
+                             }
+                         }
 
-                        }
-                    </select>
+                         @if(go.AtletiLocali != null)
+                         {
+                             @foreach (var atl in go.AtletiLocali.OrderBy(a => a.PettNum))
+                             {
+                                 <option value="@atl.Pettorale">@atl</option>
+                             }
+                         }
+                     </select>
                 </div>
           }
           else
@@ -105,7 +116,6 @@
 
 
 @code {
-
     //private IJSObjectReference? _JSRecorder;
     //private DotNetObjectReference<Recorder>? _reference;
 
@@ -127,6 +137,17 @@
     protected override async Task OnInitializedAsync()
     {
         RegistrazioneContinua = await webStorage.LocalStorage.Read("TipoRec") == "True";
+
+        // Load local athletes
+        var json = await webStorage.LocalStorage.Read("AtletiLocali");
+        if (!string.IsNullOrEmpty(json))
+        {
+            var list = System.Text.Json.JsonSerializer.Deserialize<List<Atleta>>(json);
+            if (list != null)
+            {
+                go.AtletiLocali = list;
+            }
+        }
     }
 
     private void OnCameraSelected2(string camera)
@@ -159,6 +180,6 @@
         
     }
 
-
+    private bool HasAtletiToSelect => (go.Atleti != null && go.Atleti.Any(a => a.CODGARA == go.GaraSel && a.CONFERMA=="S")) || go.AtletiLocali.Any();
 
 }

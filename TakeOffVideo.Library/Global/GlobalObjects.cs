@@ -10,6 +10,8 @@ namespace TakeOffVideo.Library.Global
     public class GlobalObjects
     {
         public IEnumerable<AtletaWise>? Atleti { get; set; } = null;
+        
+        public List<Atleta> AtletiLocali { get; set; } = new();
 
         public string? GaraSel { get; set; }
 
