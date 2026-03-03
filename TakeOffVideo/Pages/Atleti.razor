@@ -1,0 +1,179 @@
+@page "/atleti"
+@using System.Text.Json;
+@using Microsoft.Extensions.Localization;
+@using TakeOffVideo.Localization;
+@using TakeOffVideo.Library.Global;
+@using WebStorageManagement.Models;
+
+@inject IStringLocalizer<LangResources> Loc
+@inject IWebStorageService webstorage
+@inject GlobalObjects go
+
+<h3 class="title is-3">@Loc["Gestione Atleti"]</h3>
+
+<div class="box">
+    <h4 class="title is-4">@(_editingId == null ? Loc["Aggiungi Atleta"] : Loc["Modifica Atleta"])</h4>
+    <div class="field is-horizontal">
+        <div class="field-body">
+            <div class="field">
+                <p class="control">
+                    <input class="input" type="text" placeholder="@Loc["Pettorale"]" @bind="_pettorale" />
+                </p>
+            </div>
+            <div class="field">
+                <p class="control">
+                    <input class="input" type="text" placeholder="@Loc["Nome"]" @bind="_nome" />
+                </p>
+            </div>
+            <div class="field">
+                <p class="control">
+                    <input class="input" type="text" placeholder="@Loc["Cognome"]" @bind="_cognome" />
+                </p>
+            </div>
+             <div class="field">
+                <p class="control">
+                    <input class="input" type="text" placeholder="@Loc["Societa"]" @bind="_societa" />
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="field is-grouped">
+        <div class="control">
+            <button class="button is-link" @onclick="SalvaAtleta">@Loc["Salva"]</button>
+        </div>
+        @if (_editingId != null)
+        {
+            <div class="control">
+                <button class="button is-link is-light" @onclick="AnnullaModifica">@Loc["Annulla"]</button>
+            </div>
+        }
+    </div>
+</div>
+
+@if (go.AtletiLocali.Any())
+{
+    <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+            <tr>
+                <th>@Loc["Pettorale"]</th>
+                <th>@Loc["Nome"]</th>
+                <th>@Loc["Cognome"]</th>
+                <th>@Loc["Societa"]</th>
+                <th>@Loc["Azioni"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var atl in go.AtletiLocali.OrderBy(a => a.PettNum))
+            {
+                <tr>
+                    <td>@atl.Pettorale</td>
+                    <td>@atl.Nome</td>
+                    <td>@atl.Cognome</td>
+                    <td>@atl.Societa</td>
+                    <td>
+                        <button class="button is-small is-info" @onclick="() => ModificaAtleta(atl)">@Loc["Modifica"]</button>
+                        <button class="button is-small is-danger" @onclick="() => EliminaAtleta(atl)">@Loc["Elimina"]</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>@Loc["Nessun atleta inserito."]</p>
+}
+
+@code {
+    private string? _editingId;
+    private string? _nome;
+    private string? _cognome;
+    private string? _pettorale;
+    private string? _societa;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAtleti();
+    }
+
+    private async Task LoadAtleti()
+    {
+        var json = await webstorage.LocalStorage.Read("AtletiLocali");
+        if (!string.IsNullOrEmpty(json))
+        {
+            var list = JsonSerializer.Deserialize<List<Atleta>>(json);
+            if (list != null)
+            {
+                go.AtletiLocali = list;
+            }
+        }
+    }
+
+    private async Task SalvaAtletiSuStorage()
+    {
+        var json = JsonSerializer.Serialize(go.AtletiLocali);
+        await webstorage.LocalStorage.Save("AtletiLocali", json);
+    }
+
+    private async Task SalvaAtleta()
+    {
+        if (string.IsNullOrWhiteSpace(_nome) && string.IsNullOrWhiteSpace(_cognome) && string.IsNullOrWhiteSpace(_pettorale))
+            return;
+
+        if (_editingId == null)
+        {
+            var nuovoAtleta = new Atleta
+            {
+                Nome = _nome,
+                Cognome = _cognome,
+                Pettorale = _pettorale,
+                Societa = _societa
+            };
+            go.AtletiLocali.Add(nuovoAtleta);
+        }
+        else
+        {
+            var atleta = go.AtletiLocali.FirstOrDefault(a => a.Id == _editingId);
+            if (atleta != null)
+            {
+                atleta.Nome = _nome;
+                atleta.Cognome = _cognome;
+                atleta.Pettorale = _pettorale;
+                atleta.Societa = _societa;
+            }
+            _editingId = null;
+        }
+
+        PuliziaForm();
+        await SalvaAtletiSuStorage();
+    }
+
+    private void ModificaAtleta(Atleta atleta)
+    {
+        _editingId = atleta.Id;
+        _nome = atleta.Nome;
+        _cognome = atleta.Cognome;
+        _pettorale = atleta.Pettorale;
+        _societa = atleta.Societa;
+    }
+
+    private async Task EliminaAtleta(Atleta atleta)
+    {
+        go.AtletiLocali.Remove(atleta);
+        await SalvaAtletiSuStorage();
+    }
+
+    private void AnnullaModifica()
+    {
+        _editingId = null;
+        PuliziaForm();
+    }
+
+    private void PuliziaForm()
+    {
+        _nome = null;
+        _cognome = null;
+        _pettorale = null;
+        _societa = null;
+    }
+}
