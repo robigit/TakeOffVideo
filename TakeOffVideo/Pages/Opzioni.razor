@@ -1,4 +1,4 @@
-﻿@page "/opzioni"
+@page "/opzioni"
 @using System.Text;
 @using Microsoft.Extensions.Localization;
 @using TakeOffVideo.Library.CameraSelector
@@ -7,12 +7,14 @@
 @using TakeOffVideo.Library.TOVFileManagerNS;
 @using TakeOffVideo.Localization;
 @using WebStorageManagement.Models;
+@using TakeOffVideo.Library.Util;
 
 @inject IWebStorageService webstorage
 
 @inject GlobalObjects go
 @inject IStringLocalizer<LangResources> Loc
 @inject TOVFileManager filemanager
+@inject FidalScraperService _fidalScraper
 
 <h3 class="h3 mb-4">Opzioni</h3>
 
@@ -85,6 +87,33 @@
 
 </div>
 
+<br />
+
+<div class="card">
+    <div class="card-header bg-info text-white">
+        <h5 class="card-title mb-0">
+            Importazione iscritti da FIDAL
+        </h5>
+    </div>
+    <div class="card-body">
+        <p>Copia le righe della tabella dal sito FIDAL e incollale qui sotto per importare automaticamente gli atleti.</p>
+
+        <div class="mb-3">
+            <textarea class="form-control" rows="5" placeholder="Incolla qui il testo copiato dalla tabella del sito FIDAL..." @bind="_pastedText"></textarea>
+            <button class="btn btn-info text-white mt-2" type="button" @onclick="ImportaDaTesto" disabled="@_isImporting">
+                @if (_isImporting) { <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> }
+                else { <span>Importa Da Testo</span> }
+            </button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(_fidalMessage))
+        {
+            <div class="alert @(_fidalMessage.Contains("Errore") || _fidalMessage.Contains("Nessun") ? "alert-warning" : "alert-success") mt-3" role="alert">
+                @_fidalMessage
+            </div>
+        }
+    </div>
+</div>
 
 <br />
 
@@ -157,6 +186,94 @@
 @code {
     bool RegistrazioneContinua;
 
+    // FIDAL Variables
+    private string _pastedText = "";
+    private string _fidalMessage = "";
+    private bool _isImporting = false;
+
+    private async Task SalvaAtletiEstratti(List<Atleta> estratti)
+    {
+        if (estratti.Count == 0)
+        {
+            _fidalMessage = "Nessun atleta trovato.";
+            return;
+        }
+
+        // Recuperiamo quelli attuali, se presenti
+        var strCache = await webstorage.LocalStorage.Read("AtletiLocali");
+        if (!string.IsNullOrEmpty(strCache))
+        {
+            var tempList = System.Text.Json.JsonSerializer.Deserialize<List<Atleta>>(strCache);
+            if (tempList != null) go.AtletiLocali = tempList;
+        }
+
+        int aggiunti = 0;
+        foreach (var a in estratti)
+        {
+            if (!go.AtletiLocali.Any(al => al.Pettorale == a.Pettorale && al.Nome == a.Nome && al.Cognome == a.Cognome))
+            {
+                go.AtletiLocali.Add(a);
+                aggiunti++;
+            }
+        }
+
+        if (aggiunti > 0)
+        {
+            await webstorage.LocalStorage.Save("AtletiLocali", System.Text.Json.JsonSerializer.Serialize(go.AtletiLocali));
+            _fidalMessage = $"Importazione completata: {aggiunti} atleti estratti inseriti negli Atleti Locali!";
+        }
+        else
+        {
+            _fidalMessage = "Nessun nuovo atleta da aggiungere (tutti già presenti negli Atleti Locali).";
+        }
+        StateHasChanged();
+    }
+
+    private async Task OnFidalFileChange(InputFileChangeEventArgs e)
+    {
+        _isImporting = true;
+        _fidalMessage = "Elaborazione file in corso...";
+        StateHasChanged();
+
+        try
+        {
+            using var stream = e.File.OpenReadStream(10_000_000); // 10MB max
+            var estratti = await _fidalScraper.GetAtletiFromStreamAsync(stream);
+            await SalvaAtletiEstratti(estratti);
+        }
+        catch (Exception ex)
+        {
+            _fidalMessage = $"Errore elaborazione: {ex.Message}";
+        }
+        finally
+        {
+            _isImporting = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ImportaDaTesto()
+    {
+        if (string.IsNullOrWhiteSpace(_pastedText)) return;
+        _isImporting = true;
+        _fidalMessage = "Elaborazione testo in corso...";
+        StateHasChanged();
+
+        try
+        {
+            var estratti = await _fidalScraper.GetAtletiFromTextAsync(_pastedText);
+            await SalvaAtletiEstratti(estratti);
+        }
+        catch (Exception ex)
+        {
+            _fidalMessage = $"Errore elaborazione: {ex.Message}";
+        }
+        finally
+        {
+            _isImporting = false;
+            StateHasChanged();
+        }
+    }
 
     private async Task Cambia()
     {

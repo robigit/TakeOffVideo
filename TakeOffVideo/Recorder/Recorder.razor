@@ -50,13 +50,26 @@
             <span class="input-group-text">
                 <img src="image/number24.png" alt="Atleta" height="20">
             </span>
-            @if(go.Atleti != null)
+            @if(go.Atleti != null || (go.AtletiLocali != null && go.AtletiLocali.Any()))
             {
                 <select class="form-select" @onchange="SelezionaAtleta">
-                    @foreach (var atl in go.Atleti.Where(a => a.CODGARA == go.GaraSel && a.CONFERMA=="S")
-                            .OrderBy(a => a.PettNum))
+                    <option value="">-- Seleziona Atleta --</option>
+                    @if (go.Atleti != null)
                     {
-                        <option>@atl</option>
+                        @foreach (var atl in go.Atleti.Where(a => a.CODGARA == go.GaraSel && a.CONFERMA=="S")
+                            .OrderBy(a => a.PettNum))
+                        {
+                            <option value="@atl">@atl</option>
+                        }
+                    }
+                    @if (go.AtletiLocali != null && go.AtletiLocali.Count > 0)
+                    {
+                        <optgroup label="Atleti Locali">
+                            @foreach (var atl in go.AtletiLocali.OrderBy(a => int.TryParse(a.Pettorale, out int p) ? p : 9999))
+                            {
+                                <option value="@atl.DisplayName">@atl.DisplayName</option>
+                            }
+                        </optgroup>
                     }
                 </select>
             }
