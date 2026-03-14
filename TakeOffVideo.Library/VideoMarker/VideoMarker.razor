@@ -1,4 +1,4 @@
-﻿@using Microsoft.JSInterop
+@using Microsoft.JSInterop
 @using TakeOffVideo.Library.ModalDialog
 @using TakeOffVideo.Library.TOVFileManagerNS;
 
@@ -19,13 +19,21 @@
     <!-- Video Preview Section -->
     <div class="row justify-content-center mb-3">
         <div class="col-auto">
-            <div class="vmcontainer position-relative" @ref="_container">
+            <div class="vmcontainer position-relative" @ref="_container" @onclick="OnContainerClick">
                 <div class="vmvideo border rounded shadow-sm" style="background: #000;">
                     <video width="@WidthVideo" height="@HeigthVideo" @ref="_video" preload="auto" playsInline />
                 </div>
                 @if (_lineavisibile)
                 {
                     <div class="vmlinea" @ref="_linea"></div>
+                }
+                @if (_foulZoneVisible)
+                {
+                    <div class="vm-foul-zone" style="right: calc(50% + @(-_lineaPosition)px); left: 0;"></div>
+                }
+                @if (_refPointX.HasValue)
+                {
+                    <div class="vm-ref-point" style="left: @(_refPointX)px; top: 50%;"></div>
                 }
             </div>
         </div>
@@ -99,6 +107,20 @@
                             }
                             
                         </button>
+                    }
+
+                    @if (ConNulloCheck)
+                    {
+                        <div class="btn-group" role="group" aria-label="Controllo Nullo">
+                            <button class="btn btn-sm btn-outline-warning" style="padding: 0.25rem 0.5rem;"
+                                    @onclick="CheckNulloAuto" title="Analisi pixel automatica (zona sinistra barra)">
+                                <i class="bi bi-search me-1"></i>Nullo Auto
+                            </button>
+                            <button class="btn btn-sm @(_waitingRefPoint ? "btn-warning" : "btn-outline-warning")" style="padding: 0.25rem 0.5rem;"
+                                    @onclick="ToggleRefPointMode" title="Clicca sul piede nel video per impostare il punto di riferimento">
+                                <i class="bi bi-crosshair me-1"></i>@(_waitingRefPoint ? "Clicca sul piede..." : "Nullo (Punto)")
+                            </button>
+                        </div>
                     }
                 }
             </div>
@@ -212,8 +234,10 @@
     [Parameter] public bool ConControls { get; set; } = false;
 
     [Parameter] public bool ConImageRec { get; set; } = false;
+    [Parameter] public bool ConNulloCheck { get; set; } = false;
 
     [Parameter] public EventCallback<string> OnImageRecorded { get; set; }
+    [Parameter] public EventCallback<NulloResult> OnNulloChecked { get; set; }
 
     [Parameter] public EventCallback<OnVideoRecordedArgs> OnVideoRecorded { get; set; }
 
@@ -226,6 +250,8 @@
     [Parameter] public bool ConZoom { get; set; } = true;
 
     [Parameter] public TVideo Ruolo { get; set; } = 0;
+
+    public record NulloResult(bool IsNullo, int Confidenza, string Messaggio, string Modalita);
 
 
 
@@ -385,6 +411,7 @@
     private void MostraLinea()
     {
         _lineavisibile = !_lineavisibile;
+        if (!_lineavisibile) _foulZoneVisible = false;
     }
 
     private async Task Move(string direction, int pixels)
@@ -392,13 +419,65 @@
         if (_JScript == null)
             return;
 
-
         await _JScript.InvokeVoidAsync("move", direction, _container, _linea, pixels);
 
         var lp = await _JScript.InvokeAsync<int>("getlineposition", _linea);
+        _lineaPosition = lp;
         await webstorage.SessionStorage.Save(IDSession, lp.ToString());
-
     }
+
+    // ── Nullo detection ──────────────────────────────────────────────
+
+    bool _foulZoneVisible = false;
+    bool _waitingRefPoint = false;
+    double? _refPointX = null;
+    int _lineaPosition = 0;
+
+    private async Task CheckNulloAuto()
+    {
+        if (_JScript == null || !_lineavisibile) return;
+        _foulZoneVisible = false;
+        _refPointX = null;
+
+        var result = await _JScript.InvokeAsync<NulloResultJS>("checkNulloAuto", _video, _linea, _container);
+        _foulZoneVisible = result.IsNullo;
+
+        var nr = new NulloResult(result.IsNullo, result.Confidenza, result.Messaggio, "Auto");
+        if (OnNulloChecked.HasDelegate)
+            await OnNulloChecked.InvokeAsync(nr);
+
+        StateHasChanged();
+    }
+
+    private async Task ToggleRefPointMode()
+    {
+        _waitingRefPoint = !_waitingRefPoint;
+        _refPointX = null;
+        if (_JScript != null)
+            await _JScript.InvokeVoidAsync("setReferencePoint", -1, -1); // clear
+        StateHasChanged();
+    }
+
+    private async Task OnContainerClick(MouseEventArgs e)
+    {
+        if (!_waitingRefPoint || _JScript == null) return;
+
+        _refPointX = e.OffsetX;
+        await _JScript.InvokeVoidAsync("setReferencePoint", e.OffsetX, e.OffsetY);
+        _waitingRefPoint = false;
+
+        // Immediately run the ref-point check
+        var result = await _JScript.InvokeAsync<NulloResultJS>("checkNulloByRef", _linea, _container);
+        _foulZoneVisible = result.IsNullo;
+
+        var nr = new NulloResult(result.IsNullo, result.Confidenza, result.Messaggio, "Punto");
+        if (OnNulloChecked.HasDelegate)
+            await OnNulloChecked.InvokeAsync(nr);
+
+        StateHasChanged();
+    }
+
+    private record NulloResultJS(bool IsNullo, int Confidenza, string Messaggio);
 
     private async Task AdvanceFrame(int steps)
     {

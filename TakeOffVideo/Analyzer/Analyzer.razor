@@ -1,4 +1,4 @@
-﻿@using Microsoft.Extensions.Localization;
+@using Microsoft.Extensions.Localization;
 @using TakeOffVideo.Library.TOVFileManagerNS;
 @using TakeOffVideo.Library.VideoMarker
 @using TakeOffVideo.Library.VideoUploader
@@ -18,12 +18,34 @@
 
 <VideoMarker OnImageRecorded="SalvaImmagine" 
              OnZoomRequested="HandleZoomRequest"
+             OnNulloChecked="OnNulloResult"
              ConImageRec="ConImageRec" 
+             ConNulloCheck="true"
              Ruolo="VideoMarker.TVideo.Analyzer"
              WidthVideo="640" 
              HeigthVideo="640" 
              ConControls=true 
              @ref="_videoMarker" />
+
+@if (_nulloResult != null)
+{
+    <div class="row justify-content-center mt-2">
+        <div class="col-auto">
+            <div class="alert alert-info d-flex align-items-center gap-2 py-1 px-3 mb-2" role="alert" style="font-size: 0.82rem; border-radius: 8px;">
+                <i class="bi bi-flask me-1"></i>
+                <span><strong>Funzionalità BETA</strong> — Il rilevamento automatico del nullo è sperimentale e verrà migliorato nelle versioni future. I risultati potrebbero non essere precisi al 100%.</span>
+            </div>
+            <div class="alert @(_nulloResult.IsNullo ? "alert-danger" : "alert-success") d-flex align-items-center gap-3 py-2 px-4 shadow" role="alert" style="font-size: 1.1rem; border-radius: 12px;">
+                <i class="bi @(_nulloResult.IsNullo ? "bi-x-circle-fill" : "bi-check-circle-fill") fs-3"></i>
+                <div>
+                    <strong>@(_nulloResult.IsNullo ? "⛔ NULLO" : "✅ VALIDO")</strong>
+                    <span class="badge bg-warning text-dark ms-2" style="font-size: 0.65rem; vertical-align: middle;">BETA</span>
+                    <small class="d-block text-muted">@_nulloResult.Messaggio &nbsp;|&nbsp; Modalità: @_nulloResult.Modalita</small>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 <div class="row g-3 mt-3">
     <div class="col-lg-8">
@@ -42,6 +64,13 @@
     VideoMarker? _videoMarker;
 
     bool ConImageRec = false;
+    VideoMarker.NulloResult? _nulloResult = null;
+
+    void OnNulloResult(VideoMarker.NulloResult r)
+    {
+        _nulloResult = r;
+        StateHasChanged();
+    }
 
     [Parameter]
     public EventCallback<string> OnZoomRequested { get; set; }

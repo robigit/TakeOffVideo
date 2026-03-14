@@ -1,4 +1,4 @@
-﻿.vmcontainer {
+.vmcontainer {
     display: inline-block;
     position: relative;
     max-width: 100%;
@@ -25,4 +25,29 @@
     max-width: 100%;
     height: auto;
     display: block;
+}
+
+/* Foul zone: red overlay to the left of the bar when a foul is detected */
+.vm-foul-zone {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background-color: rgba(255, 0, 0, 0.22);
+    pointer-events: none;
+    z-index: 999;
+    transition: opacity 0.3s ease;
+}
+
+/* Reference point dot placed by user click */
+.vm-ref-point {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: #00e5ff;
+    border: 2px solid white;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 1001;
+    box-shadow: 0 0 6px rgba(0,229,255,0.8);
 }
