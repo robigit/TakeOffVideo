@@ -9,6 +9,8 @@
 @inject IStringLocalizer<LangResources> Loc
 
 @inject TOVFileManager videofilemanager
+@inject TakeOffVideo.Library.Util.GeminiVisionService _geminiService
+@inject WebStorageManagement.Models.IWebStorageService _webstorage
 
 @implements IDisposable
 
@@ -19,6 +21,7 @@
 <VideoMarker OnImageRecorded="SalvaImmagine" 
              OnZoomRequested="HandleZoomRequest"
              OnNulloChecked="OnNulloResult"
+             OnNulloAiRequested="OnNulloAiRequested"
              ConImageRec="ConImageRec" 
              ConNulloCheck="true"
              Ruolo="VideoMarker.TVideo.Analyzer"
@@ -36,7 +39,14 @@
                 <span><strong>Funzionalità BETA</strong> — Il rilevamento automatico del nullo è sperimentale e verrà migliorato nelle versioni future. I risultati potrebbero non essere precisi al 100%.</span>
             </div>
             <div class="alert @(_nulloResult.IsNullo ? "alert-danger" : "alert-success") d-flex align-items-center gap-3 py-2 px-4 shadow" role="alert" style="font-size: 1.1rem; border-radius: 12px;">
-                <i class="bi @(_nulloResult.IsNullo ? "bi-x-circle-fill" : "bi-check-circle-fill") fs-3"></i>
+                @if (_isAnalyzingAi)
+                {
+                    <div class="spinner-border text-primary fs-3" role="status"></div>
+                }
+                else
+                {
+                    <i class="bi @(_nulloResult.IsNullo ? "bi-x-circle-fill" : "bi-check-circle-fill") fs-3"></i>
+                }
                 <div>
                     <strong>@(_nulloResult.IsNullo ? "⛔ NULLO" : "✅ VALIDO")</strong>
                     <span class="badge bg-warning text-dark ms-2" style="font-size: 0.65rem; vertical-align: middle;">BETA</span>
@@ -65,11 +75,42 @@
 
     bool ConImageRec = false;
     VideoMarker.NulloResult? _nulloResult = null;
+    bool _isAnalyzingAi = false;
 
     void OnNulloResult(VideoMarker.NulloResult r)
     {
         _nulloResult = r;
         StateHasChanged();
+    }
+
+    async Task OnNulloAiRequested(string base64Frame)
+    {
+        var apiKey = await _webstorage.LocalStorage.Read("GeminiApiKey");
+        if (string.IsNullOrWhiteSpace(apiKey))
+        {
+            _nulloResult = new VideoMarker.NulloResult(false, 0, "Inserisci la chiave API Gemini nelle Opzioni per usare l'AI", "Gemini AI");
+            StateHasChanged();
+            return;
+        }
+
+        _isAnalyzingAi = true;
+        _nulloResult = new VideoMarker.NulloResult(false, 0, "L'intelligenza artificiale sta analizzando il salto... attendere.", "Gemini AI");
+        StateHasChanged();
+
+        try
+        {
+            var result = await _geminiService.AnalyzeFoulAsync(base64Frame, apiKey);
+            _nulloResult = new VideoMarker.NulloResult(result.IsNullo, 99, result.Messaggio, "Gemini AI");
+        }
+        catch (Exception ex)
+        {
+            _nulloResult = new VideoMarker.NulloResult(false, 0, $"Errore API Gemini: {ex.Message}", "Gemini AI");
+        }
+        finally
+        {
+            _isAnalyzingAi = false;
+            StateHasChanged();
+        }
     }
 
     [Parameter]

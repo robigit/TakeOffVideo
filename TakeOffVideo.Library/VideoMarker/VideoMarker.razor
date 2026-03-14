@@ -120,6 +120,10 @@
                                     @onclick="ToggleRefPointMode" title="Clicca sul piede nel video per impostare il punto di riferimento">
                                 <i class="bi bi-crosshair me-1"></i>@(_waitingRefPoint ? "Clicca sul piede..." : "Nullo (Punto)")
                             </button>
+                            <button class="btn btn-sm btn-outline-primary fw-bold" style="padding: 0.25rem 0.5rem;"
+                                    @onclick="CheckNulloAi" title="Analisi con Intelligenza Artificiale (Gemini)">
+                                <i class="bi bi-robot me-1"></i>Nullo AI (Gemini)
+                            </button>
                         </div>
                     }
                 }
@@ -238,6 +242,7 @@
 
     [Parameter] public EventCallback<string> OnImageRecorded { get; set; }
     [Parameter] public EventCallback<NulloResult> OnNulloChecked { get; set; }
+    [Parameter] public EventCallback<string> OnNulloAiRequested { get; set; }
 
     [Parameter] public EventCallback<OnVideoRecordedArgs> OnVideoRecorded { get; set; }
 
@@ -447,6 +452,15 @@
             await OnNulloChecked.InvokeAsync(nr);
 
         StateHasChanged();
+    }
+
+    private async Task CheckNulloAi()
+    {
+        if (_JScript == null || !OnNulloAiRequested.HasDelegate) return;
+
+        // Estrae il frame in base64 senza prefisso data URI
+        var base64Frame = await _JScript.InvokeAsync<string>("getFrameBase64", _video);
+        await OnNulloAiRequested.InvokeAsync(base64Frame);
     }
 
     private async Task ToggleRefPointMode()

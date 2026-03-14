@@ -118,6 +118,43 @@
 <br />
 
 <div class="card">
+    <div class="card-header bg-primary text-white">
+        <h5 class="card-title mb-0">
+            <i class="bi bi-robot me-2"></i>Integrazione Google Gemini AI
+        </h5>
+    </div>
+    <div class="card-body">
+        <p>Inserisci la chiave API per attivare il rilevamento automatico avanzato del nullo tramite intelligenza artificiale visiva (Gemini Vision).</p>
+        
+        <div class="mb-3">
+            <label class="form-label fw-bold">Gemini API Key</label>
+            <div class="input-group">
+                <input type="@(_showGeminiKey ? "text" : "password")" class="form-control" placeholder="es. AIzaSy..." @bind="_geminiApiKey" autocomplete="off">
+                <button class="btn btn-outline-secondary" type="button" @onclick="() => _showGeminiKey = !_showGeminiKey">
+                    <i class="bi @(_showGeminiKey ? "bi-eye-slash" : "bi-eye")"></i>
+                </button>
+            </div>
+            <div class="form-text mt-2">
+                Non hai una chiave? <a href="https://aistudio.google.com/" target="_blank" class="text-primary text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Generala gratis su Google AI Studio</a>.
+            </div>
+        </div>
+
+        <button class="btn btn-primary" @onclick="SalvaGeminiKey">
+            <i class="bi bi-save me-1"></i>Salva Chiave
+        </button>
+
+        @if (!string.IsNullOrEmpty(_geminiMessage))
+        {
+            <div class="mt-3 text-success">
+                <i class="bi bi-check-circle-fill me-1"></i>@_geminiMessage
+            </div>
+        }
+    </div>
+</div>
+
+<br />
+
+<div class="card">
     <div class="card-header">
         <h5 class="card-title mb-0">
             Selezione camera di Default
@@ -190,6 +227,33 @@
     private string _pastedText = "";
     private string _fidalMessage = "";
     private bool _isImporting = false;
+
+    // Gemini Variables
+    private string _geminiApiKey = "";
+    private bool _showGeminiKey = false;
+    private string _geminiMessage = "";
+
+    private async Task SalvaGeminiKey()
+    {
+        if (string.IsNullOrWhiteSpace(_geminiApiKey))
+        {
+            await webstorage.LocalStorage.Save("GeminiApiKey", "");
+            _geminiMessage = "Chiave API rimossa.";
+        }
+        else
+        {
+            await webstorage.LocalStorage.Save("GeminiApiKey", _geminiApiKey.Trim());
+            _geminiMessage = "Chiave API salvata con successo!";
+        }
+        
+        // Nascondi messaggio dopo 3 secondi
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(3000);
+            _geminiMessage = "";
+            await InvokeAsync(StateHasChanged);
+        });
+    }
 
     private async Task SalvaAtletiEstratti(List<Atleta> estratti)
     {
@@ -286,6 +350,12 @@
     protected override async Task OnInitializedAsync()
     {
         RegistrazioneContinua = await webstorage.LocalStorage.Read("TipoRec") == "True";
+
+        var savedKey = await webstorage.LocalStorage.Read("GeminiApiKey");
+        if (!string.IsNullOrEmpty(savedKey))
+        {
+            _geminiApiKey = savedKey;
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

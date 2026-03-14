@@ -281,6 +281,17 @@ export function AdvanceFrame(video, steps) {
     //else video.currentTime += d
 }
 
+export function getFrameBase64(video) {
+    let canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    let ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Return base64 without the data URI prefix for Gemini API
+    let dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+    return dataUrl.split(',')[1];
+}
 
 export function getCurrentCanvasFrame(video, dotHelper, nome) {
     let canvas = document.createElement("canvas");
