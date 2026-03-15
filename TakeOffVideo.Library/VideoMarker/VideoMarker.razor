@@ -115,41 +115,47 @@
                             
                         </button>
                     }
-
-                    @if (ConNulloCheck)
-                    {
-                        <div class="btn-group me-2" role="group" aria-label="Direzione Salto">
-                            <button class="btn btn-sm btn-outline-info fw-bold" style="padding: 0.25rem 0.5rem; width: 140px;"
-                                    @onclick="ToggleDirezioneSalto" title="Cambia la direzione di stacco dell'atleta">
-                                @if (_saltoVersoSinistra)
-                                {
-                                    <span><i class="bi bi-arrow-left"></i> Da Dx a Sx</span>
-                                }
-                                else
-                                {
-                                    <span>Da Sx a Dx <i class="bi bi-arrow-right"></i></span>
-                                }
-                            </button>
-                        </div>
-                        <div class="btn-group" role="group" aria-label="Controllo Nullo">
-                            <button class="btn btn-sm btn-outline-warning" style="padding: 0.25rem 0.5rem;"
-                                    @onclick="CheckNulloAuto" title="Analisi pixel automatica (zona sinistra barra)">
-                                <i class="bi bi-search me-1"></i>Nullo Auto
-                            </button>
-                            <button class="btn btn-sm @(_waitingRefPoint ? "btn-warning" : "btn-outline-warning")" style="padding: 0.25rem 0.5rem;"
-                                    @onclick="ToggleRefPointMode" title="Clicca sul piede nel video per impostare il punto di riferimento">
-                                <i class="bi bi-crosshair me-1"></i>@(_waitingRefPoint ? "Clicca sul piede..." : "Nullo (Punto)")
-                            </button>
-                            <button class="btn btn-sm btn-outline-primary fw-bold" style="padding: 0.25rem 0.5rem;"
-                                    @onclick="CheckNulloAi" title="Analisi con Intelligenza Artificiale (Gemini)">
-                                <i class="bi bi-robot me-1"></i>Nullo AI (Gemini)
-                            </button>
-                        </div>
-                    }
                 }
             </div>
         </div>
     </div>
+
+    @if (!ConRecorder && ConNulloCheck)
+    {
+        <div class="row justify-content-center mb-3">
+            <div class="col-auto">
+                <div class="d-flex gap-2 flex-wrap justify-content-center align-items-center">
+                    <div class="btn-group me-2" role="group" aria-label="Direzione Salto">
+                        <button class="btn btn-sm btn-outline-info fw-bold" style="padding: 0.25rem 0.5rem; width: 140px;"
+                                @onclick="ToggleDirezioneSalto" title="Cambia la direzione di stacco dell'atleta">
+                            @if (_saltoVersoSinistra)
+                            {
+                                <span><i class="bi bi-arrow-left"></i> Da Dx a Sx</span>
+                            }
+                            else
+                            {
+                                <span>Da Sx a Dx <i class="bi bi-arrow-right"></i></span>
+                            }
+                        </button>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="Controllo Nullo">
+                        <button class="btn btn-sm btn-outline-warning" style="padding: 0.25rem 0.5rem;"
+                                @onclick="CheckNulloAuto" title="Analisi pixel automatica (zona sinistra barra)">
+                            <i class="bi bi-search me-1"></i>Nullo Auto
+                        </button>
+                        <button class="btn btn-sm @(_waitingRefPoint ? "btn-warning" : "btn-outline-warning")" style="padding: 0.25rem 0.5rem;"
+                                @onclick="ToggleRefPointMode" title="Clicca sul piede nel video per impostare il punto di riferimento">
+                            <i class="bi bi-crosshair me-1"></i>@(_waitingRefPoint ? "Clicca sul piede..." : "Nullo (Punto)")
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary fw-bold" style="padding: 0.25rem 0.5rem;"
+                                @onclick="CheckNulloAi" title="Analisi con Intelligenza Artificiale (Gemini)">
+                            <i class="bi bi-robot me-1"></i>Nullo AI (Gemini)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
     @if (ConRecorder)
     {
