@@ -16,7 +16,7 @@ namespace TakeOffVideo.Library.Util
             _httpClient = httpClient;
         }
 
-        public async Task<GeminiNulloResult> AnalyzeFoulAsync(string base64Image, string apiKey)
+        public async Task<GeminiNulloResult> AnalyzeFoulAsync(string base64Image, string apiKey, bool versoSinistra)
         {
             if (string.IsNullOrWhiteSpace(apiKey))
                 throw new ArgumentException("API Key mancante");
@@ -31,9 +31,13 @@ namespace TakeOffVideo.Library.Util
 
             var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={apiKey}";
 
-            var systemPrompt = @"Sei un giudice internazionale di atletica leggera.
-Osserva la linea gialla verticale (tavola di battuta) e il piede dell'atleta. L'atleta arriva da destra e salta verso sinistra.
-Se il piede o la scarpa si estendono visibilmente a sinistra della linea gialla (toccando il suolo o la plastilina integrata oltre la linea), è un fallo (NULLO). Altrimenti è VALIDO.
+            string directionText = versoSinistra
+                ? "L'atleta arriva da destra e salta verso sinistra.\nSe il piede o la scarpa si estendono visibilmente a sinistra della linea gialla (toccando il suolo o la plastilina integrata oltre la linea), è un fallo (NULLO). Altrimenti è VALIDO."
+                : "L'atleta arriva da sinistra e salta verso destra.\nSe il piede o la scarpa si estendono visibilmente a destra della linea gialla (toccando il suolo o la plastilina integrata oltre la linea), è un fallo (NULLO). Altrimenti è VALIDO.";
+
+            var systemPrompt = $@"Sei un giudice internazionale di atletica leggera.
+Osserva la linea gialla verticale (tavola di battuta) e il piede dell'atleta.
+{directionText}
 Rispondi con una singola riga esatta in questo formato:
 VERDETTO | Motivazione.
 Dove VERDETTO può essere solo NULLO oppure VALIDO.";

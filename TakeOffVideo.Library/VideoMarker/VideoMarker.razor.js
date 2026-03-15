@@ -334,10 +334,11 @@ let _referencePointX = null; // stored reference point (video-relative %)
 
 /**
  * Automatic foul check via pixel analysis.
- * Samples a strip of pixels to the LEFT of the yellow bar (the foul zone).
+ * Samples a strip of pixels to the LEFT or RIGHT of the yellow bar (the foul zone)
+ * depending on the jump direction.
  * A "dark" pixel is one with luminance < threshold (foot/shoe = dark on bright track).
  */
-export function checkNulloAuto(video, lineElement, container) {
+export function checkNulloAuto(video, lineElement, container, versoSinistra) {
     try {
         // Get the absolute X position of the bar in the container
         const containerRect = container.getBoundingClientRect();
@@ -373,13 +374,25 @@ export function checkNulloAuto(video, lineElement, container) {
         // Convert bar X from container-space to canvas-space
         const barXInCanvas = Math.round(lineXAbsolute - offsetX);
 
-        // Analyse left strip (foul zone): from (barX - analyzeWidth) to barX
-        const analyzeWidth = Math.min(40, barXInCanvas); // 40px strip, or up to bar edge
-        if (analyzeWidth <= 0) {
-            return { isNullo: false, confidenza: 0, messaggio: "Barra troppo a sinistra per l'analisi" };
+        // Analyse strip (foul zone) depending on direction
+        let analyzeWidth = 40;
+        let startX;
+        
+        if (versoSinistra) {
+            // Foul zone is to the LEFT of the bar
+            analyzeWidth = Math.min(analyzeWidth, barXInCanvas);
+            if (analyzeWidth <= 0) {
+                return { isNullo: false, confidenza: 0, messaggio: "Barra troppo a sinistra per l'analisi" };
+            }
+            startX = barXInCanvas - analyzeWidth;
+        } else {
+            // Foul zone is to the RIGHT of the bar
+            analyzeWidth = Math.min(analyzeWidth, canvas.width - barXInCanvas);
+            if (analyzeWidth <= 0) {
+                return { isNullo: false, confidenza: 0, messaggio: "Barra troppo a destra per l'analisi" };
+            }
+            startX = barXInCanvas;
         }
-
-        const startX = barXInCanvas - analyzeWidth;
         const imageData = ctx.getImageData(startX, 0, analyzeWidth, canvas.height);
         const pixels = imageData.data; // RGBA
 
@@ -422,9 +435,9 @@ export function setReferencePoint(x, y) {
 
 /**
  * Checks foul by comparing the stored reference point X vs bar position.
- * If reference point is to the LEFT of the bar → nullo.
+ * The logic depends on the jump direction.
  */
-export function checkNulloByRef(lineElement, container) {
+export function checkNulloByRef(lineElement, container, versoSinistra) {
     if (_referencePointX === null) {
         return { isNullo: false, confidenza: 0, messaggio: "Nessun punto di riferimento impostato. Clicca sul piede nel video." };
     }
@@ -434,13 +447,20 @@ export function checkNulloByRef(lineElement, container) {
     const lineXAbsolute = lineRect.left - containerRect.left;
 
     const scostamento = Math.round(lineXAbsolute - _referencePointX);
-    const isNullo = _referencePointX < lineXAbsolute; // foot is LEFT of bar
+    
+    let isNullo;
+    if (versoSinistra) {
+        isNullo = _referencePointX < lineXAbsolute; // foot is LEFT of bar
+    } else {
+        isNullo = _referencePointX > lineXAbsolute; // foot is RIGHT of bar
+    }
 
+    const absScostamento = Math.abs(scostamento);
     const messaggio = isNullo
-        ? `NULLO: piede ${Math.abs(scostamento)}px oltre la linea`
-        : `VALIDO: piede ${Math.abs(scostamento)}px prima della linea`;
+        ? `NULLO: piede ${absScostamento}px oltre la linea`
+        : `VALIDO: piede ${absScostamento}px prima della linea`;
 
-    console.info(`[NulloCheck Ref] refX=${_referencePointX} barX=${lineXAbsolute} scostamento=${scostamento}`);
+    console.info(`[NulloCheck Ref] refX=${_referencePointX} barX=${lineXAbsolute} scostamento=${scostamento} versoSx=${versoSinistra}`);
     _referencePointX = null; // reset after check
     return { isNullo, confidenza: 95, messaggio };
 }

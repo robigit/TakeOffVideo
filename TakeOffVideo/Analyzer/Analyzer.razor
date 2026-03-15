@@ -83,7 +83,7 @@
         StateHasChanged();
     }
 
-    async Task OnNulloAiRequested(string base64Frame)
+    async Task OnNulloAiRequested((string base64Frame, bool versoSinistra) args)
     {
         var apiKey = await _webstorage.LocalStorage.Read("GeminiApiKey");
         if (string.IsNullOrWhiteSpace(apiKey))
@@ -99,7 +99,7 @@
 
         try
         {
-            var result = await _geminiService.AnalyzeFoulAsync(base64Frame, apiKey);
+            var result = await _geminiService.AnalyzeFoulAsync(args.base64Frame, apiKey, args.versoSinistra);
             _nulloResult = new VideoMarker.NulloResult(result.IsNullo, 99, result.Messaggio, "Gemini AI");
         }
         catch (Exception ex)

@@ -29,7 +29,14 @@
                 }
                 @if (_foulZoneVisible)
                 {
-                    <div class="vm-foul-zone" style="right: calc(50% + @(-_lineaPosition)px); left: 0;"></div>
+                    if (_saltoVersoSinistra)
+                    {
+                        <div class="vm-foul-zone" style="right: calc(50% + @(-_lineaPosition)px); left: 0;"></div>
+                    }
+                    else
+                    {
+                        <div class="vm-foul-zone" style="left: calc(50% + @(_lineaPosition)px); right: 0;"></div>
+                    }
                 }
                 @if (_refPointX.HasValue)
                 {
@@ -111,6 +118,19 @@
 
                     @if (ConNulloCheck)
                     {
+                        <div class="btn-group me-2" role="group" aria-label="Direzione Salto">
+                            <button class="btn btn-sm btn-outline-info fw-bold" style="padding: 0.25rem 0.5rem; width: 140px;"
+                                    @onclick="ToggleDirezioneSalto" title="Cambia la direzione di stacco dell'atleta">
+                                @if (_saltoVersoSinistra)
+                                {
+                                    <span><i class="bi bi-arrow-left"></i> Da Dx a Sx</span>
+                                }
+                                else
+                                {
+                                    <span>Da Sx a Dx <i class="bi bi-arrow-right"></i></span>
+                                }
+                            </button>
+                        </div>
                         <div class="btn-group" role="group" aria-label="Controllo Nullo">
                             <button class="btn btn-sm btn-outline-warning" style="padding: 0.25rem 0.5rem;"
                                     @onclick="CheckNulloAuto" title="Analisi pixel automatica (zona sinistra barra)">
@@ -242,7 +262,7 @@
 
     [Parameter] public EventCallback<string> OnImageRecorded { get; set; }
     [Parameter] public EventCallback<NulloResult> OnNulloChecked { get; set; }
-    [Parameter] public EventCallback<string> OnNulloAiRequested { get; set; }
+    [Parameter] public EventCallback<(string Base64, bool VersoSinistra)> OnNulloAiRequested { get; set; }
 
     [Parameter] public EventCallback<OnVideoRecordedArgs> OnVideoRecorded { get; set; }
 
@@ -437,6 +457,15 @@
     bool _waitingRefPoint = false;
     double? _refPointX = null;
     int _lineaPosition = 0;
+    bool _saltoVersoSinistra = true; // Default: atleta arriva da destra e salta a sinistra
+
+    private void ToggleDirezioneSalto()
+    {
+        _saltoVersoSinistra = !_saltoVersoSinistra;
+        _foulZoneVisible = false;
+        _refPointX = null;
+        StateHasChanged();
+    }
 
     private async Task CheckNulloAuto()
     {
@@ -444,7 +473,7 @@
         _foulZoneVisible = false;
         _refPointX = null;
 
-        var result = await _JScript.InvokeAsync<NulloResultJS>("checkNulloAuto", _video, _linea, _container);
+        var result = await _JScript.InvokeAsync<NulloResultJS>("checkNulloAuto", _video, _linea, _container, _saltoVersoSinistra);
         _foulZoneVisible = result.IsNullo;
 
         var nr = new NulloResult(result.IsNullo, result.Confidenza, result.Messaggio, "Auto");
@@ -460,7 +489,7 @@
 
         // Estrae il frame in base64 senza prefisso data URI
         var base64Frame = await _JScript.InvokeAsync<string>("getFrameBase64", _video);
-        await OnNulloAiRequested.InvokeAsync(base64Frame);
+        await OnNulloAiRequested.InvokeAsync((base64Frame, _saltoVersoSinistra));
     }
 
     private async Task ToggleRefPointMode()
@@ -481,7 +510,7 @@
         _waitingRefPoint = false;
 
         // Immediately run the ref-point check
-        var result = await _JScript.InvokeAsync<NulloResultJS>("checkNulloByRef", _linea, _container);
+        var result = await _JScript.InvokeAsync<NulloResultJS>("checkNulloByRef", _linea, _container, _saltoVersoSinistra);
         _foulZoneVisible = result.IsNullo;
 
         var nr = new NulloResult(result.IsNullo, result.Confidenza, result.Messaggio, "Punto");
