@@ -52,6 +52,12 @@
 
 @if (go.AtletiLocali.Any())
 {
+    <div class="mb-3" style="display: flex; justify-content: flex-end;">
+        <button class="button is-danger is-outlined" @onclick="EliminaTutti">
+            <span class="icon is-small"><i class="bi bi-trash"></i></span>
+            <span>@Loc["Elimina Tutti"]</span>
+        </button>
+    </div>
     <table class="table is-fullwidth is-striped is-hoverable">
         <thead>
             <tr>
@@ -160,6 +166,14 @@ else
     private async Task EliminaAtleta(Atleta atleta)
     {
         go.AtletiLocali.Remove(atleta);
+        await SalvaAtletiSuStorage();
+    }
+
+    private async Task EliminaTutti()
+    {
+        go.AtletiLocali.Clear();
+        PuliziaForm();
+        _editingId = null;
         await SalvaAtletiSuStorage();
     }
 
