@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -224,5 +224,38 @@
   </data>
   <data name="Atleta" xml:space="preserve">
     <value>Atleta</value>
+  </data>
+  <data name="Gestione Atleti" xml:space="preserve">
+    <value>Gestione Atleti</value>
+  </data>
+  <data name="Aggiungi Atleta" xml:space="preserve">
+    <value>Aggiungi Atleta</value>
+  </data>
+  <data name="Modifica Atleta" xml:space="preserve">
+    <value>Modifica Atleta</value>
+  </data>
+  <data name="Nome" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="Cognome" xml:space="preserve">
+    <value>Cognome</value>
+  </data>
+  <data name="Societa" xml:space="preserve">
+    <value>Società</value>
+  </data>
+  <data name="Azioni" xml:space="preserve">
+    <value>Azioni</value>
+  </data>
+  <data name="Modifica" xml:space="preserve">
+    <value>Modifica</value>
+  </data>
+  <data name="Elimina" xml:space="preserve">
+    <value>Elimina</value>
+  </data>
+  <data name="Elimina Tutti" xml:space="preserve">
+    <value>Elimina Tutti</value>
+  </data>
+  <data name="Nessun atleta inserito." xml:space="preserve">
+    <value>Nessun atleta inserito.</value>
   </data>
 </root>
