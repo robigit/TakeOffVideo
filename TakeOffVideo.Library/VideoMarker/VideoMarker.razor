@@ -1,4 +1,4 @@
-﻿@using Microsoft.JSInterop
+@using Microsoft.JSInterop
 @using TakeOffVideo.Library.ModalDialog
 @using TakeOffVideo.Library.TOVFileManagerNS;
 
@@ -19,13 +19,28 @@
     <!-- Video Preview Section -->
     <div class="row justify-content-center mb-3">
         <div class="col-auto">
-            <div class="vmcontainer position-relative" @ref="_container">
+            <div class="vmcontainer position-relative" @ref="_container" @onclick="OnContainerClick">
                 <div class="vmvideo border rounded shadow-sm" style="background: #000;">
                     <video width="@WidthVideo" height="@HeigthVideo" @ref="_video" preload="auto" playsInline />
                 </div>
                 @if (_lineavisibile)
                 {
                     <div class="vmlinea" @ref="_linea"></div>
+                }
+                @if (_foulZoneVisible)
+                {
+                    if (_saltoVersoSinistra)
+                    {
+                        <div class="vm-foul-zone" style="right: calc(50% + @(-_lineaPosition)px); left: 0;"></div>
+                    }
+                    else
+                    {
+                        <div class="vm-foul-zone" style="left: calc(50% + @(_lineaPosition)px); right: 0;"></div>
+                    }
+                }
+                @if (_refPointX.HasValue)
+                {
+                    <div class="vm-ref-point" style="left: @(_refPointX)px; top: 50%;"></div>
                 }
             </div>
         </div>
@@ -104,6 +119,43 @@
             </div>
         </div>
     </div>
+
+    @if (!ConRecorder && ConNulloCheck)
+    {
+        <div class="row justify-content-center mb-3">
+            <div class="col-auto">
+                <div class="d-flex gap-2 flex-wrap justify-content-center align-items-center">
+                    <div class="btn-group me-2" role="group" aria-label="Direzione Salto">
+                        <button class="btn btn-sm btn-outline-info fw-bold" style="padding: 0.25rem 0.5rem; width: 140px;"
+                                @onclick="ToggleDirezioneSalto" title="Cambia la direzione di stacco dell'atleta">
+                            @if (_saltoVersoSinistra)
+                            {
+                                <span><i class="bi bi-arrow-left"></i> Da Dx a Sx</span>
+                            }
+                            else
+                            {
+                                <span>Da Sx a Dx <i class="bi bi-arrow-right"></i></span>
+                            }
+                        </button>
+                    </div>
+                    <div class="btn-group" role="group" aria-label="Controllo Nullo">
+                        <button class="btn btn-sm btn-outline-warning" style="padding: 0.25rem 0.5rem;"
+                                @onclick="CheckNulloAuto" title="Analisi pixel automatica (zona sinistra barra)">
+                            <i class="bi bi-search me-1"></i>Nullo Auto
+                        </button>
+                        <button class="btn btn-sm @(_waitingRefPoint ? "btn-warning" : "btn-outline-warning")" style="padding: 0.25rem 0.5rem;"
+                                @onclick="ToggleRefPointMode" title="Clicca sul piede nel video per impostare il punto di riferimento">
+                            <i class="bi bi-crosshair me-1"></i>@(_waitingRefPoint ? "Clicca sul piede..." : "Nullo (Punto)")
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary fw-bold" style="padding: 0.25rem 0.5rem;"
+                                @onclick="CheckNulloAi" title="Analisi con Intelligenza Artificiale (Gemini)">
+                            <i class="bi bi-robot me-1"></i>Nullo AI (Gemini)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
     @if (ConRecorder)
     {
@@ -212,8 +264,11 @@
     [Parameter] public bool ConControls { get; set; } = false;
 
     [Parameter] public bool ConImageRec { get; set; } = false;
+    [Parameter] public bool ConNulloCheck { get; set; } = false;
 
     [Parameter] public EventCallback<string> OnImageRecorded { get; set; }
+    [Parameter] public EventCallback<NulloResult> OnNulloChecked { get; set; }
+    [Parameter] public EventCallback<(string Base64, bool VersoSinistra)> OnNulloAiRequested { get; set; }
 
     [Parameter] public EventCallback<OnVideoRecordedArgs> OnVideoRecorded { get; set; }
 
@@ -226,6 +281,8 @@
     [Parameter] public bool ConZoom { get; set; } = true;
 
     [Parameter] public TVideo Ruolo { get; set; } = 0;
+
+    public record NulloResult(bool IsNullo, int Confidenza, string Messaggio, string Modalita);
 
 
 
@@ -385,6 +442,7 @@
     private void MostraLinea()
     {
         _lineavisibile = !_lineavisibile;
+        if (!_lineavisibile) _foulZoneVisible = false;
     }
 
     private async Task Move(string direction, int pixels)
@@ -392,13 +450,83 @@
         if (_JScript == null)
             return;
 
-
         await _JScript.InvokeVoidAsync("move", direction, _container, _linea, pixels);
 
         var lp = await _JScript.InvokeAsync<int>("getlineposition", _linea);
+        _lineaPosition = lp;
         await webstorage.SessionStorage.Save(IDSession, lp.ToString());
-
     }
+
+    // ── Nullo detection ──────────────────────────────────────────────
+
+    bool _foulZoneVisible = false;
+    bool _waitingRefPoint = false;
+    double? _refPointX = null;
+    int _lineaPosition = 0;
+    bool _saltoVersoSinistra = true; // Default: atleta arriva da destra e salta a sinistra
+
+    private void ToggleDirezioneSalto()
+    {
+        _saltoVersoSinistra = !_saltoVersoSinistra;
+        _foulZoneVisible = false;
+        _refPointX = null;
+        StateHasChanged();
+    }
+
+    private async Task CheckNulloAuto()
+    {
+        if (_JScript == null || !_lineavisibile) return;
+        _foulZoneVisible = false;
+        _refPointX = null;
+
+        var result = await _JScript.InvokeAsync<NulloResultJS>("checkNulloAuto", _video, _linea, _container, _saltoVersoSinistra);
+        _foulZoneVisible = result.IsNullo;
+
+        var nr = new NulloResult(result.IsNullo, result.Confidenza, result.Messaggio, "Auto");
+        if (OnNulloChecked.HasDelegate)
+            await OnNulloChecked.InvokeAsync(nr);
+
+        StateHasChanged();
+    }
+
+    private async Task CheckNulloAi()
+    {
+        if (_JScript == null || !OnNulloAiRequested.HasDelegate) return;
+
+        // Estrae il frame in base64 senza prefisso data URI
+        var base64Frame = await _JScript.InvokeAsync<string>("getFrameBase64", _video);
+        await OnNulloAiRequested.InvokeAsync((base64Frame, _saltoVersoSinistra));
+    }
+
+    private async Task ToggleRefPointMode()
+    {
+        _waitingRefPoint = !_waitingRefPoint;
+        _refPointX = null;
+        if (_JScript != null)
+            await _JScript.InvokeVoidAsync("setReferencePoint", -1, -1); // clear
+        StateHasChanged();
+    }
+
+    private async Task OnContainerClick(MouseEventArgs e)
+    {
+        if (!_waitingRefPoint || _JScript == null) return;
+
+        _refPointX = e.OffsetX;
+        await _JScript.InvokeVoidAsync("setReferencePoint", e.OffsetX, e.OffsetY);
+        _waitingRefPoint = false;
+
+        // Immediately run the ref-point check
+        var result = await _JScript.InvokeAsync<NulloResultJS>("checkNulloByRef", _linea, _container, _saltoVersoSinistra);
+        _foulZoneVisible = result.IsNullo;
+
+        var nr = new NulloResult(result.IsNullo, result.Confidenza, result.Messaggio, "Punto");
+        if (OnNulloChecked.HasDelegate)
+            await OnNulloChecked.InvokeAsync(nr);
+
+        StateHasChanged();
+    }
+
+    private record NulloResultJS(bool IsNullo, int Confidenza, string Messaggio);
 
     private async Task AdvanceFrame(int steps)
     {
